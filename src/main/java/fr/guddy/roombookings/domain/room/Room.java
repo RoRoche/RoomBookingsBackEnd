@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.domain.rooms;
+package fr.guddy.roombookings.domain.room;
 
 import java.util.Map;
 
