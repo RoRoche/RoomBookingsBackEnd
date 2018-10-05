@@ -9,8 +9,9 @@ import org.dizitart.no2.Document;
 
 import java.util.Map;
 
+import static java.util.Map.entry;
+
 public final class NitriteBooking implements Booking {
-    private static final long MILLIS_FACTOR = 1000L;
     private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_END = "slot_timestamp_end";
@@ -69,9 +70,9 @@ public final class NitriteBooking implements Booking {
     @Override
     public Map<String, Object> map() {
         return Map.ofEntries(
-                Map.entry(DOCUMENT_KEY_ROOM_NAME, room().name()),
-                Map.entry(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().start().getMillis() / MILLIS_FACTOR),
-                Map.entry(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().end().getMillis() / MILLIS_FACTOR)
+                entry(DOCUMENT_KEY_ROOM_NAME, room().name()),
+                entry(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart()),
+                entry(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd())
         );
     }
 }

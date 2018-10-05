@@ -3,7 +3,7 @@ package fr.guddy.roombookings.domain.slot;
 import org.joda.time.Instant;
 
 public interface Slot {
-    Instant start();
+    long timestampStart();
 
-    Instant end();
+    long timestampEnd();
 }

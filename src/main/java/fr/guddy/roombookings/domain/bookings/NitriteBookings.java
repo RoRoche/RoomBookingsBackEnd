@@ -52,12 +52,12 @@ public final class NitriteBookings implements Bookings {
                         eq(DOCUMENT_KEY_ROOM_NAME, room.name()),
                         or(
                                 and(
-                                        lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.end().getMillis()),
-                                        gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.end().getMillis())
+                                        lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampEnd()),
+                                        gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampEnd())
                                 ),
                                 and(
-                                        lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.start().getMillis()),
-                                        gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.start().getMillis())
+                                        lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampStart()),
+                                        gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampStart())
                                 )
                         )
                 )
