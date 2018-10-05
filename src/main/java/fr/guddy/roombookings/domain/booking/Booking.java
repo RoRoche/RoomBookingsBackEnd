@@ -1,10 +1,16 @@
-package fr.guddy.roombookings.domain.bookings;
+package fr.guddy.roombookings.domain.booking;
 
-import fr.guddy.roombookings.domain.rooms.Room;
+import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slots.Slot;
 
+import java.util.Map;
+
 public interface Booking {
-    Slot slot();
+    Long id();
 
     Room room();
+
+    Slot slot();
+
+    Map<String, Object> map();
 }
