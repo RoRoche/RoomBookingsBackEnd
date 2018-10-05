@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.domain.slots;
+package fr.guddy.roombookings.domain.slot;
 
 import org.joda.time.Instant;
 
