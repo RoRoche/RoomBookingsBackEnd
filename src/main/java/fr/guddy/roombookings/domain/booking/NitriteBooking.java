@@ -17,7 +17,7 @@ public final class NitriteBooking implements Booking {
 
     private final Booking delegate;
 
-    private NitriteBooking(final Booking delegate) {
+    public NitriteBooking(final Booking delegate) {
         this.delegate = delegate;
     }
 
