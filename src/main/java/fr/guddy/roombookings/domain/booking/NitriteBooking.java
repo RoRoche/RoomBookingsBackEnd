@@ -3,8 +3,8 @@ package fr.guddy.roombookings.domain.booking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.domain.slots.LogicalSlot;
-import fr.guddy.roombookings.domain.slots.Slot;
+import fr.guddy.roombookings.domain.slot.LogicalSlot;
+import fr.guddy.roombookings.domain.slot.Slot;
 import org.dizitart.no2.Document;
 
 import java.util.Map;
