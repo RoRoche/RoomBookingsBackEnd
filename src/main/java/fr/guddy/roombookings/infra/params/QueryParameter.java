@@ -10,10 +10,15 @@ public final class QueryParameter implements Parameter<String> {
         this.delegate = delegate;
     }
 
-    public QueryParameter(final Context context, final String name) {
+    public QueryParameter(final String name, final Context context) {
         this(
-                new StringParameter(context.queryParam(name))
+                new StringParameter(name, context.queryParam(name))
         );
+    }
+
+    @Override
+    public String name() {
+        return delegate.name();
     }
 
     @Override

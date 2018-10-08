@@ -12,10 +12,10 @@ public final class PathParameter implements Parameter<String> {
         this.delegate = delegate;
     }
 
-    public PathParameter(final Context context, final String name) {
+    public PathParameter(final String name, final Context context) {
         this(
                 name,
-                new StringParameter(context.pathParam(name))
+                new StringParameter(name, context.pathParam(name))
         );
     }
 
