@@ -12,12 +12,10 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 public final class Api {
     private final Javalin app;
     private final int port;
-    private final Rooms rooms;
 
-    public Api(final Javalin app, final int port, final Rooms rooms) {
+    public Api(final Javalin app, final int port) {
         this.app = app;
         this.port = port;
-        this.rooms = rooms;
     }
 
     public Api(final int port, final Rooms rooms) {
@@ -27,10 +25,9 @@ public final class Api {
                             path("rooms", new RoomsRoute(rooms));
                             path("bookings", new BookingsRoute());
                         })
-                        .enableRouteOverview("rooms")
                         .exception(RoomNotFoundException.class, new RoomNotFoundHandler()),
-                port,
-                rooms);
+                port
+        );
     }
 
     public void start() {

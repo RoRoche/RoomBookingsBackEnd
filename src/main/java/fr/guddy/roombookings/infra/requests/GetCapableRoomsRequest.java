@@ -3,6 +3,7 @@ package fr.guddy.roombookings.infra.requests;
 import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
+import fr.guddy.roombookings.infra.params.Parameter;
 import io.javalin.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -17,6 +18,13 @@ public final class GetCapableRoomsRequest implements Request {
     public GetCapableRoomsRequest(final Rooms rooms, final int capacity) {
         this.rooms = rooms;
         this.capacity = capacity;
+    }
+
+    public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
+        this(
+                rooms,
+                capacity.value()
+        );
     }
 
     @Override

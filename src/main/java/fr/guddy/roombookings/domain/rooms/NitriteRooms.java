@@ -4,6 +4,7 @@ import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
 import io.vavr.Lazy;
 import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public final class NitriteRooms implements Rooms {
             }
             return collection;
         });
+    }
+
+    public NitriteRooms(final Nitrite database) {
+        this(database.getCollection("rooms"));
     }
 
     @Override
