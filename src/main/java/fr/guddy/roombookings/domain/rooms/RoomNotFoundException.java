@@ -1,6 +1,6 @@
 package fr.guddy.roombookings.domain.rooms;
 
-public final class RoomNotFoundException extends Exception {
+public final class RoomNotFoundException extends RuntimeException {
 
     public RoomNotFoundException(final String roomName) {
         super(

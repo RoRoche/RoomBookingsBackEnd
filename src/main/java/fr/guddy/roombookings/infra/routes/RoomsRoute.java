@@ -1,8 +1,10 @@
 package fr.guddy.roombookings.infra.routes;
 
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.infra.requests.GetRoomsRequest;
-import fr.guddy.roombookings.infra.requests.PostRoomRequest;
+import fr.guddy.roombookings.infra.params.IntegerParameter;
+import fr.guddy.roombookings.infra.params.OptionalParameter;
+import fr.guddy.roombookings.infra.params.QueryParameter;
+import fr.guddy.roombookings.infra.requests.*;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
@@ -17,10 +19,28 @@ public final class RoomsRoute implements EndpointGroup {
 
     @Override
     public void addEndpoints() {
-        get(ctx -> new GetRoomsRequest(rooms).perform(ctx));
-        get(":name", (ctx) -> {
-
-        });
-        post(ctx -> new PostRoomRequest(rooms, ctx).perform(ctx));
+        get(
+                ctx ->
+                        new OptionalParameter<>(
+                                new IntegerParameter(
+                                        new QueryParameter("capacity", ctx)
+                                )
+                        )
+                                .value()
+                                .<Request>map(capacity ->
+                                        new GetCapableRoomsRequest(rooms, capacity)
+                                ).orElseGet(() ->
+                                new GetRoomsRequest(rooms)
+                        ).perform(ctx)
+        );
+        get(
+                ":name",
+                (ctx) ->
+                        new GetNamedRoomRequest(rooms, ctx).perform(ctx)
+        );
+        post(
+                ctx ->
+                        new PostRoomRequest(rooms, ctx).perform(ctx)
+        );
     }
 }

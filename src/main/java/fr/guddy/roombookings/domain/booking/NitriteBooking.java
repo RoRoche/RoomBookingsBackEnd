@@ -44,7 +44,7 @@ public final class NitriteBooking implements Booking {
             final long timestampStart,
             final long timestampEnd,
             final Rooms rooms
-    ) throws RoomNotFoundException {
+    ) {
         this(
                 id,
                 rooms.namedRoom(roomName).orElseThrow(() -> new RoomNotFoundException(roomName)),

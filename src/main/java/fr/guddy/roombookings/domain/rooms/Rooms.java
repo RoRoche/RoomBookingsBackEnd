@@ -10,5 +10,7 @@ public interface Rooms {
 
     List<Room> rooms();
 
+    List<Room> capableRooms(final int capacity);
+
     Optional<Room> namedRoom(final String name);
 }

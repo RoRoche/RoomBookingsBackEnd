@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import static org.dizitart.no2.IndexOptions.indexOptions;
 import static org.dizitart.no2.IndexType.Unique;
 import static org.dizitart.no2.filters.Filters.eq;
+import static org.dizitart.no2.filters.Filters.gte;
 
 public final class NitriteRooms implements Rooms {
     private final Lazy<NitriteCollection> collection;
@@ -38,6 +39,15 @@ public final class NitriteRooms implements Rooms {
     @Override
     public List<Room> rooms() {
         return collection.get().find()
+                .toList()
+                .stream()
+                .map(NitriteRoom::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Room> capableRooms(final int capacity) {
+        return collection.get().find(gte("capacity", capacity))
                 .toList()
                 .stream()
                 .map(NitriteRoom::new)
