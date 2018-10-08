@@ -28,7 +28,7 @@ public final class NitriteBooking implements Booking {
         );
     }
 
-    public NitriteBooking(final Document document, final Rooms rooms) {
+    public NitriteBooking(final Document document, final Rooms rooms) throws RoomNotFoundException {
         this(
                 document.getId().getIdValue(),
                 document.get(DOCUMENT_KEY_ROOM_NAME, String.class),
@@ -44,7 +44,7 @@ public final class NitriteBooking implements Booking {
             final long timestampStart,
             final long timestampEnd,
             final Rooms rooms
-    ) {
+    ) throws RoomNotFoundException {
         this(
                 id,
                 rooms.namedRoom(roomName).orElseThrow(() -> new RoomNotFoundException(roomName)),

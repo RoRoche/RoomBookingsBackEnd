@@ -5,6 +5,7 @@ import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.Slot;
+import io.vavr.control.Try;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.NitriteCollection;
 
@@ -41,7 +42,7 @@ public final class NitriteBookings implements Bookings {
                 .toList()
                 .stream()
                 .map(
-                        document -> new NitriteBooking(document, rooms)
+                        document -> Try.of(() -> new NitriteBooking(document, rooms)).get()
                 ).collect(Collectors.toList());
     }
 
@@ -64,7 +65,7 @@ public final class NitriteBookings implements Bookings {
         ).toList();
         return documents.stream()
                 .map(document ->
-                        new NitriteBooking(document, rooms)
+                        Try.of(() -> new NitriteBooking(document, rooms)).get()
                 )
                 .collect(Collectors.toList());
     }
