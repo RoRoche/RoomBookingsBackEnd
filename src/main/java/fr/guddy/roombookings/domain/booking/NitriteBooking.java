@@ -13,6 +13,7 @@ import static java.util.Map.entry;
 
 public final class NitriteBooking implements Booking {
     private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
+    private static final String DOCUMENT_KEY_USER_ID = "user_id";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_END = "slot_timestamp_end";
 
@@ -22,15 +23,16 @@ public final class NitriteBooking implements Booking {
         this.delegate = delegate;
     }
 
-    public NitriteBooking(final Long id, final Room room, final Slot slot) {
+    public NitriteBooking(final Long id, final String userId, final Room room, final Slot slot) {
         this(
-                new SimpleBooking(id, room, slot)
+                new SimpleBooking(id, userId, room, slot)
         );
     }
 
     public NitriteBooking(final Document document, final Rooms rooms) throws RoomNotFoundException {
         this(
                 document.getId().getIdValue(),
+                document.get(DOCUMENT_KEY_USER_ID, String.class),
                 document.get(DOCUMENT_KEY_ROOM_NAME, String.class),
                 document.get(DOCUMENT_KEY_SLOT_TIMESTAMP_START, Long.class),
                 document.get(DOCUMENT_KEY_SLOT_TIMESTAMP_END, Long.class),
@@ -40,6 +42,7 @@ public final class NitriteBooking implements Booking {
 
     public NitriteBooking(
             final Long id,
+            final String userId,
             final String roomName,
             final long timestampStart,
             final long timestampEnd,
@@ -47,7 +50,10 @@ public final class NitriteBooking implements Booking {
     ) {
         this(
                 id,
-                rooms.namedRoom(roomName).orElseThrow(() -> new RoomNotFoundException(roomName)),
+                userId,
+                rooms.namedRoom(roomName).orElseThrow(() ->
+                        new RoomNotFoundException(roomName)
+                ),
                 new LogicalSlot(timestampStart, timestampEnd)
         );
     }
@@ -55,6 +61,11 @@ public final class NitriteBooking implements Booking {
     @Override
     public Long id() {
         return delegate.id();
+    }
+
+    @Override
+    public String userId() {
+        return delegate.userId();
     }
 
     @Override
@@ -70,6 +81,7 @@ public final class NitriteBooking implements Booking {
     @Override
     public Map<String, Object> map() {
         return Map.ofEntries(
+                entry(DOCUMENT_KEY_USER_ID, userId()),
                 entry(DOCUMENT_KEY_ROOM_NAME, room().name()),
                 entry(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart()),
                 entry(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd())

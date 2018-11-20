@@ -1,8 +1,7 @@
 package fr.guddy.roombookings.domain.room;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class SimpleRoom implements Room {
     private final String name;
@@ -25,9 +24,9 @@ public final class SimpleRoom implements Room {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry("name", name),
-                entry("capacity", capacity)
-        );
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", name);
+        map.put("capacity", capacity);
+        return map;
     }
 }

@@ -1,7 +1,9 @@
 package fr.guddy.roombookings.domain.bookings;
 
-public final class CreateBookingConflictException extends RuntimeException {
-    public CreateBookingConflictException(final String roomName) {
-        super(String.format("Room named '%s' already booked on this slot", roomName));
+public final class BookingNotFoundException extends RuntimeException {
+    public BookingNotFoundException(final long id) {
+        super(
+                String.format("No booking with id %d were found", id)
+        );
     }
 }

@@ -8,6 +8,8 @@ import java.util.Map;
 public interface Booking {
     Long id();
 
+    String userId();
+
     Room room();
 
     Slot slot();

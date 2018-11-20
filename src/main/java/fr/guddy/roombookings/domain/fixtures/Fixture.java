@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.domain.fixtures;
 
+import org.dizitart.no2.WriteResult;
+
 public interface Fixture {
-    void perform();
+    WriteResult perform();
 }

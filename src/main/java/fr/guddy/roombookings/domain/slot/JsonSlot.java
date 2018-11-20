@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.domain.room;
+package fr.guddy.roombookings.domain.slot;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -6,17 +6,17 @@ import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class JsonRoom implements Room {
-    private static final String JSON_KEY_NAME = "name";
-    private static final String JSON_KEY_CAPACITY = "capacity";
+public final class JsonSlot implements Slot {
+    private static final String JSON_KEY_TIMESTAMP_START = "timestamp_start";
+    private static final String JSON_KEY_TIMESTAMP_END = "timestamp_end";
 
-    private final Room delegate;
+    private final Slot delegate;
 
-    public JsonRoom(final Room delegate) {
+    public JsonSlot(final Slot delegate) {
         this.delegate = delegate;
     }
 
-    public JsonRoom(final String body) {
+    public JsonSlot(final String body) {
         this(
                 Json.createReader(
                         new StringReader(body)
@@ -24,30 +24,31 @@ public final class JsonRoom implements Room {
         );
     }
 
-    public JsonRoom(final JsonObject jsonObject) {
+    public JsonSlot(final JsonObject jsonObject) {
         this(
-                new SimpleRoom(
-                        jsonObject.getString(JSON_KEY_NAME),
-                        jsonObject.getInt(JSON_KEY_CAPACITY)
+                new LogicalSlot(
+                        jsonObject.getInt(JSON_KEY_TIMESTAMP_START),
+                        jsonObject.getInt(JSON_KEY_TIMESTAMP_END)
                 )
         );
     }
 
     @Override
-    public String name() {
-        return delegate.name();
+    public long timestampStart() {
+        return delegate.timestampStart();
     }
 
     @Override
-    public int capacity() {
-        return delegate.capacity();
+    public long timestampEnd() {
+        return delegate.timestampEnd();
     }
 
     @Override
     public Map<String, Object> map() {
         final Map<String, Object> map = new LinkedHashMap<>();
-        map.put(JSON_KEY_NAME, name());
-        map.put(JSON_KEY_CAPACITY, capacity());
+        map.put(JSON_KEY_TIMESTAMP_START, timestampStart());
+        map.put(JSON_KEY_TIMESTAMP_END, timestampEnd());
         return map;
     }
+
 }

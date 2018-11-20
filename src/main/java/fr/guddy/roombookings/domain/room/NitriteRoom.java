@@ -2,9 +2,8 @@ package fr.guddy.roombookings.domain.room;
 
 import org.dizitart.no2.Document;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class NitriteRoom implements Room {
     private static final String DOCUMENT_KEY_NAME = "room_name";
@@ -37,9 +36,9 @@ public final class NitriteRoom implements Room {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry(DOCUMENT_KEY_NAME, name()),
-                entry(DOCUMENT_KEY_CAPACITY, capacity())
-        );
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(DOCUMENT_KEY_NAME, name());
+        map.put(DOCUMENT_KEY_CAPACITY, capacity());
+        return map;
     }
 }

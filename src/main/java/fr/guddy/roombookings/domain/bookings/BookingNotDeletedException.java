@@ -1,9 +1,9 @@
 package fr.guddy.roombookings.domain.bookings;
 
-public final class BookingNotFoundException extends RuntimeException {
-    public BookingNotFoundException(final long id) {
+public final class BookingNotDeletedException extends RuntimeException {
+    public BookingNotDeletedException(final long id) {
         super(
-                String.format("No booking with id %d were found", id)
+                String.format("Booking with id %d could not be deleted", id)
         );
     }
 }

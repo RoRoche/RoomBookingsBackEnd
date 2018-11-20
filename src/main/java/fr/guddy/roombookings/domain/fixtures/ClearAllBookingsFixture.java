@@ -1,17 +1,17 @@
 package fr.guddy.roombookings.domain.fixtures;
 
-import fr.guddy.roombookings.domain.rooms.Rooms;
+import fr.guddy.roombookings.domain.bookings.Bookings;
 import org.dizitart.no2.WriteResult;
 
-public final class ClearAllRoomsFixture implements Fixture {
-    private final Rooms rooms;
+public final class ClearAllBookingsFixture implements Fixture {
+    private final Bookings bookings;
 
-    public ClearAllRoomsFixture(final Rooms rooms) {
-        this.rooms = rooms;
+    public ClearAllBookingsFixture(final Bookings bookings) {
+        this.bookings = bookings;
     }
 
     @Override
     public WriteResult perform() {
-        return rooms.clearAll();
+        return bookings.clearAll();
     }
 }

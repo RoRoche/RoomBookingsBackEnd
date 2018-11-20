@@ -3,9 +3,8 @@ package fr.guddy.roombookings.domain.room;
 import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.StringReader;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class JsonRoom implements Room {
     private static final String JSON_KEY_NAME = "name";
@@ -46,9 +45,9 @@ public final class JsonRoom implements Room {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry(JSON_KEY_NAME, name()),
-                entry(JSON_KEY_CAPACITY, capacity())
-        );
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(JSON_KEY_NAME, name());
+        map.put(JSON_KEY_CAPACITY, capacity());
+        return map;
     }
 }

@@ -1,5 +1,9 @@
 package fr.guddy.roombookings.domain.slot;
 
+import java.util.Map;
+
+import static java.util.Map.entry;
+
 public final class LogicalSlot implements Slot {
     private final long timestampStart;
     private final long timestampEnd;
@@ -17,5 +21,13 @@ public final class LogicalSlot implements Slot {
     @Override
     public long timestampEnd() {
         return timestampEnd;
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        return Map.ofEntries(
+                entry("timestampStart", timestampStart),
+                entry("timestampEnd", timestampEnd)
+        );
     }
 }

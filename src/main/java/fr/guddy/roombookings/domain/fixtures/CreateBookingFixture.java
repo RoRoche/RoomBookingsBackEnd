@@ -1,19 +1,20 @@
 package fr.guddy.roombookings.domain.fixtures;
 
-import fr.guddy.roombookings.domain.room.Room;
-import fr.guddy.roombookings.domain.rooms.Rooms;
+import fr.guddy.roombookings.domain.booking.Booking;
+import fr.guddy.roombookings.domain.bookings.Bookings;
+import org.dizitart.no2.WriteResult;
 
-public final class CreateRoomFixture implements Fixture {
-    private final Rooms rooms;
-    private final Room room;
+public final class CreateBookingFixture implements Fixture {
+    private final Bookings bookings;
+    private final Booking booking;
 
-    public CreateRoomFixture(final Rooms rooms, final Room room) {
-        this.rooms = rooms;
-        this.room = room;
+    public CreateBookingFixture(final Bookings bookings, final Booking booking) {
+        this.bookings = bookings;
+        this.booking = booking;
     }
 
     @Override
-    public void perform() {
-        rooms.create(room);
+    public WriteResult perform() {
+        return bookings.create(booking);
     }
 }
