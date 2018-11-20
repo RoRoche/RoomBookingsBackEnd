@@ -8,11 +8,13 @@ import org.junit.Test;
 
 import static java.util.Map.entry;
 
-public final class SimpleRoomTest {
+public final class JsonRoomTest {
     @Test
     public void testOk() {
         new MatchersAssertion<>(
-                new SimpleRoom("test", 12),
+                new JsonRoom(
+                        new SimpleRoom("test", 12)
+                ),
                 new HasNameMatcher("test"),
                 new HasCapacityMatcher(12),
                 new HasMapMatcher(

@@ -18,8 +18,8 @@ public final class NitriteRoomTest {
                 new HasNameMatcher("test"),
                 new HasCapacityMatcher(12),
                 new HasMapMatcher(
-                        entry("name", "test"),
-                        entry("capacity", 12)
+                        entry("room_name", "test"),
+                        entry("room_capacity", 12)
                 )
         ).check();
     }

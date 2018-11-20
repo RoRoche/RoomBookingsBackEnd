@@ -14,6 +14,6 @@ public final class HasCapacityMatcher implements Matcher<Room> {
 
     @Override
     public void check(final Room room) {
-        assertThat(room.capacity()).isEqualTo(expectedCapacity);
+        assertThat(room.capacity()).describedAs("Room capacity").isEqualTo(expectedCapacity);
     }
 }
