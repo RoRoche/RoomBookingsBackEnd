@@ -1,5 +1,6 @@
 package fr.guddy.roombookings.infra.params;
 
+import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
 import io.vavr.control.Try;
 
 public final class LongParameter implements Parameter<Long> {
@@ -17,10 +18,11 @@ public final class LongParameter implements Parameter<Long> {
 
     @Override
     public Long value() {
+        final String value = delegate.value();
         return Try.of(() ->
-                Long.valueOf(delegate.value())
+                Long.valueOf(value)
         ).getOrElseThrow(throwable ->
-                new NotProcessableException(name(), Long.class)
+                new NotProcessableParameterException(name(), Long.class)
         );
     }
 }

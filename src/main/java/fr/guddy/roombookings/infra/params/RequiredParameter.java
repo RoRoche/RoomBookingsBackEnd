@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.params;
 
+import fr.guddy.roombookings.infra.params.exceptions.MissingParameterException;
+
 import java.util.Optional;
 
 public final class RequiredParameter<T> implements Parameter<T> {
@@ -17,9 +19,8 @@ public final class RequiredParameter<T> implements Parameter<T> {
 
     @Override
     public T value() {
-        return Optional.ofNullable(
-                delegate.value()
-        ).orElseThrow(() ->
+        final T value = delegate.value();
+        return Optional.ofNullable(value).orElseThrow(() ->
                 new MissingParameterException(name())
         );
     }
