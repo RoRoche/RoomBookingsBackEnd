@@ -1,8 +1,15 @@
 package fr.guddy.roombookings.infra;
 
+import fr.guddy.roombookings.domain.bookings.BookingNotDeletedException;
+import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
+import fr.guddy.roombookings.domain.bookings.Bookings;
+import fr.guddy.roombookings.domain.bookings.CreateBookingConflictException;
+import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.infra.handlers.RoomNotFoundHandler;
+import fr.guddy.roombookings.infra.handlers.*;
+import fr.guddy.roombookings.infra.params.exceptions.MissingParameterException;
+import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
@@ -18,14 +25,20 @@ public final class Api {
         this.port = port;
     }
 
-    public Api(final int port, final Rooms rooms) {
+    public Api(final int port, final Rooms rooms, final Bookings bookings) {
         this(
                 Javalin.create()
                         .routes(() -> {
-                            path("rooms", new RoomsRoute(rooms));
-                            path("bookings", new BookingsRoute());
+                            path("rooms", new RoomsRoute(rooms, bookings));
+                            path("bookings", new BookingsRoute(bookings));
                         })
-                        .exception(RoomNotFoundException.class, new RoomNotFoundHandler()),
+                        .exception(NotProcessableParameterException.class, new NotProcessableParameterHandler())
+                        .exception(MissingParameterException.class, new MissingParameterHandler())
+                        .exception(RoomNotFoundException.class, new RoomNotFoundHandler())
+                        .exception(BookingNotFoundException.class, new BookingNotFoundHandler())
+                        .exception(BookingNotDeletedException.class, new BookingNotDeletedHandler())
+                        .exception(CreateRoomConflictException.class, new CreateRoomConflictHandler())
+                        .exception(CreateBookingConflictException.class, new CreateBookingConflictHandler()),
                 port
         );
     }
