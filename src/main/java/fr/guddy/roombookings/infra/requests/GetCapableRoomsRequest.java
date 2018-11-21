@@ -29,12 +29,12 @@ public final class GetCapableRoomsRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Room> all = rooms.capableRooms(capacity);
-        if (all.isEmpty()) {
+        final List<Room> capableRooms = rooms.capableRooms(capacity);
+        if (capableRooms.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);
         } else {
             context.json(
-                    all.stream()
+                    capableRooms.stream()
                             .map(JsonRoom::new)
                             .map(JsonRoom::map)
                             .collect(Collectors.toList())

@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-public final class GetRoomsRequestTest {
+public final class GetCapableRoomsRequestTest {
     @ClassRule
     public static final ApiExternalResource api = new ApiExternalResource();
 
@@ -23,8 +23,26 @@ public final class GetRoomsRequestTest {
         new WithFixtureAssertion(
                 new ClearAllRoomsFixture(api.rooms()),
                 new RequestHasStatusCodeAssertion(
-                        get("http://localhost:7000/rooms"),
+                        get("http://localhost:7000/rooms")
+                                .queryString("capacity", 10)
+                                .getHttpRequest(),
                         HttpStatus.NO_CONTENT_204
+                )
+        ).check();
+    }
+
+    @Test
+    public void testNotProcessableParameter() {
+        new WithFixtureAssertion(
+                new ClearAllRoomsFixture(api.rooms()),
+                new RequestWithBodyAssertion(
+                        new RequestHasStatusCodeAssertion(
+                                get("http://localhost:7000/rooms")
+                                        .queryString("capacity", "test")
+                                        .getHttpRequest(),
+                                HttpStatus.BAD_REQUEST_400
+                        ),
+                        "Parameter 'capacity' could not be processed, it should be of type Integer"
                 )
         ).check();
     }
@@ -41,7 +59,9 @@ public final class GetRoomsRequestTest {
                 ),
                 new RequestWithBodyAssertion(
                         new RequestHasStatusCodeAssertion(
-                                get("http://localhost:7000/rooms"),
+                                get("http://localhost:7000/rooms")
+                                        .queryString("capacity", 10)
+                                        .getHttpRequest(),
                                 HttpStatus.OK_200
                         ),
                         "[{\"name\":\"test_name\",\"capacity\":12}]"
