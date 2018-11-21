@@ -1,17 +1,20 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
+import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public final class RequestWithBodyAssertion implements RequestAssertion {
+public final class RequestWithHeaderAssertion implements RequestAssertion {
 
     private final RequestAssertion delegate;
-    private final String expectedBody;
+    private final String key;
+    private final String expectedValue;
 
-    public RequestWithBodyAssertion(final RequestAssertion delegate, final String expectedBody) {
+    public RequestWithHeaderAssertion(final RequestAssertion delegate, final String key, final String expectedValue) {
         this.delegate = delegate;
-        this.expectedBody = expectedBody;
+        this.key = key;
+        this.expectedValue = expectedValue;
     }
 
     @Override
@@ -22,8 +25,10 @@ public final class RequestWithBodyAssertion implements RequestAssertion {
     @Override
     public void check() {
         delegate.check();
+        final Headers headers = response().getHeaders();
+        assertThat(headers).containsKey(key);
         assertThat(
-                response().getBody()
-        ).isEqualToIgnoringCase(expectedBody);
+                headers.getFirst(key)
+        ).isEqualToIgnoringCase(expectedValue);
     }
 }
