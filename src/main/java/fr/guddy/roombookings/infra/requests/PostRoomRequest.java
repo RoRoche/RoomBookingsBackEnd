@@ -2,8 +2,10 @@ package fr.guddy.roombookings.infra.requests;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.room.Room;
+import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import io.javalin.Context;
+import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class PostRoomRequest implements Request {
@@ -24,7 +26,11 @@ public final class PostRoomRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        rooms.create(room);
+        try {
+            rooms.create(room);
+        } catch (final UniqueConstraintException exception) {
+            throw new CreateRoomConflictException(exception, room.name());
+        }
         context.header("location", String.format("/rooms/%s", room.name()))
                 .status(HttpStatus.CREATED_201);
     }

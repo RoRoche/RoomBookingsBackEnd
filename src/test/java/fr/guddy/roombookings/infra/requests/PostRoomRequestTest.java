@@ -12,25 +12,27 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import static com.mashape.unirest.http.Unirest.get;
+import static com.mashape.unirest.http.Unirest.post;
 
-public final class GetRoomsRequestTest {
+public final class PostRoomRequestTest {
     @ClassRule
     public static final ApiExternalResource api = new ApiExternalResource();
 
     @Test
-    public void testNoContent() {
+    public void testOK() {
         new WithFixtureAssertion(
                 new ClearAllRoomsFixture(api.rooms()),
                 new RequestHasStatusCodeAssertion(
-                        get("http://localhost:7000/rooms"),
-                        HttpStatus.NO_CONTENT_204
+                        post("http://localhost:7000/rooms")
+                                .body("{\"name\":\"test_name\",\"capacity\":12}")
+                                .getHttpRequest(),
+                        HttpStatus.CREATED_201
                 )
         ).check();
     }
 
     @Test
-    public void testOK() {
+    public void testConflict() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -41,10 +43,12 @@ public final class GetRoomsRequestTest {
                 ),
                 new RequestWithBodyAssertion(
                         new RequestHasStatusCodeAssertion(
-                                get("http://localhost:7000/rooms"),
-                                HttpStatus.OK_200
+                                post("http://localhost:7000/rooms")
+                                        .body("{\"name\":\"test_name\",\"capacity\":12}")
+                                        .getHttpRequest(),
+                                HttpStatus.CONFLICT_409
                         ),
-                        "[{\"name\":\"test_name\",\"capacity\":12}]"
+                        "A room named 'test_name' already exists"
                 )
         ).check();
     }
