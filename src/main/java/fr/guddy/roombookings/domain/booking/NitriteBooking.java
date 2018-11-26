@@ -7,9 +7,8 @@ import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
 import org.dizitart.no2.Document;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class NitriteBooking implements Booking {
     private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
@@ -80,11 +79,11 @@ public final class NitriteBooking implements Booking {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry(DOCUMENT_KEY_USER_ID, userId()),
-                entry(DOCUMENT_KEY_ROOM_NAME, room().name()),
-                entry(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart()),
-                entry(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd())
-        );
+        final Map<String, Object> map = new HashMap<>();
+        map.put(DOCUMENT_KEY_USER_ID, userId());
+        map.put(DOCUMENT_KEY_ROOM_NAME, room().name());
+        map.put(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart());
+        map.put(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd());
+        return map;
     }
 }

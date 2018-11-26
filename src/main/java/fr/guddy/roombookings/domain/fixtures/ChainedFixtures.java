@@ -3,6 +3,8 @@ package fr.guddy.roombookings.domain.fixtures;
 import org.dizitart.no2.WriteResult;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ChainedFixtures implements Fixture {
     private final List<Fixture> fixtures;
@@ -13,7 +15,7 @@ public final class ChainedFixtures implements Fixture {
 
     public ChainedFixtures(final Fixture... fixtures) {
         this(
-                List.of(fixtures)
+                Stream.of(fixtures).collect(Collectors.toList())
         );
     }
 

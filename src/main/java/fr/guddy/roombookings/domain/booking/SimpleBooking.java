@@ -3,9 +3,8 @@ package fr.guddy.roombookings.domain.booking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.Slot;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class SimpleBooking implements Booking {
     private final Long id;
@@ -42,10 +41,10 @@ public final class SimpleBooking implements Booking {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry("id", id),
-                entry("room", room),
-                entry("slot", slot)
-        );
+        final Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("room", room);
+        map.put("slot", slot);
+        return map;
     }
 }

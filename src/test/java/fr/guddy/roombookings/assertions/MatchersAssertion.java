@@ -1,6 +1,8 @@
 package fr.guddy.roombookings.assertions;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class MatchersAssertion<T> implements Assertion {
 
@@ -13,7 +15,7 @@ public final class MatchersAssertion<T> implements Assertion {
     }
 
     public MatchersAssertion(final T sut, final Matcher<T>... matchers) {
-        this(sut, List.of(matchers));
+        this(sut, Stream.of(matchers).collect(Collectors.toList()));
     }
 
     @Override

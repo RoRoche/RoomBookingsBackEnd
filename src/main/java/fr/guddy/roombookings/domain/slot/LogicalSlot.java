@@ -1,8 +1,7 @@
 package fr.guddy.roombookings.domain.slot;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 public final class LogicalSlot implements Slot {
     private final long timestampStart;
@@ -25,9 +24,9 @@ public final class LogicalSlot implements Slot {
 
     @Override
     public Map<String, Object> map() {
-        return Map.ofEntries(
-                entry("timestampStart", timestampStart),
-                entry("timestampEnd", timestampEnd)
-        );
+        final Map<String, Object> map = new HashMap<>();
+        map.put("timestampStart", timestampStart);
+        map.put("timestampEnd", timestampEnd);
+        return map;
     }
 }
