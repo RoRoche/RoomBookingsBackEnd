@@ -9,7 +9,7 @@ class NitriteRoom(private val delegate: Room) : Room {
     constructor(document: Document) : this(
             SimpleRoom(
                     document.get<String>(DOCUMENT_KEY_NAME, String::class.java),
-                    document.get<Int>(DOCUMENT_KEY_CAPACITY, Int::class.java)
+                    document.get<Integer>(DOCUMENT_KEY_CAPACITY, Integer::class.java).toInt()
             )
     )
 
