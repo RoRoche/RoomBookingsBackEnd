@@ -4,7 +4,7 @@ import org.dizitart.no2.Document
 
 import java.util.LinkedHashMap
 
-class NitriteRoom(private val delegate: Room) : Room {
+class NitriteRoom(private val delegate: Room) : Room by delegate {
 
     constructor(document: Document) : this(
             SimpleRoom(
@@ -12,14 +12,6 @@ class NitriteRoom(private val delegate: Room) : Room {
                     document.get<Integer>(DOCUMENT_KEY_CAPACITY, Integer::class.java).toInt()
             )
     )
-
-    override fun name(): String {
-        return delegate.name()
-    }
-
-    override fun capacity(): Int {
-        return delegate.capacity()
-    }
 
     override fun map(): Map<String, Any> {
         val map = LinkedHashMap<String, Any>()
