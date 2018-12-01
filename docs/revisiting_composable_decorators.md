@@ -154,12 +154,10 @@ class NitriteRoom(private val delegate: Room) : Room by delegate {
             )
     )
 
-    override fun map(): Map<String, Any> {
-        val map = LinkedHashMap<String, Any>()
-        map[DOCUMENT_KEY_NAME] = name()
-        map[DOCUMENT_KEY_CAPACITY] = capacity()
-        return map
-    }
+    override fun map(): Map<String, Any> = linkedMapOf(
+            DOCUMENT_KEY_NAME to name(),
+            DOCUMENT_KEY_CAPACITY to capacity()
+    )
 
     companion object {
         private const val DOCUMENT_KEY_NAME = "room_name"
@@ -168,7 +166,7 @@ class NitriteRoom(private val delegate: Room) : Room by delegate {
 }
 ```
 
-21 lines of code in Kotlin versus 37 in Java.
+19 lines of code in Kotlin versus 37 in Java.
 All the boilerplate code (repeating overridden methods to just call the delegate's ones) disappear. 
 Moreover, there is a clear distinction between [the primary constructor and the secondaries](https://www.yegor256.com/2015/05/28/one-primary-constructor.html). It's an indirect design improvement from this Kotlin migration, I think.
 And all my test harness stay green.

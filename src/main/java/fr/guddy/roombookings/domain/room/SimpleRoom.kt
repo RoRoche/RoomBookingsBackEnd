@@ -1,7 +1,5 @@
 package fr.guddy.roombookings.domain.room
 
-import java.util.LinkedHashMap
-
 class SimpleRoom(private val name: String, private val capacity: Int) : Room {
 
     override fun name(): String {
@@ -12,10 +10,8 @@ class SimpleRoom(private val name: String, private val capacity: Int) : Room {
         return capacity
     }
 
-    override fun map(): Map<String, Any> {
-        val map = LinkedHashMap<String, Any>()
-        map["name"] = name
-        map["capacity"] = capacity
-        return map
-    }
+    override fun map(): Map<String, Any> = linkedMapOf(
+            "name" to name,
+            "capacity" to capacity
+    )
 }

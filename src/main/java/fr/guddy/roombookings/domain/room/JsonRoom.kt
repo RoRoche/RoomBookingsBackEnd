@@ -1,7 +1,6 @@
 package fr.guddy.roombookings.domain.room
 
 import java.io.StringReader
-import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
 
@@ -20,12 +19,10 @@ class JsonRoom(private val delegate: Room) : Room by delegate {
             )
     )
 
-    override fun map(): Map<String, Any> {
-        val map = LinkedHashMap<String, Any>()
-        map[JSON_KEY_NAME] = name()
-        map[JSON_KEY_CAPACITY] = capacity()
-        return map
-    }
+    override fun map(): Map<String, Any> = linkedMapOf(
+            JSON_KEY_NAME to name(),
+            JSON_KEY_CAPACITY to capacity()
+    )
 
     companion object {
         private const val JSON_KEY_NAME = "name"

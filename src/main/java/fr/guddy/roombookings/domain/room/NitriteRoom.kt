@@ -2,8 +2,6 @@ package fr.guddy.roombookings.domain.room
 
 import org.dizitart.no2.Document
 
-import java.util.LinkedHashMap
-
 class NitriteRoom(private val delegate: Room) : Room by delegate {
 
     constructor(document: Document) : this(
@@ -13,12 +11,10 @@ class NitriteRoom(private val delegate: Room) : Room by delegate {
             )
     )
 
-    override fun map(): Map<String, Any> {
-        val map = LinkedHashMap<String, Any>()
-        map[DOCUMENT_KEY_NAME] = name()
-        map[DOCUMENT_KEY_CAPACITY] = capacity()
-        return map
-    }
+    override fun map(): Map<String, Any> = linkedMapOf(
+            DOCUMENT_KEY_NAME to name(),
+            DOCUMENT_KEY_CAPACITY to capacity()
+    )
 
     companion object {
         private const val DOCUMENT_KEY_NAME = "room_name"
