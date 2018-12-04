@@ -8,6 +8,7 @@ import fr.guddy.roombookings.infra.ApiExternalResource;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
+import fr.guddy.roombookings.infra.assertions.requests.RequestWithLocationHeaderAssertion;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -22,11 +23,14 @@ public final class PostRoomRequestTest {
     public void testOK() {
         new WithFixtureAssertion(
                 new ClearAllRoomsFixture(api.rooms()),
-                new RequestHasStatusCodeAssertion(
-                        post("http://localhost:7000/rooms")
-                                .body("{\"name\":\"test_name\",\"capacity\":12}")
-                                .getHttpRequest(),
-                        HttpStatus.CREATED_201
+                new RequestWithLocationHeaderAssertion(
+                        new RequestHasStatusCodeAssertion(
+                                post("http://localhost:7000/rooms")
+                                        .body("{\"name\":\"test_name\",\"capacity\":12}")
+                                        .getHttpRequest(),
+                                HttpStatus.CREATED_201
+                        ),
+                        "/rooms/"
                 )
         ).check();
     }

@@ -5,16 +5,14 @@ import com.mashape.unirest.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public final class RequestWithHeaderAssertion implements RequestAssertion {
+public final class RequestWithLocationHeaderAssertion implements RequestAssertion {
 
     private final RequestAssertion delegate;
-    private final String key;
-    private final String expectedValue;
+    private final String startUri;
 
-    public RequestWithHeaderAssertion(final RequestAssertion delegate, final String key, final String expectedValue) {
+    public RequestWithLocationHeaderAssertion(final RequestAssertion delegate, final String startUri) {
         this.delegate = delegate;
-        this.key = key;
-        this.expectedValue = expectedValue;
+        this.startUri = startUri;
     }
 
     @Override
@@ -26,9 +24,9 @@ public final class RequestWithHeaderAssertion implements RequestAssertion {
     public void check() {
         delegate.check();
         final Headers headers = response().getHeaders();
-        assertThat(headers).containsKey(key);
+        assertThat(headers).containsKey("Location");
         assertThat(
-                headers.getFirst(key)
-        ).isEqualToIgnoringCase(expectedValue);
+                headers.getFirst("Location")
+        ).startsWith(startUri);
     }
 }

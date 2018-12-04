@@ -47,6 +47,8 @@ public final class DeleteBookingRequestTest {
         new ClearAllBookingsFixture(api.bookings()).perform();
         final SimpleRoom room = new SimpleRoom("test_name", 12);
         new CreateRoomFixture(api.rooms(), room).perform();
+        final long timestampStart = Instant.now().getMillis() / 1000;
+        final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
         final WriteResult ids = new CreateBookingFixture(
                 api.bookings(),
                 new SimpleBooking(
@@ -54,8 +56,8 @@ public final class DeleteBookingRequestTest {
                         "test_user_id",
                         room,
                         new LogicalSlot(
-                                Instant.now().getMillis() / 1000,
-                                Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+                                timestampStart,
+                                timestampEnd
                         )
                 )
         ).perform();
@@ -70,7 +72,15 @@ public final class DeleteBookingRequestTest {
         );
 
         // then
-        new RequestHasStatusCodeAssertion(delete, HttpStatus.OK_200).check();
+        new RequestWithBodyAssertion(
+                new RequestHasStatusCodeAssertion(delete, HttpStatus.OK_200),
+                String.format(
+                        "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+                        ids.iterator().next().getIdValue(),
+                        timestampStart,
+                        timestampEnd
+                )
+        ).check();
         assertThat(
                 api.bookings().documentById(id)
         ).isEmpty();

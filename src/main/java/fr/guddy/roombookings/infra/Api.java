@@ -31,7 +31,7 @@ public final class Api {
                 Javalin.create()
                         .routes(() -> {
                             path("rooms", new RoomsRoute(rooms, bookings));
-                            path("bookings", new BookingsRoute(bookings));
+                            path("bookings", new BookingsRoute(rooms, bookings));
                         })
                         .exception(NotProcessableParameterException.class, new NotProcessableParameterHandler())
                         .exception(MissingParameterException.class, new MissingParameterHandler())
