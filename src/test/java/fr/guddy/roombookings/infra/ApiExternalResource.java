@@ -4,6 +4,8 @@ import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.bookings.NitriteBookings;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.Rooms;
+import fr.guddy.roombookings.infra.ports.DefaultPort;
+import fr.guddy.roombookings.infra.ports.Port;
 import org.dizitart.no2.Nitrite;
 import org.junit.rules.ExternalResource;
 
@@ -19,7 +21,7 @@ public final class ApiExternalResource extends ExternalResource {
         this.bookings = bookings;
     }
 
-    public ApiExternalResource(final int port, final Rooms rooms, final Bookings bookings) {
+    public ApiExternalResource(final Port port, final Rooms rooms, final Bookings bookings) {
         this(
                 new Api(port, rooms, bookings),
                 rooms,
@@ -27,7 +29,7 @@ public final class ApiExternalResource extends ExternalResource {
         );
     }
 
-    public ApiExternalResource(final int port, final Nitrite database) {
+    public ApiExternalResource(final Port port, final Nitrite database) {
         this(
                 port,
                 database,
@@ -35,7 +37,7 @@ public final class ApiExternalResource extends ExternalResource {
         );
     }
 
-    public ApiExternalResource(final int port, final Nitrite database, final Rooms rooms) {
+    public ApiExternalResource(final Port port, final Nitrite database, final Rooms rooms) {
         this(
                 port,
                 new NitriteRooms(database),
@@ -45,7 +47,7 @@ public final class ApiExternalResource extends ExternalResource {
 
     public ApiExternalResource() {
         this(
-                7000,
+                new DefaultPort(),
                 Nitrite.builder().openOrCreate()
         );
     }

@@ -10,6 +10,7 @@ import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.handlers.*;
 import fr.guddy.roombookings.infra.params.exceptions.MissingParameterException;
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
+import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
@@ -18,14 +19,14 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 
 public final class Api {
     private final Javalin app;
-    private final int port;
+    private final Port port;
 
-    public Api(final Javalin app, final int port) {
+    public Api(final Javalin app, final Port port) {
         this.app = app;
         this.port = port;
     }
 
-    public Api(final int port, final Rooms rooms, final Bookings bookings) {
+    public Api(final Port port, final Rooms rooms, final Bookings bookings) {
         this(
                 Javalin.create()
                         .routes(() -> {
@@ -44,7 +45,7 @@ public final class Api {
     }
 
     public void start() {
-        app.start(port);
+        app.start(port.value());
     }
 
     public void stop() {
