@@ -4,9 +4,8 @@ import fr.guddy.roombookings.assertions.MatchersAssertion;
 import fr.guddy.roombookings.domain.room.matchers.HasCapacityMatcher;
 import fr.guddy.roombookings.domain.room.matchers.HasMapMatcher;
 import fr.guddy.roombookings.domain.room.matchers.HasNameMatcher;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
-
-import static java.util.Map.entry;
 
 public final class SimpleRoomTest {
     @Test
@@ -16,8 +15,8 @@ public final class SimpleRoomTest {
                 new HasNameMatcher("test"),
                 new HasCapacityMatcher(12),
                 new HasMapMatcher(
-                        entry("name", "test"),
-                        entry("capacity", 12)
+                        Pair.of("name", "test"),
+                        Pair.of("capacity", 12)
                 )
         ).check();
     }
