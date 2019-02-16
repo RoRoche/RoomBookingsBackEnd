@@ -1,19 +1,20 @@
 package fr.guddy.roombookings.infra;
 
-import fr.guddy.roombookings.domain.bookings.BookingNotDeletedException;
-import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
-import fr.guddy.roombookings.domain.bookings.Bookings;
-import fr.guddy.roombookings.domain.bookings.CreateBookingConflictException;
+import fr.guddy.roombookings.domain.bookings.*;
 import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
+import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.handlers.*;
 import fr.guddy.roombookings.infra.params.exceptions.MissingParameterException;
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
+import fr.guddy.roombookings.infra.ports.DefaultPort;
+import fr.guddy.roombookings.infra.ports.HerokuAssignedPort;
 import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
+import org.dizitart.no2.Nitrite;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 
@@ -41,6 +42,29 @@ public final class Api {
                         .exception(CreateRoomConflictException.class, new CreateRoomConflictHandler())
                         .exception(CreateBookingConflictException.class, new CreateBookingConflictHandler()),
                 port
+        );
+    }
+
+    public Api(final Port port, final Nitrite database) {
+        this(
+                port,
+                database,
+                new NitriteRooms(database)
+        );
+    }
+
+    public Api(final Port port, final Nitrite database, final Rooms rooms) {
+        this(
+                port,
+                rooms,
+                new NitriteBookings(database, rooms)
+        );
+    }
+
+    public Api() {
+        this(
+                new HerokuAssignedPort(new DefaultPort()),
+                Nitrite.builder().openOrCreate()
         );
     }
 
