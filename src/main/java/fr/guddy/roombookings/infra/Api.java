@@ -40,7 +40,8 @@ public final class Api {
                         .exception(BookingNotFoundException.class, new BookingNotFoundHandler())
                         .exception(BookingNotDeletedException.class, new BookingNotDeletedHandler())
                         .exception(CreateRoomConflictException.class, new CreateRoomConflictHandler())
-                        .exception(CreateBookingConflictException.class, new CreateBookingConflictHandler()),
+                        .exception(CreateBookingConflictException.class, new CreateBookingConflictHandler())
+                        .enableCorsForAllOrigins(),
                 port
         );
     }
