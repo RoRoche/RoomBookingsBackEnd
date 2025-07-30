@@ -35,12 +35,12 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public WriteResult create(final Booking booking) {
+    public Long create(final Booking booking) {
         return collection.insert(
                 new Document(
                         new NitriteBooking(booking).map()
                 )
-        );
+        ).iterator().next().getIdValue();
     }
 
     @Override
@@ -96,19 +96,22 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public WriteResult clearAll() {
-        return collection.remove(Filters.ALL);
+    public boolean clearAll() {
+        final long size = collection.size();
+        return collection.remove(Filters.ALL).getAffectedCount() == size;
     }
 
     @Override
-    public Optional<Document> documentById(final long id) {
+    public Optional<Booking> bookingById(final long id) {
         return Optional.ofNullable(
                 collection.getById(NitriteId.createId(id))
-        );
+        ).map(document -> new NitriteBooking(document, rooms));
     }
 
     @Override
-    public WriteResult delete(final Document document) {
-        return collection.remove(document);
+    public boolean delete(final Booking booking) {
+        return collection.remove(
+                collection.getById(NitriteId.createId(booking.id()))
+        ).getAffectedCount() == 1;
     }
 }

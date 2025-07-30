@@ -2,9 +2,8 @@ package fr.guddy.roombookings.domain.fixtures;
 
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.bookings.Bookings;
-import org.dizitart.no2.WriteResult;
 
-public final class CreateBookingFixture implements Fixture {
+public final class CreateBookingFixture implements Fixture<Long> {
     private final Bookings bookings;
     private final Booking booking;
 
@@ -14,7 +13,7 @@ public final class CreateBookingFixture implements Fixture {
     }
 
     @Override
-    public WriteResult perform() {
+    public Long perform() {
         return bookings.create(booking);
     }
 }

@@ -2,7 +2,6 @@ package fr.guddy.roombookings.infra.requests;
 
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.JsonBooking;
-import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
@@ -13,8 +12,6 @@ import fr.guddy.roombookings.infra.params.Parameter;
 import fr.guddy.roombookings.infra.params.PathParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.Context;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.WriteResult;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class PostBookingRequest implements Request {
@@ -63,16 +60,11 @@ public final class PostBookingRequest implements Request {
         if (bookings.isConflicting(booking)) {
             throw new CreateBookingConflictException(booking.room().name());
         } else {
-            final WriteResult result = bookings.create(booking);
-            final Long id = result.iterator().next().getIdValue();
-            final Document document = bookings.documentById(id)
+            final Long id = bookings.create(booking);
+            final Booking booking = bookings.bookingById(id)
                     .orElseThrow(() -> new BookingNotFoundException(id));
             context.header("location", String.format("/bookings/%d", id))
-                    .json(
-                            new JsonBooking(
-                                    new NitriteBooking(document, rooms)
-                            ).map()
-                    )
+                    .json(new JsonBooking(booking).map())
                     .status(HttpStatus.CREATED_201);
         }
     }

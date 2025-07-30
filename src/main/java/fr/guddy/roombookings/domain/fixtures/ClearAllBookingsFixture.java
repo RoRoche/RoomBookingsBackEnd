@@ -1,9 +1,8 @@
 package fr.guddy.roombookings.domain.fixtures;
 
 import fr.guddy.roombookings.domain.bookings.Bookings;
-import org.dizitart.no2.WriteResult;
 
-public final class ClearAllBookingsFixture implements Fixture {
+public final class ClearAllBookingsFixture implements Fixture<Boolean> {
     private final Bookings bookings;
 
     public ClearAllBookingsFixture(final Bookings bookings) {
@@ -11,7 +10,7 @@ public final class ClearAllBookingsFixture implements Fixture {
     }
 
     @Override
-    public WriteResult perform() {
+    public Boolean perform() {
         return bookings.clearAll();
     }
 }

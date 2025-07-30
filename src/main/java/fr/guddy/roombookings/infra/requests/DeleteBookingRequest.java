@@ -1,5 +1,6 @@
 package fr.guddy.roombookings.infra.requests;
 
+import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.JsonBooking;
 import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.bookings.BookingNotDeletedException;
@@ -40,15 +41,11 @@ public final class DeleteBookingRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final Document document = bookings.documentById(id)
+        final Booking booking = bookings.bookingById(id)
                 .orElseThrow(() -> new BookingNotFoundException(id));
-        final WriteResult result = bookings.delete(document);
-        if (result.getAffectedCount() >= 1) {
-            context.json(
-                    new JsonBooking(
-                            new NitriteBooking(document, rooms)
-                    ).map()
-            ).status(HttpStatus.OK_200);
+        final boolean result = bookings.delete(booking);
+        if (result) {
+            context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);
         } else {
             throw new BookingNotDeletedException(id);
         }
