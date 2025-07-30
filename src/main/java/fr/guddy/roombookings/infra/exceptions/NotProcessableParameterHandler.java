@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.infra.handlers;
+package fr.guddy.roombookings.infra.exceptions;
 
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
 import io.javalin.Context;

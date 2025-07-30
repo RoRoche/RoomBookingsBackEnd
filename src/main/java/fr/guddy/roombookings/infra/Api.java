@@ -5,7 +5,7 @@ import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.infra.handlers.*;
+import fr.guddy.roombookings.infra.exceptions.*;
 import fr.guddy.roombookings.infra.params.exceptions.MissingParameterException;
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
 import fr.guddy.roombookings.infra.ports.DefaultPort;
