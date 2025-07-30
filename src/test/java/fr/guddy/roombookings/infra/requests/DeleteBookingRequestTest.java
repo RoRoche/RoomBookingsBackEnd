@@ -9,7 +9,6 @@ import fr.guddy.roombookings.infra.ApiExternalResource;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
-import org.dizitart.no2.WriteResult;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -49,7 +48,7 @@ public final class DeleteBookingRequestTest {
         new CreateRoomFixture(api.rooms(), room).perform();
         final long timestampStart = Instant.now().getMillis() / 1000;
         final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
-        final WriteResult ids = new CreateBookingFixture(
+        final long id = new CreateBookingFixture(
                 api.bookings(),
                 new SimpleBooking(
                         null,
@@ -61,7 +60,6 @@ public final class DeleteBookingRequestTest {
                         )
                 )
         ).perform();
-        final long id = ids.iterator().next().getIdValue();
 
         // when
         final HttpRequestWithBody delete = delete(
@@ -76,13 +74,13 @@ public final class DeleteBookingRequestTest {
                 new RequestHasStatusCodeAssertion(delete, HttpStatus.OK_200),
                 String.format(
                         "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                        ids.iterator().next().getIdValue(),
+                        id,
                         timestampStart,
                         timestampEnd
                 )
         ).check();
         assertThat(
-                api.bookings().documentById(id)
+                api.bookings().bookingById(id)
         ).isEmpty();
     }
 }

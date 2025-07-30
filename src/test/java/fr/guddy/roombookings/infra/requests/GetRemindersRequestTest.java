@@ -9,7 +9,6 @@ import fr.guddy.roombookings.infra.ApiExternalResource;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
-import org.dizitart.no2.WriteResult;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -78,7 +77,7 @@ public final class GetRemindersRequestTest {
                         )
                 )
         ).perform();
-        final WriteResult idMinus15ToPlus15m = new CreateBookingFixture(
+        final long idMinus15ToPlus15m = new CreateBookingFixture(
                 api.bookings(),
                 new SimpleBooking(
                         null,
@@ -87,7 +86,7 @@ public final class GetRemindersRequestTest {
                         new LogicalSlot(nowMinus15m, nowPlus15m)
                 )
         ).perform();
-        final WriteResult id15To45m = new CreateBookingFixture(
+        final long id15To45m = new CreateBookingFixture(
                 api.bookings(),
                 new SimpleBooking(
                         null,
@@ -110,10 +109,10 @@ public final class GetRemindersRequestTest {
                                 "{\"id\":%d,\"user_id\":\"test@test.com\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}," +
                                 "{\"id\":%d,\"user_id\":\"test@test.com\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}" +
                                 "]",
-                        idMinus15ToPlus15m.iterator().next().getIdValue(),
+                        idMinus15ToPlus15m,
                         nowMinus15m,
                         nowPlus15m,
-                        id15To45m.iterator().next().getIdValue(),
+                        id15To45m,
                         nowPlus15m,
                         nowPlus45m
                 )
