@@ -34,13 +34,13 @@ public final class Api {
                             path("rooms", new RoomsRoute(rooms, bookings));
                             path("bookings", new BookingsRoute(rooms, bookings));
                         })
-                        .exception(NotProcessableParameterException.class, new NotProcessableParameterHandler())
-                        .exception(MissingParameterException.class, new MissingParameterHandler())
-                        .exception(RoomNotFoundException.class, new RoomNotFoundHandler())
-                        .exception(BookingNotFoundException.class, new BookingNotFoundHandler())
-                        .exception(BookingNotDeletedException.class, new BookingNotDeletedHandler())
-                        .exception(CreateRoomConflictException.class, new CreateRoomConflictHandler())
-                        .exception(CreateBookingConflictException.class, new CreateBookingConflictHandler())
+                        .exception(NotProcessableParameterException.class, new NotProcessableParameterResponse())
+                        .exception(MissingParameterException.class, new MissingParameterResponse())
+                        .exception(RoomNotFoundException.class, new RoomNotFoundResponse())
+                        .exception(BookingNotFoundException.class, new BookingNotFoundResponse())
+                        .exception(BookingNotDeletedException.class, new BookingNotDeletedResponse())
+                        .exception(CreateRoomConflictException.class, new CreateRoomConflictResponse())
+                        .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse())
                         .enableCorsForAllOrigins(),
                 port
         );
