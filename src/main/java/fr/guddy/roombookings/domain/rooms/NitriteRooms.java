@@ -5,7 +5,6 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
-import org.dizitart.no2.WriteResult;
 import org.dizitart.no2.filters.Filters;
 
 import java.util.List;
@@ -42,12 +41,12 @@ public final class NitriteRooms implements Rooms {
     }
 
     @Override
-    public WriteResult create(final Room room) {
+    public Long create(final Room room) {
         return collection.insert(
                 new Document(
                         new NitriteRoom(room).map()
                 )
-        );
+        ).iterator().next().getIdValue();
     }
 
     @Override
@@ -78,7 +77,7 @@ public final class NitriteRooms implements Rooms {
     }
 
     @Override
-    public WriteResult clearAll() {
-        return collection.remove(Filters.ALL);
+    public int clearAll() {
+        return collection.remove(Filters.ALL).getAffectedCount();
     }
 }

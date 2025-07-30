@@ -4,7 +4,7 @@ import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import org.dizitart.no2.WriteResult;
 
-public final class CreateRoomFixture implements Fixture {
+public final class CreateRoomFixture implements Fixture<Long> {
     private final Rooms rooms;
     private final Room room;
 
@@ -14,7 +14,7 @@ public final class CreateRoomFixture implements Fixture {
     }
 
     @Override
-    public WriteResult perform() {
+    public Long perform() {
         return rooms.create(room);
     }
 }

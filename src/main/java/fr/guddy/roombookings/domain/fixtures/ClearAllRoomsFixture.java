@@ -3,7 +3,7 @@ package fr.guddy.roombookings.domain.fixtures;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import org.dizitart.no2.WriteResult;
 
-public final class ClearAllRoomsFixture implements Fixture {
+public final class ClearAllRoomsFixture implements Fixture<Integer> {
     private final Rooms rooms;
 
     public ClearAllRoomsFixture(final Rooms rooms) {
@@ -11,7 +11,7 @@ public final class ClearAllRoomsFixture implements Fixture {
     }
 
     @Override
-    public WriteResult perform() {
+    public Integer perform() {
         return rooms.clearAll();
     }
 }
