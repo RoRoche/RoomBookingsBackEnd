@@ -16,7 +16,7 @@ public interface Bookings {
 
     boolean isConflicting(final Booking booking);
 
-    boolean clearAll();
+    int clearAll();
 
     Optional<Booking> bookingById(final long id);
 

@@ -96,9 +96,8 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public boolean clearAll() {
-        final long size = collection.size();
-        return collection.remove(Filters.ALL).getAffectedCount() == size;
+    public int clearAll() {
+        return collection.remove(Filters.ALL).getAffectedCount();
     }
 
     @Override
