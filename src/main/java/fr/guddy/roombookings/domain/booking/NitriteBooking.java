@@ -10,16 +10,14 @@ import org.dizitart.no2.Document;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class NitriteBooking implements Booking {
+public final class NitriteBooking extends Booking.Envelope {
     private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
     private static final String DOCUMENT_KEY_USER_ID = "user_id";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
     private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_END = "slot_timestamp_end";
 
-    private final Booking delegate;
-
     public NitriteBooking(final Booking delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public NitriteBooking(final Long id, final String userId, final Room room, final Slot slot) {
@@ -55,26 +53,6 @@ public final class NitriteBooking implements Booking {
                 ),
                 new LogicalSlot(timestampStart, timestampEnd)
         );
-    }
-
-    @Override
-    public Long id() {
-        return delegate.id();
-    }
-
-    @Override
-    public String userId() {
-        return delegate.userId();
-    }
-
-    @Override
-    public Room room() {
-        return delegate.room();
-    }
-
-    @Override
-    public Slot slot() {
-        return delegate.slot();
     }
 
     @Override

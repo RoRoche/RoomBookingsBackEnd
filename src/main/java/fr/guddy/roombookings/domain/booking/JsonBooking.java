@@ -7,29 +7,30 @@ import fr.guddy.roombookings.domain.slot.Slot;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public final class JsonBooking implements Booking {
+public final class JsonBooking extends Booking.Envelope {
     private static final String JSON_KEY_ID = "id";
     private static final String JSON_KEY_USER_ID = "user_id";
     private static final String JSON_KEY_ROOM = "room";
     private static final String JSON_KEY_SLOT = "slot";
 
-    private final Booking delegate;
+    private static JsonObject readJsonObject(String body) {
+        try (final JsonReader reader = Json.createReader(new StringReader(body))) {
+            return reader.readObject();
+        }
+    }
 
     public JsonBooking(final Booking delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public JsonBooking(final String body) {
-        this(
-                Json.createReader(
-                        new StringReader(body)
-                ).readObject()
-        );
+        this(readJsonObject(body));
     }
 
     public JsonBooking(final JsonObject jsonObject) {
@@ -45,26 +46,6 @@ public final class JsonBooking implements Booking {
                         ).map(JsonSlot::new).orElse(null)
                 )
         );
-    }
-
-    @Override
-    public Long id() {
-        return delegate.id();
-    }
-
-    @Override
-    public String userId() {
-        return delegate.userId();
-    }
-
-    @Override
-    public Room room() {
-        return delegate.room();
-    }
-
-    @Override
-    public Slot slot() {
-        return delegate.slot();
     }
 
     @Override
