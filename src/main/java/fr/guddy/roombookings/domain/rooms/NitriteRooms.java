@@ -2,7 +2,9 @@ package fr.guddy.roombookings.domain.rooms;
 
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
-import org.dizitart.no2.*;
+import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.NitriteCollection;
 import org.dizitart.no2.filters.Filters;
 
 import java.util.List;
