@@ -58,10 +58,10 @@ public final class PostBookingRequest implements Request {
             throw new CreateBookingConflictException(booking.room().name());
         } else {
             final Long id = bookings.create(booking);
-            final Booking booking = bookings.bookingById(id)
+            final Booking actual = bookings.bookingById(id)
                     .orElseThrow(() -> new BookingNotFoundException(id));
             context.header("location", String.format("/bookings/%d", id))
-                    .json(new JsonBooking(booking).map())
+                    .json(new JsonBooking(actual).map())
                     .status(HttpStatus.CREATED_201);
         }
     }
