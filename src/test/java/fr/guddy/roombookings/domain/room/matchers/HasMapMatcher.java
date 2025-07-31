@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public final class HasMapMatcher implements Matcher<Room> {
 
-    private Pair<String, Object>[] expectedEntries;
+    private final Pair<String, Object>[] expectedEntries;
 
     @SafeVarargs
     public HasMapMatcher(final Pair<String, Object>... expectedEntries) {
@@ -28,9 +28,9 @@ public final class HasMapMatcher implements Matcher<Room> {
                 .containsExactlyElementsOf(keys);
         Stream.of(expectedEntries)
                 .forEach(pair -> {
-                    assertThat(room.map().get(pair.getKey()))
+                    assertThat(room.map())
                             .describedAs("Room map")
-                            .isEqualTo(pair.getValue());
+                            .containsEntry(pair.getKey(), pair.getValue());
                 });
     }
 }
