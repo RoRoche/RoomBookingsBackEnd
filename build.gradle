@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.0.0'
+    id 'jacoco'
 }
 
 group 'fr.guddy.roombookings'
@@ -45,6 +46,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // run report after tests
+}
+
+jacoco {
+    toolVersion = "0.8.10"
 }
 
 // Kotlin compilation target
@@ -56,3 +62,25 @@ kotlin {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true     // for CI tools like Codecov
+        html.required = true    // for human-readable reports
+        csv.required = false
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn test
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80 // 80% minimum coverage
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
