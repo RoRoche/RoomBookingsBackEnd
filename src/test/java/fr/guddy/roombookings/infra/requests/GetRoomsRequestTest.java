@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-public final class GetRoomsRequestTest {
+final class GetRoomsRequestTest {
     @RegisterExtension
-    public static final ApiExternalExtension api = new ApiExternalExtension();
+    static final ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testNoContent() {
+    void testNoContent() {
         new WithFixtureAssertion(
                 new ClearAllRoomsFixture(api.rooms()),
                 new RequestHasStatusCodeAssertion(
@@ -30,7 +30,7 @@ public final class GetRoomsRequestTest {
     }
 
     @Test
-    public void testOK() {
+    void testOK() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),

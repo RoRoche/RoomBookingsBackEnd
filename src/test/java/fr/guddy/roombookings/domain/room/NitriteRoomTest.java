@@ -7,9 +7,9 @@ import fr.guddy.roombookings.domain.room.matchers.HasNameMatcher;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
-public final class NitriteRoomTest {
+final class NitriteRoomTest {
     @Test
-    public void testOk() {
+    void testOk() {
         new MatchersAssertion<>(
                 new NitriteRoom(
                         new SimpleRoom("test", 12)

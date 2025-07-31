@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-public final class GetNamedRoomRequestTest {
+final class GetNamedRoomRequestTest {
     @RegisterExtension
     static ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testNotFound() {
+    void testNotFound() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms())
@@ -35,7 +35,7 @@ public final class GetNamedRoomRequestTest {
     }
 
     @Test
-    public void testOK() {
+    void testOK() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),

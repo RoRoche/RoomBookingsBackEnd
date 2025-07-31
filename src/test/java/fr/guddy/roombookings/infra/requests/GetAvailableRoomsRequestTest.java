@@ -16,12 +16,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-public final class GetAvailableRoomsRequestTest {
+final class GetAvailableRoomsRequestTest {
     @RegisterExtension
     static ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testNoContent() {
+    void testNoContent() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -41,7 +41,7 @@ public final class GetAvailableRoomsRequestTest {
     }
 
     @Test
-    public void testMissingParameter() {
+    void testMissingParameter() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -61,7 +61,7 @@ public final class GetAvailableRoomsRequestTest {
     }
 
     @Test
-    public void testOkWithAvailableRooms() {
+    void testOkWithAvailableRooms() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -88,7 +88,7 @@ public final class GetAvailableRoomsRequestTest {
     }
 
     @Test
-    public void testOkWithNoAvailableRooms() {
+    void testOkWithNoAvailableRooms() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),

@@ -18,12 +18,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.post;
 
-public final class PostBookingRequestTest {
+final class PostBookingRequestTest {
     @RegisterExtension
-    public static final ApiExternalExtension api = new ApiExternalExtension();
+    static final ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testOK() {
+    void testOK() {
         final long timestampStart = Instant.now().getMillis() / 1000;
         final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
         new WithFixtureAssertion(
@@ -61,7 +61,7 @@ public final class PostBookingRequestTest {
     }
 
     @Test
-    public void testConflict() {
+    void testConflict() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -102,7 +102,7 @@ public final class PostBookingRequestTest {
     }
 
     @Test
-    public void testRoomNotFound() {
+    void testRoomNotFound() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),

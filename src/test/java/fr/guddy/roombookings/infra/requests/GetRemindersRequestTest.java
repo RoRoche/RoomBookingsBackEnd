@@ -17,12 +17,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-public final class GetRemindersRequestTest {
+final class GetRemindersRequestTest {
     @RegisterExtension
-    public static final ApiExternalExtension api = new ApiExternalExtension();
+    static final ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testMissingParameter() {
+    void testMissingParameter() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -40,7 +40,7 @@ public final class GetRemindersRequestTest {
     }
 
     @Test
-    public void testNoContent() {
+    void testNoContent() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
@@ -56,7 +56,7 @@ public final class GetRemindersRequestTest {
     }
 
     @Test
-    public void testContent() {
+    void testContent() {
         // given
         final long nowMinus45m = Instant.now().minus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
         final long nowMinus15m = Instant.now().minus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;

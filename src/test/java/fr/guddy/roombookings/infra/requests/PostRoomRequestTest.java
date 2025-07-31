@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.post;
 
-public final class PostRoomRequestTest {
+final class PostRoomRequestTest {
     @RegisterExtension
-    public static final ApiExternalExtension api = new ApiExternalExtension();
+    static final ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
-    public void testOK() {
+    void testOK() {
         new WithFixtureAssertion(
                 new ClearAllRoomsFixture(api.rooms()),
                 new RequestWithLocationHeaderAssertion(
@@ -36,7 +36,7 @@ public final class PostRoomRequestTest {
     }
 
     @Test
-    public void testConflict() {
+    void testConflict() {
         new WithFixtureAssertion(
                 new ChainedFixtures(
                         new ClearAllRoomsFixture(api.rooms()),
