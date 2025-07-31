@@ -5,7 +5,7 @@ import fr.guddy.roombookings.domain.room.matchers.HasCapacityMatcher;
 import fr.guddy.roombookings.domain.room.matchers.HasMapMatcher;
 import fr.guddy.roombookings.domain.room.matchers.HasNameMatcher;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class NitriteRoomTest {
     @Test

@@ -37,9 +37,13 @@ dependencies {
     implementation 'org.glassfish:javax.json:1.1.4'
 
     // Tests
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.assertj:assertj-core:3.23.1'
     testImplementation 'com.mashape.unirest:unirest-java:1.4.9'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // Configure Kotlin compile to target JVM 11

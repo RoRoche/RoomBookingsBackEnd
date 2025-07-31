@@ -4,7 +4,7 @@ import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
-import fr.guddy.roombookings.infra.ApiExternalResource;
+import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
@@ -13,14 +13,14 @@ import fr.guddy.roombookings.infra.assertions.requests.RequestWithPartialBodyAss
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.post;
 
 public final class PostBookingRequestTest {
-    @ClassRule
-    public static final ApiExternalResource api = new ApiExternalResource();
+    @RegisterExtension
+    public static final ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
     public void testOK() {

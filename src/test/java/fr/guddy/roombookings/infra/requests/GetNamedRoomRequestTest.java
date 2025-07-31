@@ -4,19 +4,19 @@ import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
 import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
 import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
-import fr.guddy.roombookings.infra.ApiExternalResource;
+import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.mashape.unirest.http.Unirest.get;
 
 public final class GetNamedRoomRequestTest {
-    @ClassRule
-    public static final ApiExternalResource api = new ApiExternalResource();
+    @RegisterExtension
+    static ApiExternalExtension api = new ApiExternalExtension();
 
     @Test
     public void testNotFound() {
