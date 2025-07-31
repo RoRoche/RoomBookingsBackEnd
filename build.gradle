@@ -38,6 +38,9 @@ dependencies {
     implementation 'javax.json:javax.json-api:1.1.4'
     implementation 'org.glassfish:javax.json:1.1.4'
 
+    // Cactoos
+    implementation("org.cactoos:cactoos:0.57.0")
+
     // Tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.assertj:assertj-core:3.23.1'
