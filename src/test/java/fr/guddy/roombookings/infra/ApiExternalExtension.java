@@ -1,5 +1,8 @@
 package fr.guddy.roombookings.infra;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.bookings.NitriteBookings;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
@@ -12,8 +15,6 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCallback {
-
-    public static final String API_KEY = "api";
 
     private final Api api;
     private final Rooms rooms;
@@ -65,16 +66,37 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
     }
 
     @Override
-    public void beforeAll(final ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws InterruptedException {
         api.start();
-        final ExtensionContext.Store store = context.getStore(ExtensionContext.Namespace.create(getClass(), context));
-        store.put(API_KEY, api);
+        waitForServer();
     }
 
     @Override
-    public void afterAll(final ExtensionContext context) throws Exception {
+    public void afterAll(final ExtensionContext context) {
         api.stop();
-        final ExtensionContext.Store store = context.getStore(ExtensionContext.Namespace.create(getClass(), context));
-        store.remove(API_KEY);
     }
+
+    public void waitForServer() throws InterruptedException {
+        int retries = 10;
+        int delay = 200; // ms
+        boolean isReady = false;
+
+        while (retries-- > 0 && !isReady) {
+            try {
+                final HttpResponse<String> response = Unirest.get(
+                        String.format("http://localhost:%d/ready", api.port().value())
+                ).asString();
+                if (response.getStatus() == 200 && "READY".equals(response.getBody())) {
+                    isReady = true;
+                }
+            } catch (final UnirestException e) {
+                Thread.sleep(delay);
+            }
+        }
+
+        if (!isReady) {
+            throw new RuntimeException("Server didn't start in time");
+        }
+    }
+
 }
