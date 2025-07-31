@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.0.0'
     id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 group 'fr.guddy.roombookings'
@@ -42,9 +43,17 @@ dependencies {
     implementation("org.cactoos:cactoos:0.57.0")
 
     // Tests
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.assertj:assertj-core:3.23.1'
     testImplementation 'com.mashape.unirest:unirest-java:1.4.9'
+    testImplementation platform('org.junit:junit-bom:5.9.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    pitest 'org.pitest:pitest-junit5-plugin:1.1.2'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 test {
@@ -87,3 +96,11 @@ jacocoTestCoverageVerification {
 }
 
 check.dependsOn jacocoTestCoverageVerification
+
+pitest {
+    pitestVersion = '1.15.0'
+    targetClasses = ['fr.guddy.roombookings.*']
+    outputFormats = ['HTML']
+    timestampedReports = false
+    verbose = true
+}
