@@ -12,8 +12,6 @@ import java.util.function.Supplier;
 import static org.dizitart.no2.filters.Filters.eq;
 
 public final class NitriteRooms implements Rooms {
-    private static final String INDEX_ROOM_NAME = "room_name";
-
     private final NitriteCollection collection;
 
     public NitriteRooms(final NitriteCollection collection) {
@@ -25,13 +23,7 @@ public final class NitriteRooms implements Rooms {
     }
 
     public NitriteRooms(final Nitrite database) {
-        this(() -> {
-            final NitriteCollection rooms = database.getCollection("rooms");
-            if (!rooms.hasIndex(INDEX_ROOM_NAME)) {
-                rooms.createIndex(INDEX_ROOM_NAME, IndexOptions.indexOptions(IndexType.Unique, true));
-            }
-            return rooms;
-        });
+        this(new IndexedByRoomNameNitriteCollection(database));
     }
 
     @Override
@@ -63,7 +55,7 @@ public final class NitriteRooms implements Rooms {
 
     @Override
     public Optional<Room> namedRoom(final String name) {
-        return collection.find(eq(INDEX_ROOM_NAME, name))
+        return collection.find(eq("room_name", name))
                 .toList()
                 .stream()
                 .findFirst()
