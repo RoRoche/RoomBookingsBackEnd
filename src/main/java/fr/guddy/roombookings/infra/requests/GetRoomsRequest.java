@@ -17,7 +17,7 @@ public final class GetRoomsRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Room> all = this.rooms.rooms();
+        final List<Room> all = this.rooms.all();
         if (all.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);
         } else {

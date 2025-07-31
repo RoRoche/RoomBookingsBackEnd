@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface Rooms {
     Long create(final Room room);
 
-    List<Room> rooms();
+    List<Room> all();
 
     List<Room> capableRooms(final int capacity);
 

@@ -44,7 +44,7 @@ public final class NitriteRooms implements Rooms {
     }
 
     @Override
-    public List<Room> rooms() {
+    public List<Room> all() {
         return collection.find()
                 .toList()
                 .stream()
