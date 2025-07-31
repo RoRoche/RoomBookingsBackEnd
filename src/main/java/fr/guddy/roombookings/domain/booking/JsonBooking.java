@@ -1,9 +1,7 @@
 package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
-import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.JsonSlot;
-import fr.guddy.roombookings.domain.slot.Slot;
 
 import javax.json.Json;
 import javax.json.JsonObject;

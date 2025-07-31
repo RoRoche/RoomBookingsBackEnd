@@ -3,7 +3,6 @@ package fr.guddy.roombookings.domain.slot;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public record LogicalSlot(long timestampStart, long timestampEnd) implements Slot {

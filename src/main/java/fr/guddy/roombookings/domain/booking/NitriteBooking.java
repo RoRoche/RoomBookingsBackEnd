@@ -9,7 +9,6 @@ import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.dizitart.no2.Document;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public final class NitriteBooking extends Booking.Envelope {
