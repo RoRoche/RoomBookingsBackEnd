@@ -35,7 +35,7 @@ public final class JsonBooking implements Booking {
     public JsonBooking(final JsonObject jsonObject) {
         this(
                 new SimpleBooking(
-                        Integer.valueOf(jsonObject.getInt(JSON_KEY_ID, -1)).longValue(),
+                        (long) jsonObject.getInt(JSON_KEY_ID, -1),
                         jsonObject.getString(JSON_KEY_USER_ID),
                         Optional.ofNullable(
                                 jsonObject.getJsonObject(JSON_KEY_ROOM)
