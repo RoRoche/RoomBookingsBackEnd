@@ -49,7 +49,7 @@ final class GetBookingsForRoomInSlotRequestTest {
     }
 
     @Test
-    public void testOk() {
+    void testOk() {
         // given
         final long timestampStart = Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
         final long timestampEnd = Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
