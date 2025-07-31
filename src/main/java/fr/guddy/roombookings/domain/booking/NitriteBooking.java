@@ -5,6 +5,8 @@ import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.dizitart.no2.Document;
 
 import java.util.HashMap;
@@ -57,11 +59,11 @@ public final class NitriteBooking extends Booking.Envelope {
 
     @Override
     public Map<String, Object> map() {
-        final Map<String, Object> map = new HashMap<>();
-        map.put(DOCUMENT_KEY_USER_ID, userId());
-        map.put(DOCUMENT_KEY_ROOM_NAME, room().name());
-        map.put(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart());
-        map.put(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd());
-        return map;
+        return new MapOf<>(
+                new MapEntry<>(DOCUMENT_KEY_USER_ID, userId()),
+                new MapEntry<>(DOCUMENT_KEY_ROOM_NAME, room().name()),
+                new MapEntry<>(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart()),
+                new MapEntry<>(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd())
+        );
     }
 }

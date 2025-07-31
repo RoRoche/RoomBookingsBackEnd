@@ -1,5 +1,8 @@
 package fr.guddy.roombookings.domain.slot;
 
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,9 +14,9 @@ public record LogicalSlot(long timestampStart, long timestampEnd) implements Slo
 
     @Override
     public Map<String, Object> map() {
-        final Map<String, Object> map = new HashMap<>();
-        map.put("timestampStart", timestampStart);
-        map.put("timestampEnd", timestampEnd);
-        return map;
+        return new MapOf<String, Object>(
+                new MapEntry<>("timestampStart", timestampStart),
+                new MapEntry<>("timestampEnd", timestampEnd)
+        );
     }
 }
