@@ -129,3 +129,5 @@ gradle-app.setting
 build
 
 .kotlin
+
+.DS_Store
