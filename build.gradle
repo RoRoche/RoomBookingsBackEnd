@@ -1,13 +1,13 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.0'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
 }
 
 group 'fr.guddy.roombookings'
-version '1.0-SNAPSHOT'
+version '1.0.0-SNAPSHOT'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 repositories {
     mavenCentral()
@@ -15,7 +15,8 @@ repositories {
 
 dependencies {
     // Kotlin standard library
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+    implementation platform("org.jetbrains.kotlin:kotlin-bom:2.0.0")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
     // Nitrite (embedded NoSQL database)
     implementation 'org.dizitart:nitrite:3.2.0'
@@ -46,14 +47,12 @@ test {
     useJUnitPlatform()
 }
 
-// Configure Kotlin compile to target JVM 11
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+// Kotlin compilation target
+kotlin {
+    jvmToolchain(21)
 }
 
-// Optional: configure Java compile options
+// Java compile options
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
