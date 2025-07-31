@@ -7,6 +7,8 @@
 
 [![codecov](https://codecov.io/gh/RoRoche/RoomBookingsBackEnd/branch/main/graph/badge.svg)](https://codecov.io/gh/RoRoche/RoomBookingsBackEnd)
 
+[![Hits-of-Code](https://hitsofcode.com/github/RoRoche/RoomBookingsBackEnd?branch=main)](https://hitsofcode.com/github/RoRoche/RoomBookingsBackEnd/view?branch=main)
+
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=bugs)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
