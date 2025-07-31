@@ -1,9 +1,6 @@
 package fr.guddy.roombookings.domain.fixtures;
 
-import org.dizitart.no2.WriteResult;
-
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ChainedFixtures implements Fixture {
@@ -14,13 +11,11 @@ public final class ChainedFixtures implements Fixture {
     }
 
     public ChainedFixtures(final Fixture... fixtures) {
-        this(
-                Stream.of(fixtures).collect(Collectors.toList())
-        );
+        this(Stream.of(fixtures).toList());
     }
 
     @Override
-    public WriteResult perform() {
+    public Long perform() {
         fixtures.forEach(Fixture::perform);
         return null;
     }

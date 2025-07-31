@@ -23,7 +23,7 @@ public final class HasMapMatcher implements Matcher<Room> {
     public void check(final Room room) {
         final List<String> keys = Stream.of(expectedEntries)
                 .map(Pair::getKey)
-                .collect(Collectors.toList());
+                .toList();
         assertThat(room.map().keySet())
                 .describedAs("Room map")
                 .containsExactlyElementsOf(keys);

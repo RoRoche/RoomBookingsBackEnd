@@ -71,7 +71,7 @@ public final class GetAvailableRoomsRequest implements Request {
                 .stream()
                 .filter(room ->
                         bookings.bookingsForRoomInSlot(room, slot).isEmpty()
-                ).collect(Collectors.toList());
+                ).toList();
         if (availableRooms.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);
         } else {
@@ -79,7 +79,7 @@ public final class GetAvailableRoomsRequest implements Request {
                     availableRooms.stream()
                             .map(JsonRoom::new)
                             .map(JsonRoom::map)
-                            .collect(Collectors.toList())
+                            .toList()
             ).status(HttpStatus.OK_200);
         }
     }

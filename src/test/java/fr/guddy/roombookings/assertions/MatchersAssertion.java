@@ -14,8 +14,9 @@ public final class MatchersAssertion<T> implements Assertion {
         this.matchers = matchers;
     }
 
+    @SafeVarargs
     public MatchersAssertion(final T sut, final Matcher<T>... matchers) {
-        this(sut, Stream.of(matchers).collect(Collectors.toList()));
+        this(sut, List.of(matchers));
     }
 
     @Override

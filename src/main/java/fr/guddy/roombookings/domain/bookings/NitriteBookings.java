@@ -6,7 +6,10 @@ import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.Slot;
 import io.vavr.control.Try;
-import org.dizitart.no2.*;
+import org.dizitart.no2.Document;
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.NitriteCollection;
+import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.filters.Filters;
 
 import java.util.Comparator;
@@ -64,11 +67,9 @@ public final class NitriteBookings implements Bookings {
                         )
                 )
         ).toList();
-        return documents.stream()
-                .map(document ->
-                        Try.of(() -> new NitriteBooking(document, rooms)).get()
-                )
-                .collect(Collectors.toList());
+        return documents.stream().map(document ->
+                        Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get()
+                ).toList();
     }
 
     @Override
@@ -82,12 +83,11 @@ public final class NitriteBookings implements Bookings {
                         )
                 )
         ).toList();
-        return documents.stream()
-                .map(document ->
-                        Try.of(() -> new NitriteBooking(document, rooms)).get()
-                )
-                .sorted(Comparator.comparingLong(booking -> booking.slot().timestampStart()))
-                .collect(Collectors.toList());
+        return documents.stream().map(document ->
+                        Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get()
+                ).sorted(
+                        Comparator.comparingLong(booking -> booking.slot().timestampStart())
+                ).toList();
     }
 
     @Override

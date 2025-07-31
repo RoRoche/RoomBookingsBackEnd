@@ -76,7 +76,7 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
                     existingBookings.stream()
                             .map(JsonBooking::new)
                             .map(JsonBooking::map)
-                            .collect(Collectors.toList())
+                            .toList()
             ).status(HttpStatus.OK_200);
         }
     }

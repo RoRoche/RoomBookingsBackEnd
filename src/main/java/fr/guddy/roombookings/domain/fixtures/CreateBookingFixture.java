@@ -3,7 +3,7 @@ package fr.guddy.roombookings.domain.fixtures;
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.bookings.Bookings;
 
-public final class CreateBookingFixture implements Fixture<Long> {
+public final class CreateBookingFixture implements Fixture {
     private final Bookings bookings;
     private final Booking booking;
 

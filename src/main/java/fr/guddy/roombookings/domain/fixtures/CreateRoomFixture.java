@@ -2,9 +2,8 @@ package fr.guddy.roombookings.domain.fixtures;
 
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import org.dizitart.no2.WriteResult;
 
-public final class CreateRoomFixture implements Fixture<Long> {
+public final class CreateRoomFixture implements Fixture {
     private final Rooms rooms;
     private final Room room;
 

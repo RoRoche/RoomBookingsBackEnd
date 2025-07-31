@@ -37,7 +37,7 @@ public final class GetCapableRoomsRequest implements Request {
                     capableRooms.stream()
                             .map(JsonRoom::new)
                             .map(JsonRoom::map)
-                            .collect(Collectors.toList())
+                            .toList()
             ).status(HttpStatus.OK_200);
         }
     }

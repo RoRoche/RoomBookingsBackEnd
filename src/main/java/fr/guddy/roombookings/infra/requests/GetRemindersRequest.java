@@ -49,7 +49,7 @@ public final class GetRemindersRequest implements Request {
                     reminders.stream()
                             .map(JsonBooking::new)
                             .map(JsonBooking::map)
-                            .collect(Collectors.toList())
+                            .toList()
             ).status(HttpStatus.OK_200);
         }
     }

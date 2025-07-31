@@ -26,7 +26,7 @@ public final class GetRoomsRequest implements Request {
                     all.stream()
                             .map(JsonRoom::new)
                             .map(JsonRoom::map)
-                            .collect(Collectors.toList())
+                            .toList()
             ).status(HttpStatus.OK_200);
         }
     }
