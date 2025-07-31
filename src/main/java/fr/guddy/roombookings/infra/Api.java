@@ -12,6 +12,7 @@ import fr.guddy.roombookings.infra.ports.DefaultPort;
 import fr.guddy.roombookings.infra.ports.HerokuAssignedPort;
 import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
+import fr.guddy.roombookings.infra.routes.ReadinessRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
 import io.javalin.plugin.bundled.CorsPluginConfig;
@@ -34,6 +35,7 @@ public final class Api {
                             config.router.apiBuilder(() -> {
                                 path("rooms", new RoomsRoute(rooms, bookings));
                                 path("bookings", new BookingsRoute(rooms, bookings));
+                                path("ready", new ReadinessRoute());
                             });
                             config.bundledPlugins.enableCors(cors -> {
                                 cors.addRule(CorsPluginConfig.CorsRule::anyHost);
@@ -79,5 +81,13 @@ public final class Api {
 
     public void stop() {
         app.stop();
+    }
+
+    public Javalin app() {
+        return app;
+    }
+
+    public Port port() {
+        return port;
     }
 }
