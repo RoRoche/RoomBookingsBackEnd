@@ -1,8 +1,12 @@
 # RoomBookingsBackEnd
 
+[![Build Status](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/java-kotlin-gradle.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions)
+
 ![Elegant Objects](https://www.elegantobjects.org/badge.svg)
 ![intellij-idea](https://www.elegantobjects.org/intellij-idea.svg)
+
 [![codecov](https://codecov.io/gh/RoRoche/RoomBookingsBackEnd/branch/main/graph/badge.svg)](https://codecov.io/gh/RoRoche/RoomBookingsBackEnd)
+
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=bugs)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
