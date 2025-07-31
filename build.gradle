@@ -7,34 +7,49 @@ group 'fr.guddy.roombookings'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Kotlin standard library
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
-    implementation 'org.dizitart:nitrite:3.1.0'
-    implementation 'io.javalin:javalin:2.2.0'
-    implementation 'org.slf4j:slf4j-simple:1.7.25'
-    implementation 'io.vavr:vavr:0.9.2'
-    implementation 'joda-time:joda-time:2.10'
-    implementation 'javax.json:javax.json-api:1.1.2'
-    implementation 'org.glassfish:javax.json:1.1.2'
 
-    testImplementation 'junit:junit:4.12'
+    // Nitrite (embedded NoSQL database)
+    implementation 'org.dizitart:nitrite:3.2.0'
+
+    // Javalin (web framework)
+    implementation 'io.javalin:javalin:6.7.0'
+
+    // SLF4J Simple (logging)
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    // Vavr (functional library)
+    implementation 'io.vavr:vavr:0.10.4'
+
+    // Joda-Time (date/time API)
+    implementation 'joda-time:joda-time:2.10.14'
+
+    // JSON processing
+    implementation 'javax.json:javax.json-api:1.1.4'
+    implementation 'org.glassfish:javax.json:1.1.4'
+
+    // Tests
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.assertj:assertj-core:3.23.1'
     testImplementation 'com.mashape.unirest:unirest-java:1.4.9'
-    testImplementation 'org.assertj:assertj-core:3.11.1'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
-}
-
+// Configure Kotlin compile to target JVM 11
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+
+// Optional: configure Java compile options
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }

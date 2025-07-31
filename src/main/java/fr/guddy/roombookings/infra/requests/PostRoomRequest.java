@@ -4,7 +4,7 @@ import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.eclipse.jetty.http.HttpStatus;
 

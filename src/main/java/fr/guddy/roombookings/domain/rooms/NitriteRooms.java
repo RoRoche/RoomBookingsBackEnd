@@ -2,9 +2,7 @@ package fr.guddy.roombookings.domain.rooms;
 
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.NitriteCollection;
+import org.dizitart.no2.*;
 import org.dizitart.no2.filters.Filters;
 
 import java.util.List;
@@ -12,10 +10,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.dizitart.no2.IndexOptions.indexOptions;
-import static org.dizitart.no2.IndexType.Unique;
 import static org.dizitart.no2.filters.Filters.eq;
-import static org.dizitart.no2.filters.Filters.gte;
 
 public final class NitriteRooms implements Rooms {
     private static final String INDEX_ROOM_NAME = "room_name";
@@ -34,7 +29,7 @@ public final class NitriteRooms implements Rooms {
         this(() -> {
             final NitriteCollection rooms = database.getCollection("rooms");
             if (!rooms.hasIndex(INDEX_ROOM_NAME)) {
-                rooms.createIndex(INDEX_ROOM_NAME, indexOptions(Unique, true));
+                rooms.createIndex(INDEX_ROOM_NAME, IndexOptions.indexOptions(IndexType.Unique, true));
             }
             return rooms;
         });
@@ -60,7 +55,7 @@ public final class NitriteRooms implements Rooms {
 
     @Override
     public List<Room> capableRooms(final int capacity) {
-        return collection.find(gte("room_capacity", capacity))
+        return collection.find(Filters.gte("room_capacity", capacity))
                 .toList()
                 .stream()
                 .map(NitriteRoom::new)

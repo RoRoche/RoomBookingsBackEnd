@@ -2,7 +2,6 @@ package fr.guddy.roombookings.infra.requests;
 
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.JsonBooking;
-import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.bookings.BookingNotDeletedException;
 import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
@@ -10,9 +9,7 @@ import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.LongParameter;
 import fr.guddy.roombookings.infra.params.PathParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
-import io.javalin.Context;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.WriteResult;
+import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class DeleteBookingRequest implements Request {

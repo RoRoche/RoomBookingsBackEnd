@@ -1,8 +1,8 @@
 package fr.guddy.roombookings.infra.exceptions;
 
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
-import io.javalin.Context;
-import io.javalin.ExceptionHandler;
+import io.javalin.http.Context;
+import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class RoomNotFoundResponse implements ExceptionHandler<RoomNotFoundException> {

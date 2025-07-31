@@ -1,6 +1,6 @@
 package fr.guddy.roombookings.infra.params;
 
-import io.javalin.Context;
+import io.javalin.http.Context;
 
 public final class PathParameter implements Parameter<String> {
 

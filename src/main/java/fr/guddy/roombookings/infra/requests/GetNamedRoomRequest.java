@@ -7,7 +7,7 @@ import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.Parameter;
 import fr.guddy.roombookings.infra.params.PathParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class GetNamedRoomRequest implements Request {

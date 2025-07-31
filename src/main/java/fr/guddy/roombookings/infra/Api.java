@@ -14,6 +14,7 @@ import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
+import io.javalin.plugin.bundled.CorsPluginConfig;
 import org.dizitart.no2.Nitrite;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
@@ -29,10 +30,14 @@ public final class Api {
 
     public Api(final Port port, final Rooms rooms, final Bookings bookings) {
         this(
-                Javalin.create()
-                        .routes(() -> {
-                            path("rooms", new RoomsRoute(rooms, bookings));
-                            path("bookings", new BookingsRoute(rooms, bookings));
+                Javalin.create(config -> {
+                            config.router.apiBuilder(() -> {
+                                path("rooms", new RoomsRoute(rooms, bookings));
+                                path("bookings", new BookingsRoute(rooms, bookings));
+                            });
+                            config.bundledPlugins.enableCors(cors -> {
+                                cors.addRule(CorsPluginConfig.CorsRule::anyHost);
+                            });
                         })
                         .exception(NotProcessableParameterException.class, new NotProcessableParameterResponse())
                         .exception(MissingParameterException.class, new MissingParameterResponse())
@@ -40,8 +45,7 @@ public final class Api {
                         .exception(BookingNotFoundException.class, new BookingNotFoundResponse())
                         .exception(BookingNotDeletedException.class, new BookingNotDeletedResponse())
                         .exception(CreateRoomConflictException.class, new CreateRoomConflictResponse())
-                        .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse())
-                        .enableCorsForAllOrigins(),
+                        .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse()),
                 port
         );
     }

@@ -6,7 +6,7 @@ import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.infra.params.Parameter;
 import fr.guddy.roombookings.infra.params.QueryParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Instant;
 

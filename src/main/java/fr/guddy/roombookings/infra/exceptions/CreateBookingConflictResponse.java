@@ -1,8 +1,8 @@
 package fr.guddy.roombookings.infra.exceptions;
 
 import fr.guddy.roombookings.domain.bookings.CreateBookingConflictException;
-import io.javalin.Context;
-import io.javalin.ExceptionHandler;
+import io.javalin.http.Context;
+import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class CreateBookingConflictResponse implements ExceptionHandler<CreateBookingConflictException> {

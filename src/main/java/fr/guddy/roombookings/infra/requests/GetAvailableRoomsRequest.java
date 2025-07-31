@@ -7,7 +7,7 @@ import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
 import fr.guddy.roombookings.infra.params.*;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.util.List;

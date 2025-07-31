@@ -4,7 +4,7 @@ import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.Parameter;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.util.List;
