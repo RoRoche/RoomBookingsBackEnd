@@ -10,15 +10,15 @@ import java.util.Optional;
 public interface Bookings {
     Long create(final Booking booking);
 
-    List<Booking> bookingsForRoomInSlot(final Room room, final Slot slot);
+    List<Booking> forRoomInSlot(final Room room, final Slot slot);
 
-    List<Booking> bookingsForUserFromStartDate(final String userId, final long timestampStart);
+    List<Booking> forUserFromStartDate(final String userId, final long timestampStart);
 
     boolean isConflicting(final Booking booking);
 
     int clearAll();
 
-    Optional<Booking> bookingById(final long id);
+    Optional<Booking> byId(final long id);
 
     boolean delete(final Booking booking);
 }

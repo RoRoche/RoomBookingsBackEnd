@@ -38,7 +38,7 @@ public final class GetNamedRoomRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final Room room = rooms.namedRoom(name).orElseThrow(() -> new RoomNotFoundException(name));
+        final Room room = rooms.withName(name).orElseThrow(() -> new RoomNotFoundException(name));
         context.json(new JsonRoom(room).map())
                 .status(HttpStatus.OK_200);
     }

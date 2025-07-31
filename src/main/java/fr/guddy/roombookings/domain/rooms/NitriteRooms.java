@@ -45,7 +45,7 @@ public final class NitriteRooms implements Rooms {
     }
 
     @Override
-    public List<Room> capableRooms(final int capacity) {
+    public List<Room> withCapacity(final int capacity) {
         return collection.find(Filters.gte("room_capacity", capacity))
                 .toList()
                 .stream()
@@ -54,7 +54,7 @@ public final class NitriteRooms implements Rooms {
     }
 
     @Override
-    public Optional<Room> namedRoom(final String name) {
+    public Optional<Room> withName(final String name) {
         return collection.find(eq("room_name", name))
                 .toList()
                 .stream()

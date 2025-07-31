@@ -57,7 +57,7 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
     ) {
         this(
                 bookings,
-                rooms.namedRoom(roomName.value()).orElseThrow(() -> new RoomNotFoundException(roomName.value())),
+                rooms.withName(roomName.value()).orElseThrow(() -> new RoomNotFoundException(roomName.value())),
                 new LogicalSlot(
                         timestampStart.value(),
                         timestampEnd.value()
@@ -67,7 +67,7 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Booking> existingBookings = bookings.bookingsForRoomInSlot(room, slot);
+        final List<Booking> existingBookings = bookings.forRoomInSlot(room, slot);
         if (existingBookings.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);
         } else {

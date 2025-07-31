@@ -49,7 +49,7 @@ public final class NitriteBooking extends Booking.Envelope {
         this(
                 id,
                 userId,
-                rooms.namedRoom(roomName).orElseThrow(() ->
+                rooms.withName(roomName).orElseThrow(() ->
                         new RoomNotFoundException(roomName)
                 ),
                 new LogicalSlot(timestampStart, timestampEnd)

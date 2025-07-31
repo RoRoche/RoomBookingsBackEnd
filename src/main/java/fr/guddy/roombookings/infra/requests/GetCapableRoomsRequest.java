@@ -28,7 +28,7 @@ public final class GetCapableRoomsRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Room> capableRooms = rooms.capableRooms(capacity);
+        final List<Room> capableRooms = rooms.withCapacity(capacity);
         if (capableRooms.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);
         } else {

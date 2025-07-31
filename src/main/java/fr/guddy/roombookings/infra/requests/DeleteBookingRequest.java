@@ -34,7 +34,7 @@ public final class DeleteBookingRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final Booking booking = bookings.bookingById(id)
+        final Booking booking = bookings.byId(id)
                 .orElseThrow(() -> new BookingNotFoundException(id));
         final boolean result = bookings.delete(booking);
         if (result) {

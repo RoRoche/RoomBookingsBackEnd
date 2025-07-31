@@ -66,10 +66,10 @@ public final class GetAvailableRoomsRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Room> availableRooms = rooms.capableRooms(capacity)
+        final List<Room> availableRooms = rooms.withCapacity(capacity)
                 .stream()
                 .filter(room ->
-                        bookings.bookingsForRoomInSlot(room, slot).isEmpty()
+                        bookings.forRoomInSlot(room, slot).isEmpty()
                 ).toList();
         if (availableRooms.isEmpty()) {
             context.status(HttpStatus.NO_CONTENT_204);

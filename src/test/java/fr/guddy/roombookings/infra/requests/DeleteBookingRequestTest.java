@@ -80,7 +80,7 @@ final class DeleteBookingRequestTest {
                 )
         ).check();
         assertThat(
-                api.bookings().bookingById(id)
+                api.bookings().byId(id)
         ).isEmpty();
     }
 }

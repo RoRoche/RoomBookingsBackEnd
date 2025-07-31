@@ -10,9 +10,9 @@ public interface Rooms {
 
     List<Room> all();
 
-    List<Room> capableRooms(final int capacity);
+    List<Room> withCapacity(final int capacity);
 
-    Optional<Room> namedRoom(final String name);
+    Optional<Room> withName(final String name);
 
     int clearAll();
 }

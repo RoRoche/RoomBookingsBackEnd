@@ -37,7 +37,7 @@ public final class GetRemindersRequest implements Request {
 
     @Override
     public void perform(final Context context) {
-        final List<Booking> reminders = bookings.bookingsForUserFromStartDate(
+        final List<Booking> reminders = bookings.forUserFromStartDate(
                 userId,
                 Instant.now().getMillis() / 1000
         );

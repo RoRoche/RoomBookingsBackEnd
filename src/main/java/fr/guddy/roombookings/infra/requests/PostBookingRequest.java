@@ -44,7 +44,7 @@ public final class PostBookingRequest implements Request {
                 new SimpleBooking(
                         null,
                         booking.userId(),
-                        rooms.namedRoom(roomName.value()).orElseThrow(() ->
+                        rooms.withName(roomName.value()).orElseThrow(() ->
                                 new RoomNotFoundException(roomName.value())
                         ),
                         booking.slot()
@@ -58,7 +58,7 @@ public final class PostBookingRequest implements Request {
             throw new CreateBookingConflictException(booking.room().name());
         } else {
             final Long id = bookings.create(booking);
-            final Booking actual = bookings.bookingById(id)
+            final Booking actual = bookings.byId(id)
                     .orElseThrow(() -> new BookingNotFoundException(id));
             context.header("location", String.format("/bookings/%d", id))
                     .json(new JsonBooking(actual).map())

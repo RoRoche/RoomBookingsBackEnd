@@ -46,7 +46,7 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public List<Booking> bookingsForRoomInSlot(final Room room, final Slot slot) {
+    public List<Booking> forRoomInSlot(final Room room, final Slot slot) {
         final List<Document> documents = collection.find(
                 and(
                         eq(DOCUMENT_KEY_ROOM_NAME, room.name()),
@@ -72,7 +72,7 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public List<Booking> bookingsForUserFromStartDate(final String userId, final long timestampStart) {
+    public List<Booking> forUserFromStartDate(final String userId, final long timestampStart) {
         final List<Document> documents = collection.find(
                 and(
                         eq(DOCUMENT_KEY_USER_ID, userId),
@@ -91,7 +91,7 @@ public final class NitriteBookings implements Bookings {
 
     @Override
     public boolean isConflicting(final Booking booking) {
-        return !bookingsForRoomInSlot(booking.room(), booking.slot()).isEmpty();
+        return !forRoomInSlot(booking.room(), booking.slot()).isEmpty();
     }
 
     @Override
@@ -100,7 +100,7 @@ public final class NitriteBookings implements Bookings {
     }
 
     @Override
-    public Optional<Booking> bookingById(final long id) {
+    public Optional<Booking> byId(final long id) {
         return Optional.ofNullable(
                 collection.getById(NitriteId.createId(id))
         ).map(document -> new NitriteBooking(document, rooms));
