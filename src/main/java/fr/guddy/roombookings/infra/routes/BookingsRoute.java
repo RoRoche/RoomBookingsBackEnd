@@ -25,7 +25,7 @@ public final class BookingsRoute implements EndpointGroup {
                         new GetRemindersRequest(bookings, ctx).perform(ctx)
         );
         delete(
-                "/:id",
+                "/{id}",
                 ctx ->
                         new DeleteBookingRequest(rooms, bookings, ctx).perform(ctx)
         );

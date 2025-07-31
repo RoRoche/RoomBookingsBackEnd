@@ -58,17 +58,17 @@ public final class RoomsRoute implements EndpointGroup {
                 }
         );
         get(
-                "/:name",
+                "/{name}",
                 ctx ->
                         new GetNamedRoomRequest(rooms, ctx).perform(ctx)
         );
         get(
-                "/:name/bookings",
+                "/{name}/bookings",
                 ctx ->
                         new GetBookingsForRoomInSlotRequest(rooms, bookings, ctx).perform(ctx)
         );
         post(
-                "/:name/bookings",
+                "/{name}/bookings",
                 ctx ->
                         new PostBookingRequest(rooms, bookings, ctx).perform(ctx)
         );
