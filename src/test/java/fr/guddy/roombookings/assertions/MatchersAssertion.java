@@ -1,8 +1,6 @@
 package fr.guddy.roombookings.assertions;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class MatchersAssertion<T> implements Assertion {
 

@@ -5,7 +5,6 @@ import fr.guddy.roombookings.domain.booking.JsonBooking;
 import fr.guddy.roombookings.domain.bookings.BookingNotDeletedException;
 import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
-import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.LongParameter;
 import fr.guddy.roombookings.infra.params.PathParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
@@ -14,19 +13,16 @@ import org.eclipse.jetty.http.HttpStatus;
 
 public final class DeleteBookingRequest implements Request {
 
-    private final Rooms rooms;
     private final Bookings bookings;
     private final long id;
 
-    public DeleteBookingRequest(final Rooms rooms, final Bookings bookings, final long id) {
-        this.rooms = rooms;
+    public DeleteBookingRequest(final Bookings bookings, final long id) {
         this.bookings = bookings;
         this.id = id;
     }
 
-    public DeleteBookingRequest(final Rooms rooms, final Bookings bookings, final Context context) {
+    public DeleteBookingRequest(final Bookings bookings, final Context context) {
         this(
-                rooms,
                 bookings,
                 new LongParameter(
                         new RequiredParameter<>(

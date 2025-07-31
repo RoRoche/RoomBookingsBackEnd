@@ -16,12 +16,10 @@ import org.eclipse.jetty.http.HttpStatus;
 
 public final class PostBookingRequest implements Request {
 
-    private final Rooms rooms;
     private final Bookings bookings;
     private final Booking booking;
 
-    public PostBookingRequest(final Rooms rooms, final Bookings bookings, final Booking booking) {
-        this.rooms = rooms;
+    public PostBookingRequest(final Bookings bookings, final Booking booking) {
         this.bookings = bookings;
         this.booking = booking;
     }
@@ -42,7 +40,6 @@ public final class PostBookingRequest implements Request {
                               final Parameter<String> roomName,
                               final Booking booking) {
         this(
-                rooms,
                 bookings,
                 new SimpleBooking(
                         null,

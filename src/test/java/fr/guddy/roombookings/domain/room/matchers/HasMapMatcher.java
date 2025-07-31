@@ -5,7 +5,6 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;

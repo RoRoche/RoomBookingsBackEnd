@@ -34,7 +34,7 @@ public final class Api {
                 Javalin.create(config -> {
                             config.router.apiBuilder(() -> {
                                 path("rooms", new RoomsRoute(rooms, bookings));
-                                path("bookings", new BookingsRoute(rooms, bookings));
+                                path("bookings", new BookingsRoute(bookings));
                                 path("ready", new ReadinessRoute());
                             });
                             config.bundledPlugins.enableCors(cors -> {

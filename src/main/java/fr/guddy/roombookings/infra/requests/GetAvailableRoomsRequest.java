@@ -11,7 +11,6 @@ import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class GetAvailableRoomsRequest implements Request {
 

@@ -11,7 +11,6 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Instant;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class GetRemindersRequest implements Request {
 
