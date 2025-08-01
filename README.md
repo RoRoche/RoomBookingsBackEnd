@@ -1,6 +1,6 @@
 # RoomBookingsBackEnd
 
-![Logo](./assets/logo.jpeg)
+![Logo](./assets/logo.png)
 
 [![Build Status](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/java-kotlin-gradle.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions)
 
