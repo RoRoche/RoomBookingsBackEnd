@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public final class JsonBooking extends Booking.Envelope {
     private static final String JSON_KEY_ID = "id";
@@ -17,18 +18,12 @@ public final class JsonBooking extends Booking.Envelope {
     private static final String JSON_KEY_ROOM = "room";
     private static final String JSON_KEY_SLOT = "slot";
 
-    private static JsonObject readJsonObject(String body) {
-        try (final JsonReader reader = Json.createReader(new StringReader(body))) {
-            return reader.readObject();
-        }
-    }
-
     public JsonBooking(final Booking delegate) {
         super(delegate);
     }
 
     public JsonBooking(final String body) {
-        this(readJsonObject(body));
+        this(new JsonFromBody(body));
     }
 
     public JsonBooking(final JsonObject jsonObject) {
@@ -44,6 +39,10 @@ public final class JsonBooking extends Booking.Envelope {
                         ).map(JsonSlot::new).orElse(null)
                 )
         );
+    }
+
+    public JsonBooking(final Supplier<JsonObject> supplier) {
+        this(supplier.get());
     }
 
     @Override
