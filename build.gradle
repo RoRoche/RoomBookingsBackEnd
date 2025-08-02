@@ -47,7 +47,7 @@ dependencies {
     testImplementation 'com.mashape.unirest:unirest-java:1.4.9'
     testImplementation platform('org.junit:junit-bom:5.9.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.1'
+    testImplementation 'com.tngtech.archunit:archunit:1.4.1'
     pitest 'org.pitest:pitest-junit5-plugin:1.1.2'
 }
 
@@ -101,6 +101,7 @@ check.dependsOn jacocoTestCoverageVerification
 pitest {
     pitestVersion = '1.15.0'
     targetClasses = ['fr.guddy.roombookings.*']
+    excludedTestClasses = ['fr.guddy.roombookings.architecture.*']
     outputFormats = ['HTML']
     timestampedReports = false
     verbose = true
