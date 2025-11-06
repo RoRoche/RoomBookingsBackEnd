@@ -5,6 +5,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
+import fr.guddy.roombookings.architecture.rules.PublicMethodsDeclaredInInterfacesRule;
 import org.junit.jupiter.api.Test;
 
 final class ArchitectureTest {
@@ -19,5 +20,10 @@ final class ArchitectureTest {
                 .should().accessClassesThat().resideInAPackage("..infra..")
                 .because("domain logic must not be dependent of infrastructure code");
         rule.check(CLASSES);
+    }
+
+    @Test
+    void testPublicMethodsAreDeclaredInInterface() {
+        new PublicMethodsDeclaredInInterfacesRule().check(CLASSES);
     }
 }
