@@ -1,5 +1,6 @@
 package fr.guddy.roombookings.infra;
 
+import fr.guddy.roombookings.Application;
 import fr.guddy.roombookings.domain.bookings.*;
 import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
@@ -20,7 +21,7 @@ import org.dizitart.no2.Nitrite;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 
-public final class Api {
+public final class Api implements Application {
     private final Javalin app;
     private final Port port;
 
@@ -75,10 +76,12 @@ public final class Api {
         );
     }
 
+    @Override
     public void start() {
         app.start(port.value());
     }
 
+    @Override
     public void stop() {
         app.stop();
     }
