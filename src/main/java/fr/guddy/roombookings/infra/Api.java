@@ -77,16 +77,16 @@ public final class Api implements Application, Exposed {
 
     @Override
     public void start() {
-        app.start(port.value());
+        this.app.start(this.port.value());
     }
 
     @Override
     public void stop() {
-        app.stop();
+        this.app.stop();
     }
 
     @Override
     public Port port() {
-        return port;
+        return this.port;
     }
 }
