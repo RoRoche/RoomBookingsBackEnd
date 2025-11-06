@@ -7,16 +7,17 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.Test;
 
-public final class ArchitectureTest {
+final class ArchitectureTest {
+    private static final JavaClasses CLASSES = new ClassFileImporter()
+            .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+            .importPackages("fr.guddy.roombookings");
+
     @Test
     void testDomainClassesShouldNotAccessInfra() {
-        final JavaClasses classes = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("fr.guddy.roombookings");
         final ArchRule rule = ArchRuleDefinition.noClasses()
                 .that().resideInAPackage("..domain..")
                 .should().accessClassesThat().resideInAPackage("..infra..")
                 .because("domain logic must not be dependent of infrastructure code");
-        rule.check(classes);
+        rule.check(CLASSES);
     }
 }
