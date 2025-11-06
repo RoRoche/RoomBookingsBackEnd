@@ -1,0 +1,33 @@
+package fr.guddy.roombookings.architecture.rules.conditions;
+
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaMethod;
+import org.cactoos.Scalar;
+
+/**
+ * Compare parameters ignoring generics, and check that
+ * each implementation type is the same or a subtype of the interface type.
+ */
+public final class ParametersAssignableIgnoringGenerics implements Scalar<Boolean> {
+    private final JavaMethod ifaceMethod;
+    private final JavaMethod implMethod;
+
+    public ParametersAssignableIgnoringGenerics(final JavaMethod ifaceMethod, final JavaMethod implMethod) {
+        this.ifaceMethod = ifaceMethod;
+        this.implMethod = implMethod;
+    }
+
+    @Override
+    public Boolean value() {
+        var ifaceParams = this.ifaceMethod.getRawParameterTypes();
+        var implParams = this.implMethod.getRawParameterTypes();
+        for (int i = 0; i < ifaceParams.size(); i++) {
+            final JavaClass ifaceParam = ifaceParams.get(i).toErasure();
+            final JavaClass implParam = implParams.get(i).toErasure();
+            if (!new IsSameOrSubtype(implParam, ifaceParam).value()) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
