@@ -37,9 +37,9 @@ public final class Api {
                                 path("bookings", new BookingsRoute(bookings));
                                 path("ready", new ReadinessRoute());
                             });
-                            config.bundledPlugins.enableCors(cors -> {
-                                cors.addRule(CorsPluginConfig.CorsRule::anyHost);
-                            });
+                            config.bundledPlugins.enableCors(cors ->
+                                    cors.addRule(CorsPluginConfig.CorsRule::anyHost)
+                            );
                         })
                         .exception(NotProcessableParameterException.class, new NotProcessableParameterResponse())
                         .exception(MissingParameterException.class, new MissingParameterResponse())
@@ -81,10 +81,6 @@ public final class Api {
 
     public void stop() {
         app.stop();
-    }
-
-    public Javalin app() {
-        return app;
     }
 
     public Port port() {
