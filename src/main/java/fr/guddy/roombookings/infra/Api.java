@@ -20,7 +20,7 @@ import org.dizitart.no2.Nitrite;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 
-public final class Api implements Application {
+public final class Api implements Application, Exposed {
     private final Javalin app;
     private final Port port;
 
@@ -85,6 +85,7 @@ public final class Api implements Application {
         app.stop();
     }
 
+    @Override
     public Port port() {
         return port;
     }
