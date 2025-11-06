@@ -1,4 +1,4 @@
-package fr.guddy.roombookings;
+package fr.guddy.roombookings.infra;
 
 public interface Application {
     void start();

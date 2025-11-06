@@ -1,6 +1,5 @@
 package fr.guddy.roombookings.infra;
 
-import fr.guddy.roombookings.Application;
 import fr.guddy.roombookings.domain.bookings.*;
 import fr.guddy.roombookings.domain.rooms.CreateRoomConflictException;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
