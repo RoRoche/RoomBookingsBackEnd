@@ -7,8 +7,8 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 
-public final class HaveOnlyPublicMethodsDeclaredInInterfacesConditions extends ArchCondition<JavaClass> {
-    public HaveOnlyPublicMethodsDeclaredInInterfacesConditions() {
+public final class HaveOnlyPublicMethodsDeclaredInInterfacesCondition extends ArchCondition<JavaClass> {
+    public HaveOnlyPublicMethodsDeclaredInInterfacesCondition() {
         super("have only public methods declared in implemented interfaces");
     }
 
