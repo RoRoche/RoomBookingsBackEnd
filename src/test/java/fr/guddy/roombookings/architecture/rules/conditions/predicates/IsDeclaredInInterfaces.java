@@ -17,13 +17,10 @@ public final class IsDeclaredInInterfaces implements Scalar<Boolean> {
     @Override
     public Boolean value() {
         // Check if the implementation method matches any method from the interfaces
-        for (final JavaMethod ifaceMethod : this.interfaceMethods) {
-            if (ifaceMethod.getName().equals(this.implMethod.getName())
-                    && new HaveSameParameterCount(ifaceMethod, this.implMethod).value()
-                    && new ParametersAssignableIgnoringGenerics(ifaceMethod, this.implMethod).value()) {
-                return true;
-            }
-        }
-        return false;
+        return this.interfaceMethods.stream()
+                .anyMatch(ifaceMethod -> ifaceMethod.getName().equals(this.implMethod.getName())
+                        && new HaveSameParameterCount(ifaceMethod, this.implMethod).value()
+                        && new ParametersAssignableIgnoringGenerics(ifaceMethod, this.implMethod).value()
+                );
     }
 }
