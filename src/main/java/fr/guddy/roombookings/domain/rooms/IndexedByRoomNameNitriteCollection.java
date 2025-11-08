@@ -1,13 +1,12 @@
 package fr.guddy.roombookings.domain.rooms;
 
+import org.cactoos.Scalar;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
 
-import java.util.function.Supplier;
-
-public final class IndexedByRoomNameNitriteCollection implements Supplier<NitriteCollection> {
+public final class IndexedByRoomNameNitriteCollection implements Scalar<NitriteCollection> {
     private static final String INDEX_ROOM_NAME = "room_name";
 
     private final Nitrite database;
@@ -17,7 +16,7 @@ public final class IndexedByRoomNameNitriteCollection implements Supplier<Nitrit
     }
 
     @Override
-    public NitriteCollection get() {
+    public NitriteCollection value() {
         final NitriteCollection rooms = database.getCollection("rooms");
         if (!rooms.hasIndex(INDEX_ROOM_NAME)) {
             rooms.createIndex(INDEX_ROOM_NAME, IndexOptions.indexOptions(IndexType.Unique, true));

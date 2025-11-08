@@ -2,12 +2,13 @@ package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.slot.JsonSlot;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 
 import javax.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public final class JsonBooking extends Booking.Envelope {
     private static final String JSON_KEY_ID = "id";
@@ -38,8 +39,10 @@ public final class JsonBooking extends Booking.Envelope {
         );
     }
 
-    public JsonBooking(final Supplier<JsonObject> supplier) {
-        this(supplier.get());
+    public JsonBooking(final Scalar<JsonObject> json) {
+        this(
+                new Unchecked<>(json).value()
+        );
     }
 
     @Override

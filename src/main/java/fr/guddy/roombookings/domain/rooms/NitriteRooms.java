@@ -2,6 +2,8 @@ package fr.guddy.roombookings.domain.rooms;
 
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
@@ -9,7 +11,6 @@ import org.dizitart.no2.filters.Filters;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static org.dizitart.no2.filters.Filters.eq;
 
@@ -20,8 +21,10 @@ public final class NitriteRooms implements Rooms {
         this.collection = collection;
     }
 
-    public NitriteRooms(final Supplier<NitriteCollection> collectionSupplier) {
-        this(collectionSupplier.get());
+    public NitriteRooms(final Scalar<NitriteCollection> collection) {
+        this(
+                new Unchecked<>(collection).value()
+        );
     }
 
     public NitriteRooms(final Nitrite database) {
