@@ -8,8 +8,8 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.NoStaticMethodsMessage;
 
-public final class NoStaticMethodsCondition extends ArchCondition<JavaClass> {
-    public NoStaticMethodsCondition() {
+public final class HaveNoStaticMethods extends ArchCondition<JavaClass> {
+    public HaveNoStaticMethods() {
         super("not have static methods");
     }
 

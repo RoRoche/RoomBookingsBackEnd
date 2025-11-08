@@ -8,8 +8,8 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.PublicMethodsDeclaredInInterfacesMessage;
 
-public final class HaveOnlyPublicMethodsDeclaredInInterfacesCondition extends ArchCondition<JavaClass> {
-    public HaveOnlyPublicMethodsDeclaredInInterfacesCondition() {
+public final class HaveOnlyPublicMethodsDeclaredInInterfaces extends ArchCondition<JavaClass> {
+    public HaveOnlyPublicMethodsDeclaredInInterfaces() {
         super("have only public methods declared in implemented interfaces");
     }
 
