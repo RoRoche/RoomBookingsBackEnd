@@ -22,12 +22,7 @@ public final class HaveOnlyPublicMethodsDeclaredInInterfacesCondition extends Ar
 
             final String name = method.getName();
             // Check if this is the public static void main(String[] args) method
-            final boolean isMainMethod =
-                    name.equals("main")
-                            && method.getModifiers().contains(JavaModifier.PUBLIC)
-                            && method.getModifiers().contains(JavaModifier.STATIC)
-                            && method.getRawParameterTypes().size() == 1
-                            && method.getRawParameterTypes().getFirst().getName().equals("[Ljava.lang.String;");
+            final boolean isMainMethod = new IsMainMethod(method).value();
 
             // Ignore toString, equals, hashCode, and main
             if (name.equals("toString") || name.equals("equals") || name.equals("hashCode") || isMainMethod) {
