@@ -6,6 +6,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import fr.guddy.roombookings.architecture.rules.ClassesAreAbstractOrFinalRule;
+import fr.guddy.roombookings.architecture.rules.FieldsShouldBeFinalRule;
 import fr.guddy.roombookings.architecture.rules.PublicMethodsDeclaredInInterfacesRule;
 import org.junit.jupiter.api.Test;
 
@@ -31,5 +32,10 @@ final class ArchitectureTest {
     @Test
     void testClassesAreAbstractOrFinal() {
         new ClassesAreAbstractOrFinalRule().check(CLASSES);
+    }
+
+    @Test
+    void testFieldsShouldBeFinalRule() {
+        new FieldsShouldBeFinalRule().check(CLASSES);
     }
 }
