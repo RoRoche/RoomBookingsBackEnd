@@ -6,6 +6,7 @@ import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import fr.guddy.roombookings.architecture.rules.conditions.messages.PublicMethodsDeclaredInInterfacesMessage;
 
 public final class HaveOnlyPublicMethodsDeclaredInInterfacesCondition extends ArchCondition<JavaClass> {
     public HaveOnlyPublicMethodsDeclaredInInterfacesCondition() {
