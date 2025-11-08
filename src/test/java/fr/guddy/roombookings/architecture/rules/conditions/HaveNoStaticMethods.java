@@ -7,6 +7,7 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.NoStaticMethodsMessage;
+import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsMainMethod;
 
 public final class HaveNoStaticMethods extends ArchCondition<JavaClass> {
     public HaveNoStaticMethods() {

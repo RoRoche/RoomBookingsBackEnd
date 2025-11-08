@@ -6,6 +6,8 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.NotHaveGettersOrSettersMessage;
+import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsGetter;
+import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsSetter;
 
 public final class NotHaveGettersOrSetters extends ArchCondition<JavaClass> {
     public NotHaveGettersOrSetters() {

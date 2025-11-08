@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.architecture.rules.conditions;
+package fr.guddy.roombookings.architecture.rules.conditions.collections;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import org.cactoos.scalar.Unchecked;

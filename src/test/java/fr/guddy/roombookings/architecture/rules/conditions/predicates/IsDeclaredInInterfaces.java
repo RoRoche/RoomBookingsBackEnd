@@ -1,4 +1,4 @@
-package fr.guddy.roombookings.architecture.rules.conditions;
+package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 
 import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
