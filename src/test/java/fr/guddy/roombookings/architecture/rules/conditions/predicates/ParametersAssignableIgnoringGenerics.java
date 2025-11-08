@@ -19,8 +19,8 @@ public final class ParametersAssignableIgnoringGenerics implements Scalar<Boolea
 
     @Override
     public Boolean value() {
-        var ifaceParams = this.ifaceMethod.getRawParameterTypes();
-        var implParams = this.implMethod.getRawParameterTypes();
+        final var ifaceParams = this.ifaceMethod.getRawParameterTypes();
+        final var implParams = this.implMethod.getRawParameterTypes();
         for (int i = 0; i < ifaceParams.size(); i++) {
             final JavaClass ifaceParam = ifaceParams.get(i).toErasure();
             final JavaClass implParam = implParams.get(i).toErasure();

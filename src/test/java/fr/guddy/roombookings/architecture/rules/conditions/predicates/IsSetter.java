@@ -17,9 +17,9 @@ public final class IsSetter implements Scalar<Boolean> {
     public Boolean value() {
         if (this.method.reflect().isSynthetic()) return false;
 
-        String name = this.method.getName();
-        List<JavaClass> params = this.method.getRawParameterTypes();
-        JavaClass returnType = this.method.getRawReturnType();
+        final String name = this.method.getName();
+        final List<JavaClass> params = this.method.getRawParameterTypes();
+        final JavaClass returnType = this.method.getRawReturnType();
 
         // setters start with set, take exactly 1 param, and return void
         return name.startsWith("set")

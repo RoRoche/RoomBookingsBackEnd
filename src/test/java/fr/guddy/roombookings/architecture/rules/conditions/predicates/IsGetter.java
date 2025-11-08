@@ -19,7 +19,7 @@ public final class IsGetter implements Scalar<Boolean> {
 
         final String name = this.method.getName();
         final List<JavaClass> params = this.method.getRawParameterTypes();
-        JavaClass returnType = this.method.getRawReturnType();
+        final JavaClass returnType = this.method.getRawReturnType();
 
         // getters start with get/is, take 0 params, and return a value (non-void)
         final boolean isGet = name.startsWith("get")

@@ -14,10 +14,10 @@ public final class IsMainMethod implements Scalar<Boolean> {
     @Override
     public Boolean value() {
         // Check if this is the public static void main(String[] args) method
-        return method.getName().equals("main")
-                && method.getModifiers().contains(JavaModifier.PUBLIC)
-                && method.getModifiers().contains(JavaModifier.STATIC)
-                && method.getRawParameterTypes().size() == 1
-                && method.getRawParameterTypes().getFirst().getName().equals("[Ljava.lang.String;");
+        return this.method.getName().equals("main")
+                && this.method.getModifiers().contains(JavaModifier.PUBLIC)
+                && this.method.getModifiers().contains(JavaModifier.STATIC)
+                && this.method.getRawParameterTypes().size() == 1
+                && this.method.getRawParameterTypes().getFirst().getName().equals("[Ljava.lang.String;");
     }
 }
