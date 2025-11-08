@@ -5,10 +5,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
-import fr.guddy.roombookings.architecture.rules.ClassesAreAbstractOrFinalRule;
-import fr.guddy.roombookings.architecture.rules.FieldsShouldBeFinalRule;
-import fr.guddy.roombookings.architecture.rules.NoStaticMethodsRule;
-import fr.guddy.roombookings.architecture.rules.PublicMethodsDeclaredInInterfacesRule;
+import fr.guddy.roombookings.architecture.rules.*;
 import org.junit.jupiter.api.Test;
 
 final class ArchitectureTest {
@@ -42,6 +39,11 @@ final class ArchitectureTest {
 
     @Test
     void testNoStaticMethodsRule() {
-        new NoStaticMethodsRule().check(CLASSES);
+        new ClassesShouldHaveNoStaticMethodsRule().check(CLASSES);
+    }
+
+    @Test
+    void testClassesShouldNotHavePrivateMethodsRule() {
+        new ClassesShouldNotHavePrivateMethodsRule().check(CLASSES);
     }
 }
