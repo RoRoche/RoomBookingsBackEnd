@@ -7,7 +7,7 @@ import org.dizitart.no2.NitriteCollection;
 
 import java.util.function.Supplier;
 
-public class IndexedByRoomNameNitriteCollection implements Supplier<NitriteCollection> {
+public final class IndexedByRoomNameNitriteCollection implements Supplier<NitriteCollection> {
     private static final String INDEX_ROOM_NAME = "room_name";
 
     private final Nitrite database;

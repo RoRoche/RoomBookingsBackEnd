@@ -6,7 +6,7 @@ import javax.json.JsonReader;
 import java.io.StringReader;
 import java.util.function.Supplier;
 
-public class JsonFromBody implements Supplier<JsonObject> {
+public final class JsonFromBody implements Supplier<JsonObject> {
     private final String body;
 
     public JsonFromBody(final String body) {
