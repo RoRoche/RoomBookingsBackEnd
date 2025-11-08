@@ -46,4 +46,9 @@ final class ArchitectureTest {
     void testClassesShouldNotHavePrivateMethodsRule() {
         new ClassesShouldNotHavePrivateMethodsRule().check(CLASSES);
     }
+
+    @Test
+    void testClassesShouldNotHaveGettersOrSettersRule() {
+        new ClassesShouldNotHaveGettersOrSettersRule().check(CLASSES);
+    }
 }
