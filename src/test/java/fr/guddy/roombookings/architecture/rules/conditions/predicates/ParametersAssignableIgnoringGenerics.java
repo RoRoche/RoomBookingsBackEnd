@@ -1,8 +1,9 @@
 package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
+
+import java.util.stream.IntStream;
 
 /**
  * Compare parameters ignoring generics, and check that
@@ -21,13 +22,12 @@ public final class ParametersAssignableIgnoringGenerics implements Scalar<Boolea
     public Boolean value() {
         final var ifaceParams = this.ifaceMethod.getRawParameterTypes();
         final var implParams = this.implMethod.getRawParameterTypes();
-        for (int i = 0; i < ifaceParams.size(); i++) {
-            final JavaClass ifaceParam = ifaceParams.get(i).toErasure();
-            final JavaClass implParam = implParams.get(i).toErasure();
-            if (!new IsSameOrSubtype(implParam, ifaceParam).value()) {
-                return false;
-            }
-        }
-        return true;
+
+        return IntStream.range(0, ifaceParams.size())
+                .allMatch(i -> {
+                    final var ifaceParam = ifaceParams.get(i).toErasure();
+                    final var implParam = implParams.get(i).toErasure();
+                    return new IsSameOrSubtype(implParam, ifaceParam).value();
+                });
     }
 }
