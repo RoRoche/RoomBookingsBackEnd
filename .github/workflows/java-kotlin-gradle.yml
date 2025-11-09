@@ -50,6 +50,10 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Run youshallnotpass
+        run: ./gradlew youshallnotpass
+        continue-on-error: true
+
       - name: Run PIT
         run: ./gradlew pitest
 
