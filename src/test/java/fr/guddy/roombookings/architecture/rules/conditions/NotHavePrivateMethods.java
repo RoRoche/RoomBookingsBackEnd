@@ -15,9 +15,7 @@ public final class NotHavePrivateMethods extends ArchCondition<JavaClass> {
     @Override
     public void check(final JavaClass javaClass, final ConditionEvents events) {
         javaClass.getMethods().stream()
-                .filter(method ->
-                        method.getModifiers().contains(JavaModifier.PRIVATE) &&
-                                !method.reflect().isSynthetic())
+                .filter(method -> method.getModifiers().contains(JavaModifier.PRIVATE) && !method.reflect().isSynthetic())
                 .forEach(method ->
                         events.add(
                                 SimpleConditionEvent.violated(
