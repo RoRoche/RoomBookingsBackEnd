@@ -17,7 +17,7 @@ public final class BeAbstractOrFinal extends ArchCondition<JavaClass> {
         final boolean isAbstract = javaClass.getModifiers().contains(JavaModifier.ABSTRACT);
         final boolean isFinal = javaClass.getModifiers().contains(JavaModifier.FINAL);
 
-        if (isAbstract == isFinal) { // must be exactly one of them
+        if (!isAbstract && !isFinal) {
             events.add(
                     SimpleConditionEvent.violated(
                             javaClass,
