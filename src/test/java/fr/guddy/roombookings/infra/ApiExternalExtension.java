@@ -26,34 +26,35 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
         this.bookings = bookings;
     }
 
-    public ApiExternalExtension(final Port port, final Rooms rooms, final Bookings bookings) {
+    public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
         this(
-                new Api(port, rooms, bookings),
+                new Api(database, rooms, bookings, port),
                 rooms,
                 bookings
         );
     }
 
-    public ApiExternalExtension(final Port port, final Nitrite database) {
+    public ApiExternalExtension(final Nitrite database, final Port port) {
         this(
-                port,
                 database,
-                new NitriteRooms(database)
+                new NitriteRooms(database),
+                port
         );
     }
 
-    public ApiExternalExtension(final Port port, final Nitrite database, final Rooms rooms) {
+    public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Port port) {
         this(
-                port,
+                database,
                 new NitriteRooms(database),
-                new NitriteBookings(database, rooms)
+                new NitriteBookings(database, rooms),
+                port
         );
     }
 
     public ApiExternalExtension() {
         this(
-                new DefaultPort(),
-                Nitrite.builder().openOrCreate()
+                Nitrite.builder().openOrCreate(),
+                new DefaultPort()
         );
     }
 

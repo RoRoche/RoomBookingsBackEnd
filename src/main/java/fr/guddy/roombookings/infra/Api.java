@@ -22,14 +22,16 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 
 public final class Api implements Application, Exposed {
     private final Javalin app;
+    private final Nitrite database;
     private final Port port;
 
-    public Api(final Javalin app, final Port port) {
+    public Api(final Javalin app, final Nitrite database, final Port port) {
         this.app = app;
+        this.database = database;
         this.port = port;
     }
 
-    public Api(final Port port, final Rooms rooms, final Bookings bookings) {
+    public Api(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
         this(
                 Javalin.create(config -> {
                             config.router.apiBuilder(() -> {
@@ -48,30 +50,32 @@ public final class Api implements Application, Exposed {
                         .exception(BookingNotDeletedException.class, new BookingNotDeletedResponse())
                         .exception(CreateRoomConflictException.class, new CreateRoomConflictResponse())
                         .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse()),
+                database,
                 port
         );
     }
 
-    public Api(final Port port, final Nitrite database) {
+    public Api(final Nitrite database, final Port port) {
         this(
-                port,
                 database,
-                new NitriteRooms(database)
+                new NitriteRooms(database),
+                port
         );
     }
 
-    public Api(final Port port, final Nitrite database, final Rooms rooms) {
+    public Api(final Nitrite database, final Rooms rooms, final Port port) {
         this(
-                port,
+                database,
                 rooms,
-                new NitriteBookings(database, rooms)
+                new NitriteBookings(database, rooms),
+                port
         );
     }
 
     public Api() {
         this(
-                new HerokuAssignedPort(new DefaultPort()),
-                Nitrite.builder().openOrCreate()
+                Nitrite.builder().openOrCreate(),
+                new HerokuAssignedPort(new DefaultPort())
         );
     }
 
@@ -82,6 +86,7 @@ public final class Api implements Application, Exposed {
 
     @Override
     public void stop() {
+        this.database.close();
         this.app.stop();
     }
 
