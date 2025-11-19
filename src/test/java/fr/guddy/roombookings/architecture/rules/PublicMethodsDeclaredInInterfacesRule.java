@@ -10,6 +10,7 @@ public final class PublicMethodsDeclaredInInterfacesRule extends ArchRuleEnvelop
         super(
                 classes().that().areNotInterfaces()
                         .should(new HaveOnlyPublicMethodsDeclaredInInterfaces())
+                        .because("https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#2-he-works-by-contracts")
         );
     }
 }

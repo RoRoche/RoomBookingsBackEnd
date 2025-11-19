@@ -10,7 +10,7 @@ public final class ClassesAreAbstractOrFinalRule extends ArchRuleEnvelope {
                         .that().areNotInterfaces()
                         .and().areNotEnums()
                         .should(new BeAbstractOrFinal())
-                        .because("every class should be either final or abstract to make the design intention explicit")
+                        .because("https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#7-his-class-is-either-final-or-abstract")
         );
     }
 }
