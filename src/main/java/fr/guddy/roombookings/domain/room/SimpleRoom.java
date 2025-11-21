@@ -5,25 +5,7 @@ import org.cactoos.map.MapOf;
 
 import java.util.Map;
 
-public final class SimpleRoom implements Room {
-
-    private final String name;
-    private final int capacity;
-
-    public SimpleRoom(final String name, final int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String name() {
-        return this.name;
-    }
-
-    @Override
-    public int capacity() {
-        return this.capacity;
-    }
+public record SimpleRoom(String name, int capacity) implements Room {
 
     @Override
     public Map<String, Object> map() {
