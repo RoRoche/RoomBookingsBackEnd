@@ -1,4 +1,4 @@
-name: Java Kotlin CI (Maven)
+name: Java CI (Maven)
 
 on:
   push:
