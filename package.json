@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/RoRoche/RoomBookingsBackEnd/issues"
   },
-  "homepage": "https://github.com/RoRoche/RoomBookingsBackEnd#readme"
+  "homepage": "https://github.com/RoRoche/RoomBookingsBackEnd#readme",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
 }
