@@ -3,6 +3,7 @@
 <img src="assets/logo.png" width="200" />
 
 [![Build Status](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/java-maven.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions)
+[![Prettier Check](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/prettier-check.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/prettier-check.yml)
 
 ![Elegant Objects](https://www.elegantobjects.org/badge.svg)
 ![intellij-idea](https://www.elegantobjects.org/intellij-idea.svg)
