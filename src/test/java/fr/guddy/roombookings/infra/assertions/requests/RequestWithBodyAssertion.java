@@ -1,6 +1,7 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
 import com.mashape.unirest.http.HttpResponse;
+import fr.guddy.roombookings.infra.matchers.HttpResponseBodyMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.text.IsEqualIgnoringCase;
 
@@ -16,12 +17,12 @@ public final class RequestWithBodyAssertion implements RequestAssertion {
 
   @Override
   public HttpResponse<String> response() {
-    return delegate.response();
+    return this.delegate.response();
   }
 
   @Override
   public void check() {
-    delegate.check();
-    MatcherAssert.assertThat(response().getBody(), new IsEqualIgnoringCase(expectedBody));
+    this.delegate.check();
+    MatcherAssert.assertThat(response(), new HttpResponseBodyMatcher(this.expectedBody));
   }
 }

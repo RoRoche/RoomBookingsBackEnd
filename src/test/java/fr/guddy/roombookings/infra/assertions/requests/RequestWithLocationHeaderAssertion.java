@@ -1,11 +1,10 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.startsWith;
 
-import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
-import org.hamcrest.core.StringStartsWith;
+import fr.guddy.roombookings.infra.matchers.HeadersHasHeaderWithValueMatcher;
 
 public final class RequestWithLocationHeaderAssertion implements RequestAssertion {
 
@@ -22,14 +21,15 @@ public final class RequestWithLocationHeaderAssertion implements RequestAssertio
 
   @Override
   public HttpResponse<String> response() {
-    return delegate.response();
+    return this.delegate.response();
   }
 
   @Override
   public void check() {
-    delegate.check();
-    final Headers headers = response().getHeaders();
-    assertThat(headers, hasKey("Location"));
-    assertThat(headers.getFirst("Location"), new StringStartsWith(startUri));
+    this.delegate.check();
+    assertThat(
+      response(),
+      new HeadersHasHeaderWithValueMatcher("Location", startsWith(this.startUri))
+    );
   }
 }

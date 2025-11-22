@@ -3,6 +3,7 @@ package fr.guddy.roombookings.infra.assertions.requests;
 import static org.hamcrest.Matchers.containsString;
 
 import com.mashape.unirest.http.HttpResponse;
+import fr.guddy.roombookings.infra.matchers.HttpResponseBodyContainsMatcher;
 import org.hamcrest.MatcherAssert;
 
 public final class RequestWithPartialBodyAssertion implements RequestAssertion {
@@ -20,15 +21,12 @@ public final class RequestWithPartialBodyAssertion implements RequestAssertion {
 
   @Override
   public HttpResponse<String> response() {
-    return delegate.response();
+    return this.delegate.response();
   }
 
   @Override
   public void check() {
-    delegate.check();
-    String actual = response().getBody().toLowerCase();
-    String expected = expectedBody.toLowerCase();
-
-    MatcherAssert.assertThat(actual, containsString(expected));
+    this.delegate.check();
+    MatcherAssert.assertThat(response(), new HttpResponseBodyContainsMatcher(this.expectedBody));
   }
 }

@@ -2,6 +2,7 @@ package fr.guddy.roombookings.infra.assertions.requests;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.request.HttpRequest;
+import fr.guddy.roombookings.infra.matchers.HttpResponseStatusMatcher;
 import io.vavr.Lazy;
 import io.vavr.control.Try;
 import org.hamcrest.MatcherAssert;
@@ -20,16 +21,16 @@ public final class RequestHasStatusCodeAssertion implements RequestAssertion {
   }
 
   private HttpResponse<String> performRequest() {
-    return Try.of(request::asString).get();
+    return Try.of(this.request::asString).get();
   }
 
   @Override
   public HttpResponse<String> response() {
-    return response.get();
+    return this.response.get();
   }
 
   @Override
   public void check() {
-    MatcherAssert.assertThat(response().getStatus(), new IsEqual<>(expectedStatusCode));
+    MatcherAssert.assertThat(response(), new HttpResponseStatusMatcher(this.expectedStatusCode));
   }
 }
