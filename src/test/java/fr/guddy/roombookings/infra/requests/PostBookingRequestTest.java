@@ -19,110 +19,110 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static com.mashape.unirest.http.Unirest.post;
 
 final class PostBookingRequestTest {
-    @RegisterExtension
-    static final ApiExternalExtension api = new ApiExternalExtension();
+  @RegisterExtension
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
-    @Test
-    void testOK() {
-        final long timestampStart = Instant.now().getMillis() / 1000;
-        final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new ClearAllBookingsFixture(api.bookings()),
-                        new CreateRoomFixture(
-                                api.rooms(),
-                                new SimpleRoom("test_name", 12)
-                        )
-                ),
-                new RequestWithLocationHeaderAssertion(
-                        new RequestWithPartialBodyAssertion(
-                                new RequestHasStatusCodeAssertion(
-                                        post("http://localhost:7000/rooms/test_name/bookings")
-                                                .body(
-                                                        String.format(
-                                                                "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                                                                timestampStart,
-                                                                timestampEnd
-                                                        )
-                                                )
-                                                .getHttpRequest(),
-                                        HttpStatus.CREATED_201
-                                ),
-                                String.format(
-                                        "\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                                        timestampStart,
-                                        timestampEnd
-                                )
-                        ),
-                        "/bookings/"
+  @Test
+  void testOK() {
+    final long timestampStart = Instant.now().getMillis() / 1000;
+    final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new ClearAllBookingsFixture(api.bookings()),
+        new CreateRoomFixture(
+          api.rooms(),
+          new SimpleRoom("test_name", 12)
+        )
+      ),
+      new RequestWithLocationHeaderAssertion(
+        new RequestWithPartialBodyAssertion(
+          new RequestHasStatusCodeAssertion(
+            post("http://localhost:7000/rooms/test_name/bookings")
+              .body(
+                String.format(
+                  "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+                  timestampStart,
+                  timestampEnd
                 )
-        ).check();
-    }
+              )
+              .getHttpRequest(),
+            HttpStatus.CREATED_201
+          ),
+          String.format(
+            "\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+            timestampStart,
+            timestampEnd
+          )
+        ),
+        "/bookings/"
+      )
+    ).check();
+  }
 
-    @Test
-    void testConflict() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new ClearAllBookingsFixture(api.bookings()),
-                        new CreateRoomFixture(
-                                api.rooms(),
-                                new SimpleRoom("test_name", 12)
-                        ),
-                        new CreateBookingFixture(
-                                api.bookings(),
-                                new SimpleBooking(
-                                        null,
-                                        "test_user_id",
-                                        new SimpleRoom("test_name", 12),
-                                        new LogicalSlot(
-                                                Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-                                                Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
-                                        )
-                                )
-                        )
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                post("http://localhost:7000/rooms/test_name/bookings")
-                                        .body(
-                                                String.format(
-                                                        "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                                                        Instant.now().getMillis() / 1000,
-                                                        Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-                                                )
-                                        )
-                                        .getHttpRequest(),
-                                HttpStatus.CONFLICT_409
-                        ),
-                        "Room named 'test_name' already booked on this slot"
-                )
-        ).check();
-    }
+  @Test
+  void testConflict() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new ClearAllBookingsFixture(api.bookings()),
+        new CreateRoomFixture(
+          api.rooms(),
+          new SimpleRoom("test_name", 12)
+        ),
+        new CreateBookingFixture(
+          api.bookings(),
+          new SimpleBooking(
+            null,
+            "test_user_id",
+            new SimpleRoom("test_name", 12),
+            new LogicalSlot(
+              Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
+              Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+            )
+          )
+        )
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          post("http://localhost:7000/rooms/test_name/bookings")
+            .body(
+              String.format(
+                "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+                Instant.now().getMillis() / 1000,
+                Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+              )
+            )
+            .getHttpRequest(),
+          HttpStatus.CONFLICT_409
+        ),
+        "Room named 'test_name' already booked on this slot"
+      )
+    ).check();
+  }
 
-    @Test
-    void testRoomNotFound() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new ClearAllBookingsFixture(api.bookings())
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                post("http://localhost:7000/rooms/test_name/bookings")
-                                        .body(
-                                                String.format(
-                                                        "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                                                        Instant.now().getMillis() / 1000,
-                                                        Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-                                                )
-                                        )
-                                        .getHttpRequest(),
-                                HttpStatus.NOT_FOUND_404
-                        ),
-                        "No room found for name 'test_name'"
-                )
-        ).check();
-    }
+  @Test
+  void testRoomNotFound() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new ClearAllBookingsFixture(api.bookings())
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          post("http://localhost:7000/rooms/test_name/bookings")
+            .body(
+              String.format(
+                "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+                Instant.now().getMillis() / 1000,
+                Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+              )
+            )
+            .getHttpRequest(),
+          HttpStatus.NOT_FOUND_404
+        ),
+        "No room found for name 'test_name'"
+      )
+    ).check();
+  }
 }

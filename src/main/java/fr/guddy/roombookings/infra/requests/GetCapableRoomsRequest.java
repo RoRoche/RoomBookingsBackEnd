@@ -11,33 +11,33 @@ import java.util.List;
 
 public final class GetCapableRoomsRequest implements Request {
 
-    private final Rooms rooms;
-    private final int capacity;
+  private final Rooms rooms;
+  private final int capacity;
 
-    public GetCapableRoomsRequest(final Rooms rooms, final int capacity) {
-        this.rooms = rooms;
-        this.capacity = capacity;
-    }
+  public GetCapableRoomsRequest(final Rooms rooms, final int capacity) {
+    this.rooms = rooms;
+    this.capacity = capacity;
+  }
 
-    public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
-        this(
-                rooms,
-                capacity.value()
-        );
-    }
+  public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
+    this(
+      rooms,
+      capacity.value()
+    );
+  }
 
-    @Override
-    public void perform(final Context context) {
-        final List<Room> capableRooms = rooms.withCapacity(capacity);
-        if (capableRooms.isEmpty()) {
-            context.status(HttpStatus.NO_CONTENT_204);
-        } else {
-            context.json(
-                    capableRooms.stream()
-                            .map(JsonRoom::new)
-                            .map(JsonRoom::map)
-                            .toList()
-            ).status(HttpStatus.OK_200);
-        }
+  @Override
+  public void perform(final Context context) {
+    final List<Room> capableRooms = rooms.withCapacity(capacity);
+    if (capableRooms.isEmpty()) {
+      context.status(HttpStatus.NO_CONTENT_204);
+    } else {
+      context.json(
+        capableRooms.stream()
+          .map(JsonRoom::new)
+          .map(JsonRoom::map)
+          .toList()
+      ).status(HttpStatus.OK_200);
     }
+  }
 }

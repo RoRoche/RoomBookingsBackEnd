@@ -15,37 +15,37 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static com.mashape.unirest.http.Unirest.get;
 
 final class GetRoomsRequestTest {
-    @RegisterExtension
-    static final ApiExternalExtension api = new ApiExternalExtension();
+  @RegisterExtension
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
-    @Test
-    void testNoContent() {
-        new WithFixtureAssertion(
-                new ClearAllRoomsFixture(api.rooms()),
-                new RequestHasStatusCodeAssertion(
-                        get("http://localhost:7000/rooms"),
-                        HttpStatus.NO_CONTENT_204
-                )
-        ).check();
-    }
+  @Test
+  void testNoContent() {
+    new WithFixtureAssertion(
+      new ClearAllRoomsFixture(api.rooms()),
+      new RequestHasStatusCodeAssertion(
+        get("http://localhost:7000/rooms"),
+        HttpStatus.NO_CONTENT_204
+      )
+    ).check();
+  }
 
-    @Test
-    void testOK() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new CreateRoomFixture(
-                                api.rooms(),
-                                new SimpleRoom("test_name", 12)
-                        )
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                get("http://localhost:7000/rooms"),
-                                HttpStatus.OK_200
-                        ),
-                        "[{\"name\":\"test_name\",\"capacity\":12}]"
-                )
-        ).check();
-    }
+  @Test
+  void testOK() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new CreateRoomFixture(
+          api.rooms(),
+          new SimpleRoom("test_name", 12)
+        )
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          get("http://localhost:7000/rooms"),
+          HttpStatus.OK_200
+        ),
+        "[{\"name\":\"test_name\",\"capacity\":12}]"
+      )
+    ).check();
+  }
 }

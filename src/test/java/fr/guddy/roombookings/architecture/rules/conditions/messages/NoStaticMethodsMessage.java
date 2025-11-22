@@ -6,13 +6,13 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class NoStaticMethodsMessage extends TextEnvelope {
-    public NoStaticMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
-        super(
-                new FormattedText(
-                        "Class %s contains static method %s",
-                        javaClass.getName(),
-                        method.getFullName()
-                )
-        );
-    }
+  public NoStaticMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
+    super(
+      new FormattedText(
+        "Class %s contains static method %s",
+        javaClass.getName(),
+        method.getFullName()
+      )
+    );
+  }
 }

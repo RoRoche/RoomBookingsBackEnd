@@ -14,42 +14,42 @@ import java.util.List;
 
 public final class GetRemindersRequest implements Request {
 
-    private final Bookings bookings;
-    private final String userId;
+  private final Bookings bookings;
+  private final String userId;
 
-    public GetRemindersRequest(final Bookings bookings, final String userId) {
-        this.bookings = bookings;
-        this.userId = userId;
-    }
+  public GetRemindersRequest(final Bookings bookings, final String userId) {
+    this.bookings = bookings;
+    this.userId = userId;
+  }
 
-    public GetRemindersRequest(final Bookings bookings, final Parameter<String> userId) {
-        this(bookings, userId.value());
-    }
+  public GetRemindersRequest(final Bookings bookings, final Parameter<String> userId) {
+    this(bookings, userId.value());
+  }
 
-    public GetRemindersRequest(final Bookings bookings, final Context context) {
-        this(
-                bookings,
-                new RequiredParameter<>(
-                        new QueryParameter("user_id", context)
-                )
-        );
-    }
+  public GetRemindersRequest(final Bookings bookings, final Context context) {
+    this(
+      bookings,
+      new RequiredParameter<>(
+        new QueryParameter("user_id", context)
+      )
+    );
+  }
 
-    @Override
-    public void perform(final Context context) {
-        final List<Booking> reminders = bookings.forUserFromStartDate(
-                userId,
-                Instant.now().getMillis() / 1000
-        );
-        if (reminders.isEmpty()) {
-            context.status(HttpStatus.NO_CONTENT_204);
-        } else {
-            context.json(
-                    reminders.stream()
-                            .map(JsonBooking::new)
-                            .map(JsonBooking::map)
-                            .toList()
-            ).status(HttpStatus.OK_200);
-        }
+  @Override
+  public void perform(final Context context) {
+    final List<Booking> reminders = bookings.forUserFromStartDate(
+      userId,
+      Instant.now().getMillis() / 1000
+    );
+    if (reminders.isEmpty()) {
+      context.status(HttpStatus.NO_CONTENT_204);
+    } else {
+      context.json(
+        reminders.stream()
+          .map(JsonBooking::new)
+          .map(JsonBooking::map)
+          .toList()
+      ).status(HttpStatus.OK_200);
     }
+  }
 }

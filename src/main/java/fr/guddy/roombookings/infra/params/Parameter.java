@@ -1,7 +1,7 @@
 package fr.guddy.roombookings.infra.params;
 
 public interface Parameter<T> {
-    String name();
+  String name();
 
-    T value();
+  T value();
 }

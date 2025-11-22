@@ -12,22 +12,22 @@ import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsMainMeth
 import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsObjectMethod;
 
 public final class HaveOnlyPublicMethodsDeclaredInInterfaces extends ArchCondition<JavaClass> {
-    public HaveOnlyPublicMethodsDeclaredInInterfaces() {
-        super("have only public methods declared in implemented interfaces");
-    }
+  public HaveOnlyPublicMethodsDeclaredInInterfaces() {
+    super("have only public methods declared in implemented interfaces");
+  }
 
-    @Override
-    public void check(final JavaClass clazz, final ConditionEvents events) {
-        if (clazz.isInterface()) return;
-        clazz.getMethods().stream()
-                .filter(method -> method.getModifiers().contains(JavaModifier.PUBLIC))
-                .filter(method -> !new IsObjectMethod(method).value() && !new IsMainMethod(method).value())
-                .filter(method -> !new IsDeclaredInInterfaces(method, new InterfaceMethods(clazz)).value())
-                .forEach(method -> events.add(
-                        SimpleConditionEvent.violated(
-                                method,
-                                new PublicMethodsDeclaredInInterfacesMessage(clazz, method).toString()
-                        )
-                ));
-    }
+  @Override
+  public void check(final JavaClass clazz, final ConditionEvents events) {
+    if (clazz.isInterface()) return;
+    clazz.getMethods().stream()
+      .filter(method -> method.getModifiers().contains(JavaModifier.PUBLIC))
+      .filter(method -> !new IsObjectMethod(method).value() && !new IsMainMethod(method).value())
+      .filter(method -> !new IsDeclaredInInterfaces(method, new InterfaceMethods(clazz)).value())
+      .forEach(method -> events.add(
+        SimpleConditionEvent.violated(
+          method,
+          new PublicMethodsDeclaredInInterfacesMessage(clazz, method).toString()
+        )
+      ));
+  }
 }

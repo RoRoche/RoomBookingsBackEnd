@@ -15,42 +15,42 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static com.mashape.unirest.http.Unirest.get;
 
 final class GetNamedRoomRequestTest {
-    @RegisterExtension
-    static ApiExternalExtension api = new ApiExternalExtension();
+  @RegisterExtension
+  static ApiExternalExtension api = new ApiExternalExtension();
 
-    @Test
-    void testNotFound() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms())
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                get("http://localhost:7000/rooms/test_name"),
-                                HttpStatus.NOT_FOUND_404
-                        ),
-                        "No room found for name 'test_name'"
-                )
-        ).check();
-    }
+  @Test
+  void testNotFound() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms())
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          get("http://localhost:7000/rooms/test_name"),
+          HttpStatus.NOT_FOUND_404
+        ),
+        "No room found for name 'test_name'"
+      )
+    ).check();
+  }
 
-    @Test
-    void testOK() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new CreateRoomFixture(
-                                api.rooms(),
-                                new SimpleRoom("test_name", 12)
-                        )
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                get("http://localhost:7000/rooms/test_name"),
-                                HttpStatus.OK_200
-                        ),
-                        "{\"name\":\"test_name\",\"capacity\":12}"
-                )
-        ).check();
-    }
+  @Test
+  void testOK() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new CreateRoomFixture(
+          api.rooms(),
+          new SimpleRoom("test_name", 12)
+        )
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          get("http://localhost:7000/rooms/test_name"),
+          HttpStatus.OK_200
+        ),
+        "{\"name\":\"test_name\",\"capacity\":12}"
+      )
+    ).check();
+  }
 }

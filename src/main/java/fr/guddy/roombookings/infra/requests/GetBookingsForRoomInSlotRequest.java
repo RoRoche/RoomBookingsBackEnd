@@ -15,68 +15,68 @@ import org.eclipse.jetty.http.HttpStatus;
 import java.util.List;
 
 public final class GetBookingsForRoomInSlotRequest implements Request {
-    private final Bookings bookings;
-    private final Room room;
-    private final Slot slot;
+  private final Bookings bookings;
+  private final Room room;
+  private final Slot slot;
 
-    public GetBookingsForRoomInSlotRequest(final Bookings bookings, final Room room, final Slot slot) {
-        this.bookings = bookings;
-        this.room = room;
-        this.slot = slot;
-    }
+  public GetBookingsForRoomInSlotRequest(final Bookings bookings, final Room room, final Slot slot) {
+    this.bookings = bookings;
+    this.room = room;
+    this.slot = slot;
+  }
 
-    public GetBookingsForRoomInSlotRequest(
-            final Rooms rooms,
-            final Bookings bookings,
-            final Context context) {
-        this(
-                rooms,
-                bookings,
-                new RequiredParameter<>(
-                        new PathParameter("name", context)
-                ),
-                new LongParameter(
-                        new RequiredParameter<>(
-                                new QueryParameter("timestamp_start", context)
-                        )
-                ),
-                new LongParameter(
-                        new RequiredParameter<>(
-                                new QueryParameter("timestamp_end", context)
-                        )
-                )
-        );
-    }
+  public GetBookingsForRoomInSlotRequest(
+    final Rooms rooms,
+    final Bookings bookings,
+    final Context context) {
+    this(
+      rooms,
+      bookings,
+      new RequiredParameter<>(
+        new PathParameter("name", context)
+      ),
+      new LongParameter(
+        new RequiredParameter<>(
+          new QueryParameter("timestamp_start", context)
+        )
+      ),
+      new LongParameter(
+        new RequiredParameter<>(
+          new QueryParameter("timestamp_end", context)
+        )
+      )
+    );
+  }
 
-    public GetBookingsForRoomInSlotRequest(
-            final Rooms rooms,
-            final Bookings bookings,
-            final Parameter<String> roomName,
-            final Parameter<Long> timestampStart,
-            final Parameter<Long> timestampEnd
-    ) {
-        this(
-                bookings,
-                rooms.withName(roomName.value()).orElseThrow(() -> new RoomNotFoundException(roomName.value())),
-                new LogicalSlot(
-                        timestampStart.value(),
-                        timestampEnd.value()
-                )
-        );
-    }
+  public GetBookingsForRoomInSlotRequest(
+    final Rooms rooms,
+    final Bookings bookings,
+    final Parameter<String> roomName,
+    final Parameter<Long> timestampStart,
+    final Parameter<Long> timestampEnd
+  ) {
+    this(
+      bookings,
+      rooms.withName(roomName.value()).orElseThrow(() -> new RoomNotFoundException(roomName.value())),
+      new LogicalSlot(
+        timestampStart.value(),
+        timestampEnd.value()
+      )
+    );
+  }
 
-    @Override
-    public void perform(final Context context) {
-        final List<Booking> existingBookings = bookings.forRoomInSlot(room, slot);
-        if (existingBookings.isEmpty()) {
-            context.status(HttpStatus.NO_CONTENT_204);
-        } else {
-            context.json(
-                    existingBookings.stream()
-                            .map(JsonBooking::new)
-                            .map(JsonBooking::map)
-                            .toList()
-            ).status(HttpStatus.OK_200);
-        }
+  @Override
+  public void perform(final Context context) {
+    final List<Booking> existingBookings = bookings.forRoomInSlot(room, slot);
+    if (existingBookings.isEmpty()) {
+      context.status(HttpStatus.NO_CONTENT_204);
+    } else {
+      context.json(
+        existingBookings.stream()
+          .map(JsonBooking::new)
+          .map(JsonBooking::map)
+          .toList()
+      ).status(HttpStatus.OK_200);
     }
+  }
 }

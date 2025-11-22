@@ -6,8 +6,8 @@ import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class CreateBookingConflictResponse implements ExceptionHandler<CreateBookingConflictException> {
-    @Override
-    public void handle(final CreateBookingConflictException exception, final Context ctx) {
-        ctx.status(HttpStatus.CONFLICT_409).result(exception.getMessage());
-    }
+  @Override
+  public void handle(final CreateBookingConflictException exception, final Context ctx) {
+    ctx.status(HttpStatus.CONFLICT_409).result(exception.getMessage());
+  }
 }

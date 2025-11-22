@@ -8,22 +8,22 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.ClassesAreAbstractOrFinalMessage;
 
 public final class BeAbstractOrFinal extends ArchCondition<JavaClass> {
-    public BeAbstractOrFinal() {
-        super("be final or abstract");
-    }
+  public BeAbstractOrFinal() {
+    super("be final or abstract");
+  }
 
-    @Override
-    public void check(final JavaClass javaClass, final ConditionEvents events) {
-        final boolean isAbstract = javaClass.getModifiers().contains(JavaModifier.ABSTRACT);
-        final boolean isFinal = javaClass.getModifiers().contains(JavaModifier.FINAL);
+  @Override
+  public void check(final JavaClass javaClass, final ConditionEvents events) {
+    final boolean isAbstract = javaClass.getModifiers().contains(JavaModifier.ABSTRACT);
+    final boolean isFinal = javaClass.getModifiers().contains(JavaModifier.FINAL);
 
-        if (!isAbstract && !isFinal) {
-            events.add(
-                    SimpleConditionEvent.violated(
-                            javaClass,
-                            new ClassesAreAbstractOrFinalMessage(javaClass, isAbstract, isFinal).toString()
-                    )
-            );
-        }
+    if (!isAbstract && !isFinal) {
+      events.add(
+        SimpleConditionEvent.violated(
+          javaClass,
+          new ClassesAreAbstractOrFinalMessage(javaClass, isAbstract, isFinal).toString()
+        )
+      );
     }
+  }
 }

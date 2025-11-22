@@ -21,77 +21,77 @@ import org.dizitart.no2.Nitrite;
 import static io.javalin.apibuilder.ApiBuilder.path;
 
 public final class Api implements Application, Exposed {
-    private final Javalin app;
-    private final Nitrite database;
-    private final Port port;
+  private final Javalin app;
+  private final Nitrite database;
+  private final Port port;
 
-    public Api(final Javalin app, final Nitrite database, final Port port) {
-        this.app = app;
-        this.database = database;
-        this.port = port;
-    }
+  public Api(final Javalin app, final Nitrite database, final Port port) {
+    this.app = app;
+    this.database = database;
+    this.port = port;
+  }
 
-    public Api(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
-        this(
-                Javalin.create(config -> {
-                            config.router.apiBuilder(() -> {
-                                path("rooms", new RoomsRoute(rooms, bookings));
-                                path("bookings", new BookingsRoute(bookings));
-                                path("ready", new ReadinessRoute());
-                            });
-                            config.bundledPlugins.enableCors(cors ->
-                                    cors.addRule(CorsPluginConfig.CorsRule::anyHost)
-                            );
-                        })
-                        .exception(NotProcessableParameterException.class, new NotProcessableParameterResponse())
-                        .exception(MissingParameterException.class, new MissingParameterResponse())
-                        .exception(RoomNotFoundException.class, new RoomNotFoundResponse())
-                        .exception(BookingNotFoundException.class, new BookingNotFoundResponse())
-                        .exception(BookingNotDeletedException.class, new BookingNotDeletedResponse())
-                        .exception(CreateRoomConflictException.class, new CreateRoomConflictResponse())
-                        .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse()),
-                database,
-                port
-        );
-    }
+  public Api(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
+    this(
+      Javalin.create(config -> {
+          config.router.apiBuilder(() -> {
+            path("rooms", new RoomsRoute(rooms, bookings));
+            path("bookings", new BookingsRoute(bookings));
+            path("ready", new ReadinessRoute());
+          });
+          config.bundledPlugins.enableCors(cors ->
+            cors.addRule(CorsPluginConfig.CorsRule::anyHost)
+          );
+        })
+        .exception(NotProcessableParameterException.class, new NotProcessableParameterResponse())
+        .exception(MissingParameterException.class, new MissingParameterResponse())
+        .exception(RoomNotFoundException.class, new RoomNotFoundResponse())
+        .exception(BookingNotFoundException.class, new BookingNotFoundResponse())
+        .exception(BookingNotDeletedException.class, new BookingNotDeletedResponse())
+        .exception(CreateRoomConflictException.class, new CreateRoomConflictResponse())
+        .exception(CreateBookingConflictException.class, new CreateBookingConflictResponse()),
+      database,
+      port
+    );
+  }
 
-    public Api(final Nitrite database, final Port port) {
-        this(
-                database,
-                new NitriteRooms(database),
-                port
-        );
-    }
+  public Api(final Nitrite database, final Port port) {
+    this(
+      database,
+      new NitriteRooms(database),
+      port
+    );
+  }
 
-    public Api(final Nitrite database, final Rooms rooms, final Port port) {
-        this(
-                database,
-                rooms,
-                new NitriteBookings(database, rooms),
-                port
-        );
-    }
+  public Api(final Nitrite database, final Rooms rooms, final Port port) {
+    this(
+      database,
+      rooms,
+      new NitriteBookings(database, rooms),
+      port
+    );
+  }
 
-    public Api() {
-        this(
-                Nitrite.builder().openOrCreate(),
-                new HerokuAssignedPort(new DefaultPort())
-        );
-    }
+  public Api() {
+    this(
+      Nitrite.builder().openOrCreate(),
+      new HerokuAssignedPort(new DefaultPort())
+    );
+  }
 
-    @Override
-    public void start() {
-        this.app.start(this.port.value());
-    }
+  @Override
+  public void start() {
+    this.app.start(this.port.value());
+  }
 
-    @Override
-    public void stop() {
-        this.database.close();
-        this.app.stop();
-    }
+  @Override
+  public void stop() {
+    this.database.close();
+    this.app.stop();
+  }
 
-    @Override
-    public Port port() {
-        return this.port;
-    }
+  @Override
+  public Port port() {
+    return this.port;
+  }
 }

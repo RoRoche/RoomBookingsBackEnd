@@ -16,44 +16,44 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static com.mashape.unirest.http.Unirest.post;
 
 final class PostRoomRequestTest {
-    @RegisterExtension
-    static final ApiExternalExtension api = new ApiExternalExtension();
+  @RegisterExtension
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
-    @Test
-    void testOK() {
-        new WithFixtureAssertion(
-                new ClearAllRoomsFixture(api.rooms()),
-                new RequestWithLocationHeaderAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                post("http://localhost:7000/rooms")
-                                        .body("{\"name\":\"test_name\",\"capacity\":12}")
-                                        .getHttpRequest(),
-                                HttpStatus.CREATED_201
-                        ),
-                        "/rooms/"
-                )
-        ).check();
-    }
+  @Test
+  void testOK() {
+    new WithFixtureAssertion(
+      new ClearAllRoomsFixture(api.rooms()),
+      new RequestWithLocationHeaderAssertion(
+        new RequestHasStatusCodeAssertion(
+          post("http://localhost:7000/rooms")
+            .body("{\"name\":\"test_name\",\"capacity\":12}")
+            .getHttpRequest(),
+          HttpStatus.CREATED_201
+        ),
+        "/rooms/"
+      )
+    ).check();
+  }
 
-    @Test
-    void testConflict() {
-        new WithFixtureAssertion(
-                new ChainedFixtures(
-                        new ClearAllRoomsFixture(api.rooms()),
-                        new CreateRoomFixture(
-                                api.rooms(),
-                                new SimpleRoom("test_name", 12)
-                        )
-                ),
-                new RequestWithBodyAssertion(
-                        new RequestHasStatusCodeAssertion(
-                                post("http://localhost:7000/rooms")
-                                        .body("{\"name\":\"test_name\",\"capacity\":12}")
-                                        .getHttpRequest(),
-                                HttpStatus.CONFLICT_409
-                        ),
-                        "A room named 'test_name' already exists"
-                )
-        ).check();
-    }
+  @Test
+  void testConflict() {
+    new WithFixtureAssertion(
+      new ChainedFixtures(
+        new ClearAllRoomsFixture(api.rooms()),
+        new CreateRoomFixture(
+          api.rooms(),
+          new SimpleRoom("test_name", 12)
+        )
+      ),
+      new RequestWithBodyAssertion(
+        new RequestHasStatusCodeAssertion(
+          post("http://localhost:7000/rooms")
+            .body("{\"name\":\"test_name\",\"capacity\":12}")
+            .getHttpRequest(),
+          HttpStatus.CONFLICT_409
+        ),
+        "A room named 'test_name' already exists"
+      )
+    ).check();
+  }
 }

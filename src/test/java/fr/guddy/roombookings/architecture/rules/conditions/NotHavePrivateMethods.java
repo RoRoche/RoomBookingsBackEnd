@@ -8,21 +8,21 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.NotHavePrivateMethodsMessage;
 
 public final class NotHavePrivateMethods extends ArchCondition<JavaClass> {
-    public NotHavePrivateMethods() {
-        super("not have private methods");
-    }
+  public NotHavePrivateMethods() {
+    super("not have private methods");
+  }
 
-    @Override
-    public void check(final JavaClass javaClass, final ConditionEvents events) {
-        javaClass.getMethods().stream()
-                .filter(method -> method.getModifiers().contains(JavaModifier.PRIVATE) && !method.reflect().isSynthetic())
-                .forEach(method ->
-                        events.add(
-                                SimpleConditionEvent.violated(
-                                        method,
-                                        new NotHavePrivateMethodsMessage(javaClass, method).toString()
-                                )
-                        )
-                );
-    }
+  @Override
+  public void check(final JavaClass javaClass, final ConditionEvents events) {
+    javaClass.getMethods().stream()
+      .filter(method -> method.getModifiers().contains(JavaModifier.PRIVATE) && !method.reflect().isSynthetic())
+      .forEach(method ->
+        events.add(
+          SimpleConditionEvent.violated(
+            method,
+            new NotHavePrivateMethodsMessage(javaClass, method).toString()
+          )
+        )
+      );
+  }
 }

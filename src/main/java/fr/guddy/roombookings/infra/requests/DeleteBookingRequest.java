@@ -13,34 +13,34 @@ import org.eclipse.jetty.http.HttpStatus;
 
 public final class DeleteBookingRequest implements Request {
 
-    private final Bookings bookings;
-    private final long id;
+  private final Bookings bookings;
+  private final long id;
 
-    public DeleteBookingRequest(final Bookings bookings, final long id) {
-        this.bookings = bookings;
-        this.id = id;
-    }
+  public DeleteBookingRequest(final Bookings bookings, final long id) {
+    this.bookings = bookings;
+    this.id = id;
+  }
 
-    public DeleteBookingRequest(final Bookings bookings, final Context context) {
-        this(
-                bookings,
-                new LongParameter(
-                        new RequiredParameter<>(
-                                new PathParameter("id", context)
-                        )
-                ).value()
-        );
-    }
+  public DeleteBookingRequest(final Bookings bookings, final Context context) {
+    this(
+      bookings,
+      new LongParameter(
+        new RequiredParameter<>(
+          new PathParameter("id", context)
+        )
+      ).value()
+    );
+  }
 
-    @Override
-    public void perform(final Context context) {
-        final Booking booking = bookings.byId(id)
-                .orElseThrow(() -> new BookingNotFoundException(id));
-        final boolean result = bookings.delete(booking);
-        if (result) {
-            context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);
-        } else {
-            throw new BookingNotDeletedException(id);
-        }
+  @Override
+  public void perform(final Context context) {
+    final Booking booking = bookings.byId(id)
+      .orElseThrow(() -> new BookingNotFoundException(id));
+    final boolean result = bookings.delete(booking);
+    if (result) {
+      context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);
+    } else {
+      throw new BookingNotDeletedException(id);
     }
+  }
 }

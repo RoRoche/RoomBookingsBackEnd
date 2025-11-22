@@ -4,21 +4,21 @@ import java.util.List;
 
 public final class MatchersAssertion<T> implements Assertion {
 
-    private final T sut;
-    private final List<Matcher<T>> matchers;
+  private final T sut;
+  private final List<Matcher<T>> matchers;
 
-    public MatchersAssertion(final T sut, final List<Matcher<T>> matchers) {
-        this.sut = sut;
-        this.matchers = matchers;
-    }
+  public MatchersAssertion(final T sut, final List<Matcher<T>> matchers) {
+    this.sut = sut;
+    this.matchers = matchers;
+  }
 
-    @SafeVarargs
-    public MatchersAssertion(final T sut, final Matcher<T>... matchers) {
-        this(sut, List.of(matchers));
-    }
+  @SafeVarargs
+  public MatchersAssertion(final T sut, final Matcher<T>... matchers) {
+    this(sut, List.of(matchers));
+  }
 
-    @Override
-    public void check() {
-        matchers.forEach(matcher -> matcher.check(sut));
-    }
+  @Override
+  public void check() {
+    matchers.forEach(matcher -> matcher.check(sut));
+  }
 }

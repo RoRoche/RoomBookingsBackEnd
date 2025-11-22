@@ -9,22 +9,22 @@ import static io.javalin.apibuilder.ApiBuilder.delete;
 import static io.javalin.apibuilder.ApiBuilder.get;
 
 public final class BookingsRoute implements EndpointGroup {
-    private final Bookings bookings;
+  private final Bookings bookings;
 
-    public BookingsRoute(final Bookings bookings) {
-        this.bookings = bookings;
-    }
+  public BookingsRoute(final Bookings bookings) {
+    this.bookings = bookings;
+  }
 
-    @Override
-    public void addEndpoints() {
-        get(
-                ctx ->
-                        new GetRemindersRequest(bookings, ctx).perform(ctx)
-        );
-        delete(
-                "/{id}",
-                ctx ->
-                        new DeleteBookingRequest(bookings, ctx).perform(ctx)
-        );
-    }
+  @Override
+  public void addEndpoints() {
+    get(
+      ctx ->
+        new GetRemindersRequest(bookings, ctx).perform(ctx)
+    );
+    delete(
+      "/{id}",
+      ctx ->
+        new DeleteBookingRequest(bookings, ctx).perform(ctx)
+    );
+  }
 }

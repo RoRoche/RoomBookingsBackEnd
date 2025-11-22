@@ -6,13 +6,13 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class NotHavePrivateMethodsMessage extends TextEnvelope {
-    public NotHavePrivateMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
-        super(
-                new FormattedText(
-                        "Class %s contains private method %s",
-                        javaClass.getName(),
-                        method.getFullName()
-                )
-        );
-    }
+  public NotHavePrivateMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
+    super(
+      new FormattedText(
+        "Class %s contains private method %s",
+        javaClass.getName(),
+        method.getFullName()
+      )
+    );
+  }
 }

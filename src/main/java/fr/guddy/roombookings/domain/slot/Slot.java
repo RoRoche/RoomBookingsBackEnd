@@ -3,9 +3,9 @@ package fr.guddy.roombookings.domain.slot;
 import java.util.Map;
 
 public interface Slot {
-    long timestampStart();
+  long timestampStart();
 
-    long timestampEnd();
+  long timestampEnd();
 
-    Map<String, Object> map();
+  Map<String, Object> map();
 }

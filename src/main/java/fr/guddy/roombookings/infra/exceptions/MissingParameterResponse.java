@@ -6,8 +6,8 @@ import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class MissingParameterResponse implements ExceptionHandler<MissingParameterException> {
-    @Override
-    public void handle(final MissingParameterException exception, final Context ctx) {
-        ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
-    }
+  @Override
+  public void handle(final MissingParameterException exception, final Context ctx) {
+    ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
+  }
 }

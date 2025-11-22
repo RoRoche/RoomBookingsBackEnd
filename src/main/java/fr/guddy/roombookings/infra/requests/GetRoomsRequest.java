@@ -9,24 +9,24 @@ import org.eclipse.jetty.http.HttpStatus;
 import java.util.List;
 
 public final class GetRoomsRequest implements Request {
-    private final Rooms rooms;
+  private final Rooms rooms;
 
-    public GetRoomsRequest(final Rooms rooms) {
-        this.rooms = rooms;
-    }
+  public GetRoomsRequest(final Rooms rooms) {
+    this.rooms = rooms;
+  }
 
-    @Override
-    public void perform(final Context context) {
-        final List<Room> all = this.rooms.all();
-        if (all.isEmpty()) {
-            context.status(HttpStatus.NO_CONTENT_204);
-        } else {
-            context.json(
-                    all.stream()
-                            .map(JsonRoom::new)
-                            .map(JsonRoom::map)
-                            .toList()
-            ).status(HttpStatus.OK_200);
-        }
+  @Override
+  public void perform(final Context context) {
+    final List<Room> all = this.rooms.all();
+    if (all.isEmpty()) {
+      context.status(HttpStatus.NO_CONTENT_204);
+    } else {
+      context.json(
+        all.stream()
+          .map(JsonRoom::new)
+          .map(JsonRoom::map)
+          .toList()
+      ).status(HttpStatus.OK_200);
     }
+  }
 }

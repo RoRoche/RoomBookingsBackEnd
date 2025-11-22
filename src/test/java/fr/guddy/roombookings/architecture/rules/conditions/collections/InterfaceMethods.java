@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 
 public final class InterfaceMethods extends SetEnvelope<JavaMethod> {
 
-    public InterfaceMethods(final JavaClass clazz) {
-        super(
-                new RecursiveInterfaces(clazz).stream()
-                        .flatMap(iface -> iface.getMethods().stream())
-                        .collect(Collectors.toSet())
-        );
-    }
+  public InterfaceMethods(final JavaClass clazz) {
+    super(
+      new RecursiveInterfaces(clazz).stream()
+        .flatMap(iface -> iface.getMethods().stream())
+        .collect(Collectors.toSet())
+    );
+  }
 }

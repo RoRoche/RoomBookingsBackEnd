@@ -3,9 +3,9 @@ package fr.guddy.roombookings.domain.room;
 import java.util.Map;
 
 public interface Room {
-    String name();
+  String name();
 
-    int capacity();
+  int capacity();
 
-    Map<String, Object> map();
+  Map<String, Object> map();
 }

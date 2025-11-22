@@ -4,5 +4,5 @@ import com.mashape.unirest.http.HttpResponse;
 import fr.guddy.roombookings.assertions.Assertion;
 
 public interface RequestAssertion extends Assertion {
-    HttpResponse<String> response();
+  HttpResponse<String> response();
 }

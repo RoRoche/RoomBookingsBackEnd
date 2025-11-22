@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface Bookings {
-    Long create(final Booking booking);
+  Long create(final Booking booking);
 
-    List<Booking> forRoomInSlot(final Room room, final Slot slot);
+  List<Booking> forRoomInSlot(final Room room, final Slot slot);
 
-    List<Booking> forUserFromStartDate(final String userId, final long timestampStart);
+  List<Booking> forUserFromStartDate(final String userId, final long timestampStart);
 
-    boolean isConflicting(final Booking booking);
+  boolean isConflicting(final Booking booking);
 
-    int clearAll();
+  int clearAll();
 
-    Optional<Booking> byId(final long id);
+  Optional<Booking> byId(final long id);
 
-    boolean delete(final Booking booking);
+  boolean delete(final Booking booking);
 }

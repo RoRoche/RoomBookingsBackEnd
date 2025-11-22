@@ -6,13 +6,13 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class NotHaveGettersOrSettersMessage extends TextEnvelope {
-    public NotHaveGettersOrSettersMessage(final JavaClass javaClass, final JavaMethod method) {
-        super(
-                new FormattedText(
-                        "Class %s contains getter/setter method %s",
-                        javaClass.getName(),
-                        method.getFullName()
-                )
-        );
-    }
+  public NotHaveGettersOrSettersMessage(final JavaClass javaClass, final JavaMethod method) {
+    super(
+      new FormattedText(
+        "Class %s contains getter/setter method %s",
+        javaClass.getName(),
+        method.getFullName()
+      )
+    );
+  }
 }

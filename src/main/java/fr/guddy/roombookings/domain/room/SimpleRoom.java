@@ -7,11 +7,11 @@ import java.util.Map;
 
 public record SimpleRoom(String name, int capacity) implements Room {
 
-    @Override
-    public Map<String, Object> map() {
-        return new MapOf<String, Object>(
-                new MapEntry<>("name", this.name),
-                new MapEntry<>("capacity", this.capacity)
-        );
-    }
+  @Override
+  public Map<String, Object> map() {
+    return new MapOf<String, Object>(
+      new MapEntry<>("name", this.name),
+      new MapEntry<>("capacity", this.capacity)
+    );
+  }
 }

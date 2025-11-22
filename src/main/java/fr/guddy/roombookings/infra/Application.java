@@ -1,7 +1,7 @@
 package fr.guddy.roombookings.infra;
 
 public interface Application {
-    void start();
+  void start();
 
-    void stop();
+  void stop();
 }

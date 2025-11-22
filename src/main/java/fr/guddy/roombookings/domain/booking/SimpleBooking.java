@@ -9,12 +9,12 @@ import java.util.Map;
 
 public record SimpleBooking(Long id, String userId, Room room, Slot slot) implements Booking {
 
-    @Override
-    public Map<String, Object> map() {
-        return new MapOf<>(
-                new MapEntry<>("id", id),
-                new MapEntry<>("room", room),
-                new MapEntry<>("slot", slot)
-        );
-    }
+  @Override
+  public Map<String, Object> map() {
+    return new MapOf<>(
+      new MapEntry<>("id", id),
+      new MapEntry<>("room", room),
+      new MapEntry<>("slot", slot)
+    );
+  }
 }
