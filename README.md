@@ -21,7 +21,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=RoRoche_RoomBookingsBackEnd&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=RoRoche_RoomBookingsBackEnd)
 
-Back-end to manage rooms and its bookings
+Back-end to manage rooms and their bookings.
 
 ## TODO
 
