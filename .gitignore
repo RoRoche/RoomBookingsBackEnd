@@ -162,3 +162,5 @@ buildNumber.properties
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,intellij
 
 .DS_Store
+
+node_modules
