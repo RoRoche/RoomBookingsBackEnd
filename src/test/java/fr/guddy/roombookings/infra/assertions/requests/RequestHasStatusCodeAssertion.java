@@ -1,11 +1,11 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.request.HttpRequest;
 import io.vavr.Lazy;
 import io.vavr.control.Try;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 
 public final class RequestHasStatusCodeAssertion implements RequestAssertion {
 
@@ -30,6 +30,6 @@ public final class RequestHasStatusCodeAssertion implements RequestAssertion {
 
   @Override
   public void check() {
-    assertThat(response().getStatus()).isEqualTo(expectedStatusCode);
+    MatcherAssert.assertThat(response().getStatus(), new IsEqual<>(expectedStatusCode));
   }
 }

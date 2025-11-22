@@ -1,6 +1,7 @@
 package fr.guddy.roombookings.assertions;
 
 import java.util.List;
+import org.hamcrest.Matcher;
 
 public final class MatchersAssertion<T> implements Assertion {
 
@@ -19,6 +20,6 @@ public final class MatchersAssertion<T> implements Assertion {
 
   @Override
   public void check() {
-    matchers.forEach((matcher) -> matcher.check(sut));
+    matchers.forEach((matcher) -> matcher.matches(sut));
   }
 }

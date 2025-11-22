@@ -1,9 +1,11 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasKey;
 
 import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
+import org.hamcrest.core.StringStartsWith;
 
 public final class RequestWithLocationHeaderAssertion implements RequestAssertion {
 
@@ -27,7 +29,7 @@ public final class RequestWithLocationHeaderAssertion implements RequestAssertio
   public void check() {
     delegate.check();
     final Headers headers = response().getHeaders();
-    assertThat(headers).containsKey("Location");
-    assertThat(headers.getFirst("Location")).startsWith(startUri);
+    assertThat(headers, hasKey("Location"));
+    assertThat(headers.getFirst("Location"), new StringStartsWith(startUri));
   }
 }

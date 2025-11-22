@@ -1,7 +1,8 @@
 package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.delete;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import com.mashape.unirest.request.HttpRequestWithBody;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
@@ -70,6 +71,6 @@ final class DeleteBookingRequestTest {
         timestampEnd
       )
     ).check();
-    assertThat(api.bookings().byId(id)).isEmpty();
+    assertThat(api.bookings().byId(id).isPresent(), is(false));
   }
 }

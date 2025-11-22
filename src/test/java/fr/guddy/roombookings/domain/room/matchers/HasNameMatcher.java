@@ -1,11 +1,10 @@
 package fr.guddy.roombookings.domain.room.matchers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import fr.guddy.roombookings.assertions.Matcher;
 import fr.guddy.roombookings.domain.room.Room;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
-public final class HasNameMatcher implements Matcher<Room> {
+public final class HasNameMatcher extends TypeSafeMatcher<Room> {
 
   private final String expectedName;
 
@@ -14,7 +13,17 @@ public final class HasNameMatcher implements Matcher<Room> {
   }
 
   @Override
-  public void check(final Room room) {
-    assertThat(room.name()).describedAs("Room name").isEqualToIgnoringCase(expectedName);
+  protected boolean matchesSafely(final Room room) {
+    return room.name().equalsIgnoreCase(expectedName);
+  }
+
+  @Override
+  public void describeTo(final Description description) {
+    description.appendText("a Room with name (ignoring case) ").appendValue(expectedName);
+  }
+
+  @Override
+  protected void describeMismatchSafely(final Room room, final Description mismatchDescription) {
+    mismatchDescription.appendText("was a Room with name ").appendValue(room.name());
   }
 }

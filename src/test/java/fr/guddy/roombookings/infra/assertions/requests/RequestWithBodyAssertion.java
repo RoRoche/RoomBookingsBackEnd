@@ -1,8 +1,8 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mashape.unirest.http.HttpResponse;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.text.IsEqualIgnoringCase;
 
 public final class RequestWithBodyAssertion implements RequestAssertion {
 
@@ -22,6 +22,6 @@ public final class RequestWithBodyAssertion implements RequestAssertion {
   @Override
   public void check() {
     delegate.check();
-    assertThat(response().getBody()).isEqualToIgnoringCase(expectedBody);
+    MatcherAssert.assertThat(response().getBody(), new IsEqualIgnoringCase(expectedBody));
   }
 }

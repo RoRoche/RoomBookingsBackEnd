@@ -1,8 +1,9 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 import com.mashape.unirest.http.HttpResponse;
+import org.hamcrest.MatcherAssert;
 
 public final class RequestWithPartialBodyAssertion implements RequestAssertion {
 
@@ -25,6 +26,9 @@ public final class RequestWithPartialBodyAssertion implements RequestAssertion {
   @Override
   public void check() {
     delegate.check();
-    assertThat(response().getBody()).containsIgnoringCase(expectedBody);
+    String actual = response().getBody().toLowerCase();
+    String expected = expectedBody.toLowerCase();
+
+    MatcherAssert.assertThat(actual, containsString(expected));
   }
 }
