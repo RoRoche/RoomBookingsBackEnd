@@ -4,6 +4,7 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
 
 public final class HaveSameParameterCount implements Scalar<Boolean> {
+
   private final JavaMethod a;
   private final JavaMethod b;
 

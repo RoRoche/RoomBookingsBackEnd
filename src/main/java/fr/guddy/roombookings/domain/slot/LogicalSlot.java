@@ -1,12 +1,10 @@
 package fr.guddy.roombookings.domain.slot;
 
+import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 
-import java.util.Map;
-
 public record LogicalSlot(long timestampStart, long timestampEnd) implements Slot {
-
   @Override
   public long timestampStart() {
     return Long.min(timestampStart, timestampEnd);

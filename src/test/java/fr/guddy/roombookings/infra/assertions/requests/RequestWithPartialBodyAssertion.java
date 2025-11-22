@@ -1,15 +1,18 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import com.mashape.unirest.http.HttpResponse;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mashape.unirest.http.HttpResponse;
 
 public final class RequestWithPartialBodyAssertion implements RequestAssertion {
 
   private final RequestAssertion delegate;
   private final String expectedBody;
 
-  public RequestWithPartialBodyAssertion(final RequestAssertion delegate, final String expectedBody) {
+  public RequestWithPartialBodyAssertion(
+    final RequestAssertion delegate,
+    final String expectedBody
+  ) {
     this.delegate = delegate;
     this.expectedBody = expectedBody;
   }
@@ -22,8 +25,6 @@ public final class RequestWithPartialBodyAssertion implements RequestAssertion {
   @Override
   public void check() {
     delegate.check();
-    assertThat(
-      response().getBody()
-    ).containsIgnoringCase(expectedBody);
+    assertThat(response().getBody()).containsIgnoringCase(expectedBody);
   }
 }

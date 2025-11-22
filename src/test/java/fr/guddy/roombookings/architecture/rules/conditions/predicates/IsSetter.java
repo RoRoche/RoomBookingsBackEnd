@@ -2,11 +2,11 @@ package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaMethod;
+import java.util.List;
 import org.cactoos.Scalar;
 
-import java.util.List;
-
 public final class IsSetter implements Scalar<Boolean> {
+
   private final JavaMethod method;
 
   public IsSetter(final JavaMethod method) {
@@ -22,8 +22,6 @@ public final class IsSetter implements Scalar<Boolean> {
     final JavaClass returnType = this.method.getRawReturnType();
 
     // setters start with set, take exactly 1 param, and return void
-    return name.startsWith("set")
-      && params.size() == 1
-      && returnType.isEquivalentTo(void.class);
+    return name.startsWith("set") && params.size() == 1 && returnType.isEquivalentTo(void.class);
   }
 }

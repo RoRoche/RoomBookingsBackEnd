@@ -1,11 +1,10 @@
 package fr.guddy.roombookings.architecture.rules.conditions.collections;
 
 import com.tngtech.archunit.core.domain.JavaClass;
-import org.cactoos.scalar.Unchecked;
-import org.cactoos.set.SetEnvelope;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.cactoos.scalar.Unchecked;
+import org.cactoos.set.SetEnvelope;
 
 public final class RecursiveInterfaces extends SetEnvelope<JavaClass> {
 
@@ -14,17 +13,23 @@ public final class RecursiveInterfaces extends SetEnvelope<JavaClass> {
       new Unchecked<>(() -> {
         final Set<JavaClass> result = new HashSet<>();
         // Recursively collect interfaces implemented by this class
-        clazz.getInterfaces().forEach(ifaceType -> {
-          final JavaClass iface = ifaceType.toErasure();
-          if (result.add(iface)) {
-            result.addAll(new RecursiveInterfaces(iface));
-          }
-        });
+        clazz
+          .getInterfaces()
+          .forEach((ifaceType) -> {
+            final JavaClass iface = ifaceType.toErasure();
+            if (result.add(iface)) {
+              result.addAll(new RecursiveInterfaces(iface));
+            }
+          });
         // Also collect interfaces from superclasses
-        clazz.getSuperclass().ifPresent(superclassType ->
-          result.addAll(new RecursiveInterfaces(superclassType.toErasure()))
-        );
+        clazz
+          .getSuperclass()
+          .ifPresent((superclassType) ->
+            result.addAll(new RecursiveInterfaces(superclassType.toErasure()))
+          );
         return result;
-      }).value());
+      })
+        .value()
+    );
   }
 }

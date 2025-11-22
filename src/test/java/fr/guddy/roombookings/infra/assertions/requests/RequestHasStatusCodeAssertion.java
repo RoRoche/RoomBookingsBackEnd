@@ -1,13 +1,14 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.request.HttpRequest;
 import io.vavr.Lazy;
 import io.vavr.control.Try;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public final class RequestHasStatusCodeAssertion implements RequestAssertion {
+
   private final HttpRequest request;
   private final int expectedStatusCode;
   private final Lazy<HttpResponse<String>> response;

@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.get;
+
 import com.mashape.unirest.request.HttpRequest;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
@@ -15,9 +17,8 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.get;
-
 final class GetRemindersRequestTest {
+
   @RegisterExtension
   static final ApiExternalExtension api = new ApiExternalExtension();
 
@@ -30,8 +31,7 @@ final class GetRemindersRequestTest {
       ),
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/bookings")
-            .getHttpRequest(),
+          get("http://localhost:7000/bookings").getHttpRequest(),
           HttpStatus.BAD_REQUEST_400
         ),
         "Parameter named 'user_id' is missing"
@@ -58,10 +58,14 @@ final class GetRemindersRequestTest {
   @Test
   void testContent() {
     // given
-    final long nowMinus45m = Instant.now().minus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
-    final long nowMinus15m = Instant.now().minus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
-    final long nowPlus15m = Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
-    final long nowPlus45m = Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
+    final long nowMinus45m =
+      Instant.now().minus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
+    final long nowMinus15m =
+      Instant.now().minus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
+    final long nowPlus15m =
+      Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
+    final long nowPlus45m =
+      Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     new ChainedFixtures(
       new ClearAllRoomsFixture(api.rooms()),
@@ -69,31 +73,16 @@ final class GetRemindersRequestTest {
       new CreateRoomFixture(api.rooms(), room),
       new CreateBookingFixture(
         api.bookings(),
-        new SimpleBooking(
-          null,
-          "test@test.com",
-          room,
-          new LogicalSlot(nowMinus45m, nowMinus15m)
-        )
+        new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowMinus45m, nowMinus15m))
       )
     ).perform();
     final long idMinus15ToPlus15m = new CreateBookingFixture(
       api.bookings(),
-      new SimpleBooking(
-        null,
-        "test@test.com",
-        room,
-        new LogicalSlot(nowMinus15m, nowPlus15m)
-      )
+      new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowMinus15m, nowPlus15m))
     ).perform();
     final long id15To45m = new CreateBookingFixture(
       api.bookings(),
-      new SimpleBooking(
-        null,
-        "test@test.com",
-        room,
-        new LogicalSlot(nowPlus15m, nowPlus45m)
-      )
+      new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowPlus15m, nowPlus45m))
     ).perform();
 
     // when

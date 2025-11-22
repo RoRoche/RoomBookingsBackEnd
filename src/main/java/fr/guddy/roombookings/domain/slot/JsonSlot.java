@@ -1,12 +1,13 @@
 package fr.guddy.roombookings.domain.slot;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public final class JsonSlot implements Slot {
+
   private static final String JSON_KEY_TIMESTAMP_START = "timestamp_start";
   private static final String JSON_KEY_TIMESTAMP_END = "timestamp_end";
 
@@ -17,11 +18,7 @@ public final class JsonSlot implements Slot {
   }
 
   public JsonSlot(final String body) {
-    this(
-      Json.createReader(
-        new StringReader(body)
-      ).readObject()
-    );
+    this(Json.createReader(new StringReader(body)).readObject());
   }
 
   public JsonSlot(final JsonObject jsonObject) {
@@ -50,5 +47,4 @@ public final class JsonSlot implements Slot {
     map.put(JSON_KEY_TIMESTAMP_END, timestampEnd());
     return map;
   }
-
 }

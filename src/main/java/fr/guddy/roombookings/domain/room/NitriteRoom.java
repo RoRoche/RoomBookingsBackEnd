@@ -1,12 +1,12 @@
 package fr.guddy.roombookings.domain.room;
 
+import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.dizitart.no2.Document;
 
-import java.util.Map;
-
 public final class NitriteRoom extends RoomEnvelope {
+
   private static final String DOCUMENT_KEY_NAME = "room_name";
   private static final String DOCUMENT_KEY_CAPACITY = "room_capacity";
 

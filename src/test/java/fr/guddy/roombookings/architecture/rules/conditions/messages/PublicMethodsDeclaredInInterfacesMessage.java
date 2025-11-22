@@ -6,6 +6,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class PublicMethodsDeclaredInInterfacesMessage extends TextEnvelope {
+
   public PublicMethodsDeclaredInInterfacesMessage(final JavaClass clazz, final JavaMethod method) {
     super(
       new FormattedText(

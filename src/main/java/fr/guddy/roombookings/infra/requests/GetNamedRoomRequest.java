@@ -21,25 +21,16 @@ public final class GetNamedRoomRequest implements Request {
   }
 
   public GetNamedRoomRequest(final Rooms rooms, final Context context) {
-    this(
-      rooms,
-      new RequiredParameter<>(
-        new PathParameter("name", context)
-      )
-    );
+    this(rooms, new RequiredParameter<>(new PathParameter("name", context)));
   }
 
   public GetNamedRoomRequest(final Rooms rooms, final Parameter<String> name) {
-    this(
-      rooms,
-      name.value()
-    );
+    this(rooms, name.value());
   }
 
   @Override
   public void perform(final Context context) {
     final Room room = rooms.withName(name).orElseThrow(() -> new RoomNotFoundException(name));
-    context.json(new JsonRoom(room).map())
-      .status(HttpStatus.OK_200);
+    context.json(new JsonRoom(room).map()).status(HttpStatus.OK_200);
   }
 }

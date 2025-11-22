@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.post;
+
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
@@ -16,24 +18,21 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.post;
-
 final class PostBookingRequestTest {
+
   @RegisterExtension
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
   void testOK() {
     final long timestampStart = Instant.now().getMillis() / 1000;
-    final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
+    final long timestampEnd =
+      Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
         new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        )
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
       ),
       new RequestWithLocationHeaderAssertion(
         new RequestWithPartialBodyAssertion(
@@ -66,10 +65,7 @@ final class PostBookingRequestTest {
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
         new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        ),
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12)),
         new CreateBookingFixture(
           api.bookings(),
           new SimpleBooking(

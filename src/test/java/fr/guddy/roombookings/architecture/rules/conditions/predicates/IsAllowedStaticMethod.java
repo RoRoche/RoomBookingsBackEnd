@@ -4,6 +4,7 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
 
 public final class IsAllowedStaticMethod implements Scalar<Boolean> {
+
   private final JavaMethod method;
 
   public IsAllowedStaticMethod(final JavaMethod method) {

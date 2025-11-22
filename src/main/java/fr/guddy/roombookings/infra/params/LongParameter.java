@@ -19,9 +19,7 @@ public final class LongParameter implements Parameter<Long> {
   @Override
   public Long value() {
     final String value = delegate.value();
-    return Try.of(() ->
-      Long.valueOf(value)
-    ).getOrElseThrow(throwable ->
+    return Try.of(() -> Long.valueOf(value)).getOrElseThrow((throwable) ->
       new NotProcessableParameterException(name(), Long.class)
     );
   }

@@ -7,10 +7,9 @@ import fr.guddy.roombookings.infra.params.Parameter;
 import fr.guddy.roombookings.infra.params.QueryParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.http.Context;
+import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.Instant;
-
-import java.util.List;
 
 public final class GetRemindersRequest implements Request {
 
@@ -27,12 +26,7 @@ public final class GetRemindersRequest implements Request {
   }
 
   public GetRemindersRequest(final Bookings bookings, final Context context) {
-    this(
-      bookings,
-      new RequiredParameter<>(
-        new QueryParameter("user_id", context)
-      )
-    );
+    this(bookings, new RequiredParameter<>(new QueryParameter("user_id", context)));
   }
 
   @Override
@@ -44,12 +38,9 @@ public final class GetRemindersRequest implements Request {
     if (reminders.isEmpty()) {
       context.status(HttpStatus.NO_CONTENT_204);
     } else {
-      context.json(
-        reminders.stream()
-          .map(JsonBooking::new)
-          .map(JsonBooking::map)
-          .toList()
-      ).status(HttpStatus.OK_200);
+      context
+        .json(reminders.stream().map(JsonBooking::new).map(JsonBooking::map).toList())
+        .status(HttpStatus.OK_200);
     }
   }
 }

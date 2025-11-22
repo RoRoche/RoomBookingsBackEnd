@@ -5,9 +5,8 @@ import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.Parameter;
 import io.javalin.http.Context;
-import org.eclipse.jetty.http.HttpStatus;
-
 import java.util.List;
+import org.eclipse.jetty.http.HttpStatus;
 
 public final class GetCapableRoomsRequest implements Request {
 
@@ -20,10 +19,7 @@ public final class GetCapableRoomsRequest implements Request {
   }
 
   public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
-    this(
-      rooms,
-      capacity.value()
-    );
+    this(rooms, capacity.value());
   }
 
   @Override
@@ -32,12 +28,9 @@ public final class GetCapableRoomsRequest implements Request {
     if (capableRooms.isEmpty()) {
       context.status(HttpStatus.NO_CONTENT_204);
     } else {
-      context.json(
-        capableRooms.stream()
-          .map(JsonRoom::new)
-          .map(JsonRoom::map)
-          .toList()
-      ).status(HttpStatus.OK_200);
+      context
+        .json(capableRooms.stream().map(JsonRoom::new).map(JsonRoom::map).toList())
+        .status(HttpStatus.OK_200);
     }
   }
 }

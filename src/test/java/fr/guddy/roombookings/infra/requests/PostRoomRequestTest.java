@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.post;
+
 import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
 import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
 import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
@@ -13,9 +15,8 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.post;
-
 final class PostRoomRequestTest {
+
   @RegisterExtension
   static final ApiExternalExtension api = new ApiExternalExtension();
 
@@ -40,10 +41,7 @@ final class PostRoomRequestTest {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        )
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
       ),
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(

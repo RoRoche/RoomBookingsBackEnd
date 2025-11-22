@@ -13,10 +13,7 @@ public final class PathParameter implements Parameter<String> {
   }
 
   public PathParameter(final String name, final Context context) {
-    this(
-      name,
-      new StringParameter(name, context.pathParam(name))
-    );
+    this(name, new StringParameter(name, context.pathParam(name)));
   }
 
   @Override

@@ -6,6 +6,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class NotHavePrivateMethodsMessage extends TextEnvelope {
+
   public NotHavePrivateMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
     super(
       new FormattedText(

@@ -1,7 +1,11 @@
 package fr.guddy.roombookings.domain.rooms;
 
+import static org.dizitart.no2.filters.Filters.eq;
+
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
+import java.util.List;
+import java.util.Optional;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.dizitart.no2.Document;
@@ -9,12 +13,8 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
 import org.dizitart.no2.filters.Filters;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.dizitart.no2.filters.Filters.eq;
-
 public final class NitriteRooms implements Rooms {
+
   private final NitriteCollection collection;
 
   public NitriteRooms(final NitriteCollection collection) {
@@ -22,9 +22,7 @@ public final class NitriteRooms implements Rooms {
   }
 
   public NitriteRooms(final Scalar<NitriteCollection> collection) {
-    this(
-      new Unchecked<>(collection).value()
-    );
+    this(new Unchecked<>(collection).value());
   }
 
   public NitriteRooms(final Nitrite database) {
@@ -33,34 +31,37 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public Long create(final Room room) {
-    return collection.insert(
-      new Document(
-        new NitriteRoom(room).map()
-      )
-    ).iterator().next().getIdValue();
+    return collection
+      .insert(new Document(new NitriteRoom(room).map()))
+      .iterator()
+      .next()
+      .getIdValue();
   }
 
   @Override
   public List<Room> all() {
-    return collection.find()
+    return collection
+      .find()
       .toList()
       .stream()
-      .map(document -> (Room) new NitriteRoom(document))
+      .map((document) -> (Room) new NitriteRoom(document))
       .toList();
   }
 
   @Override
   public List<Room> withCapacity(final int capacity) {
-    return collection.find(Filters.gte("room_capacity", capacity))
+    return collection
+      .find(Filters.gte("room_capacity", capacity))
       .toList()
       .stream()
-      .map(document -> (Room) new NitriteRoom(document))
+      .map((document) -> (Room) new NitriteRoom(document))
       .toList();
   }
 
   @Override
   public Optional<Room> withName(final String name) {
-    return collection.find(eq("room_name", name))
+    return collection
+      .find(eq("room_name", name))
       .toList()
       .stream()
       .findFirst()

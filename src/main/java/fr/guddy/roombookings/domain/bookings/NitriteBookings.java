@@ -1,24 +1,24 @@
 package fr.guddy.roombookings.domain.bookings;
 
+import static org.dizitart.no2.filters.Filters.*;
+
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.Slot;
 import io.vavr.control.Try;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
 import org.dizitart.no2.NitriteId;
 import org.dizitart.no2.filters.Filters;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import static org.dizitart.no2.filters.Filters.*;
-
 public final class NitriteBookings implements Bookings {
+
   private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
   private static final String DOCUMENT_KEY_USER_ID = "user_id";
   private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
@@ -38,55 +38,60 @@ public final class NitriteBookings implements Bookings {
 
   @Override
   public Long create(final Booking booking) {
-    return collection.insert(
-      new Document(
-        new NitriteBooking(booking).map()
-      )
-    ).iterator().next().getIdValue();
+    return collection
+      .insert(new Document(new NitriteBooking(booking).map()))
+      .iterator()
+      .next()
+      .getIdValue();
   }
 
   @Override
   public List<Booking> forRoomInSlot(final Room room, final Slot slot) {
-    final List<Document> documents = collection.find(
-      and(
-        eq(DOCUMENT_KEY_ROOM_NAME, room.name()),
-        or(
-          and(
-            lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampEnd()),
-            gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampEnd())
-          ),
-          and(
-            lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampStart()),
-            gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampStart())
-          ),
-          and(
-            gte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampStart()),
-            lte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampEnd())
+    final List<Document> documents = collection
+      .find(
+        and(
+          eq(DOCUMENT_KEY_ROOM_NAME, room.name()),
+          or(
+            and(
+              lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampEnd()),
+              gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampEnd())
+            ),
+            and(
+              lte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampStart()),
+              gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampStart())
+            ),
+            and(
+              gte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot.timestampStart()),
+              lte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot.timestampEnd())
+            )
           )
         )
       )
-    ).toList();
-    return documents.stream().map(document ->
-      Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get()
-    ).toList();
+      .toList();
+    return documents
+      .stream()
+      .map((document) -> Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get())
+      .toList();
   }
 
   @Override
   public List<Booking> forUserFromStartDate(final String userId, final long timestampStart) {
-    final List<Document> documents = collection.find(
-      and(
-        eq(DOCUMENT_KEY_USER_ID, userId),
-        or(
-          gte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, timestampStart),
-          gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, timestampStart)
+    final List<Document> documents = collection
+      .find(
+        and(
+          eq(DOCUMENT_KEY_USER_ID, userId),
+          or(
+            gte(DOCUMENT_KEY_SLOT_TIMESTAMP_START, timestampStart),
+            gte(DOCUMENT_KEY_SLOT_TIMESTAMP_END, timestampStart)
+          )
         )
       )
-    ).toList();
-    return documents.stream().map(document ->
-      Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get()
-    ).sorted(
-      Comparator.comparingLong(booking -> booking.slot().timestampStart())
-    ).toList();
+      .toList();
+    return documents
+      .stream()
+      .map((document) -> Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get())
+      .sorted(Comparator.comparingLong((booking) -> booking.slot().timestampStart()))
+      .toList();
   }
 
   @Override
@@ -101,15 +106,16 @@ public final class NitriteBookings implements Bookings {
 
   @Override
   public Optional<Booking> byId(final long id) {
-    return Optional.ofNullable(
-      collection.getById(NitriteId.createId(id))
-    ).map(document -> new NitriteBooking(document, rooms));
+    return Optional.ofNullable(collection.getById(NitriteId.createId(id))).map((document) ->
+      new NitriteBooking(document, rooms)
+    );
   }
 
   @Override
   public boolean delete(final Booking booking) {
-    return collection.remove(
-      collection.getById(NitriteId.createId(booking.id()))
-    ).getAffectedCount() == 1;
+    return (
+      collection.remove(collection.getById(NitriteId.createId(booking.id()))).getAffectedCount() ==
+      1
+    );
   }
 }

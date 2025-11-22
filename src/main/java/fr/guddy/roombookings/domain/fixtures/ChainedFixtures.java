@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public final class ChainedFixtures implements Fixture {
+
   private final List<Fixture> fixtures;
 
   public ChainedFixtures(final List<Fixture> fixtures) {

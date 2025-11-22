@@ -2,7 +2,6 @@ package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.Slot;
-
 import java.util.Map;
 
 public interface Booking {
@@ -17,6 +16,7 @@ public interface Booking {
   Map<String, Object> map();
 
   abstract class Envelope implements Booking {
+
     private final Booking delegate;
 
     protected Envelope(final Booking delegate) {

@@ -8,6 +8,7 @@ import org.cactoos.Scalar;
  * returns true if implClass == ifaceClass or implClass inherits/implements ifaceClass.
  */
 public final class IsSameOrSubtype implements Scalar<Boolean> {
+
   private final JavaClass implClass;
   private final JavaClass ifaceClass;
 

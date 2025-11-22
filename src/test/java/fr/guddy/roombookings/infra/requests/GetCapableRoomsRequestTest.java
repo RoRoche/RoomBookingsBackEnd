@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.get;
+
 import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
 import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
 import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
@@ -12,9 +14,8 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.get;
-
 final class GetCapableRoomsRequestTest {
+
   @RegisterExtension
   static ApiExternalExtension api = new ApiExternalExtension();
 
@@ -23,9 +24,7 @@ final class GetCapableRoomsRequestTest {
     new WithFixtureAssertion(
       new ClearAllRoomsFixture(api.rooms()),
       new RequestHasStatusCodeAssertion(
-        get("http://localhost:7000/rooms")
-          .queryString("capacity", 10)
-          .getHttpRequest(),
+        get("http://localhost:7000/rooms").queryString("capacity", 10).getHttpRequest(),
         HttpStatus.NO_CONTENT_204
       )
     ).check();
@@ -37,9 +36,7 @@ final class GetCapableRoomsRequestTest {
       new ClearAllRoomsFixture(api.rooms()),
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/rooms")
-            .queryString("capacity", "test")
-            .getHttpRequest(),
+          get("http://localhost:7000/rooms").queryString("capacity", "test").getHttpRequest(),
           HttpStatus.BAD_REQUEST_400
         ),
         "Parameter 'capacity' could not be processed, it should be of type Integer"
@@ -52,16 +49,11 @@ final class GetCapableRoomsRequestTest {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        )
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
       ),
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/rooms")
-            .queryString("capacity", 10)
-            .getHttpRequest(),
+          get("http://localhost:7000/rooms").queryString("capacity", 10).getHttpRequest(),
           HttpStatus.OK_200
         ),
         "[{\"name\":\"test_name\",\"capacity\":12}]"

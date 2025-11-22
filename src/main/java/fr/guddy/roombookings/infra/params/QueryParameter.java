@@ -11,9 +11,7 @@ public final class QueryParameter implements Parameter<String> {
   }
 
   public QueryParameter(final String name, final Context context) {
-    this(
-      new StringParameter(name, context.queryParam(name))
-    );
+    this(new StringParameter(name, context.queryParam(name)));
   }
 
   @Override

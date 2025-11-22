@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.get;
+
 import com.mashape.unirest.request.HttpRequest;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
@@ -15,9 +17,8 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.get;
-
 final class GetBookingsForRoomInSlotRequestTest {
+
   @RegisterExtension
   static ApiExternalExtension api = new ApiExternalExtension();
 
@@ -27,17 +28,11 @@ final class GetBookingsForRoomInSlotRequestTest {
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
         new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        )
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
       ),
       new RequestHasStatusCodeAssertion(
         get("http://localhost:7000/rooms/test_name/bookings")
-          .queryString(
-            "timestamp_start",
-            Instant.now().getMillis() / 1000
-          )
+          .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
@@ -51,8 +46,10 @@ final class GetBookingsForRoomInSlotRequestTest {
   @Test
   void testOk() {
     // given
-    final long timestampStart = Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
-    final long timestampEnd = Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
+    final long timestampStart =
+      Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
+    final long timestampEnd =
+      Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     new ChainedFixtures(
       new ClearAllRoomsFixture(api.rooms()),
@@ -61,20 +58,12 @@ final class GetBookingsForRoomInSlotRequestTest {
     ).perform();
     final Long id = new CreateBookingFixture(
       api.bookings(),
-      new SimpleBooking(
-        null,
-        "test_user_id",
-        room,
-        new LogicalSlot(timestampStart, timestampEnd)
-      )
+      new SimpleBooking(null, "test_user_id", room, new LogicalSlot(timestampStart, timestampEnd))
     ).perform();
 
     // when
     final HttpRequest request = get("http://localhost:7000/rooms/test_name/bookings")
-      .queryString(
-        "timestamp_start",
-        Instant.now().getMillis() / 1000
-      )
+      .queryString("timestamp_start", Instant.now().getMillis() / 1000)
       .queryString(
         "timestamp_end",
         Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
@@ -103,10 +92,7 @@ final class GetBookingsForRoomInSlotRequestTest {
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(
           get("http://localhost:7000/rooms/test_name/bookings")
-            .queryString(
-              "timestamp_start",
-              Instant.now().getMillis() / 1000
-            )
+            .queryString("timestamp_start", Instant.now().getMillis() / 1000)
             .queryString(
               "timestamp_end",
               Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000

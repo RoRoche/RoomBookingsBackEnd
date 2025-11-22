@@ -26,36 +26,25 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
     this.bookings = bookings;
   }
 
-  public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
-    this(
-      new Api(database, rooms, bookings, port),
-      rooms,
-      bookings
-    );
+  public ApiExternalExtension(
+    final Nitrite database,
+    final Rooms rooms,
+    final Bookings bookings,
+    final Port port
+  ) {
+    this(new Api(database, rooms, bookings, port), rooms, bookings);
   }
 
   public ApiExternalExtension(final Nitrite database, final Port port) {
-    this(
-      database,
-      new NitriteRooms(database),
-      port
-    );
+    this(database, new NitriteRooms(database), port);
   }
 
   public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Port port) {
-    this(
-      database,
-      new NitriteRooms(database),
-      new NitriteBookings(database, rooms),
-      port
-    );
+    this(database, new NitriteRooms(database), new NitriteBookings(database, rooms), port);
   }
 
   public ApiExternalExtension() {
-    this(
-      Nitrite.builder().openOrCreate(),
-      new DefaultPort()
-    );
+    this(Nitrite.builder().openOrCreate(), new DefaultPort());
   }
 
   public Rooms rooms() {
@@ -99,5 +88,4 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
       throw new RuntimeException("Server didn't start in time");
     }
   }
-
 }

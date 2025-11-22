@@ -1,11 +1,12 @@
 package fr.guddy.roombookings.domain.room.matchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fr.guddy.roombookings.assertions.Matcher;
 import fr.guddy.roombookings.domain.room.Room;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public final class HasNameMatcher implements Matcher<Room> {
+
   private final String expectedName;
 
   public HasNameMatcher(final String expectedName) {

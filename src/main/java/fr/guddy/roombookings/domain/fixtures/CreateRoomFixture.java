@@ -4,6 +4,7 @@ import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 
 public final class CreateRoomFixture implements Fixture {
+
   private final Rooms rooms;
   private final Room room;
 

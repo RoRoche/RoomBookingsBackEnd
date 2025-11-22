@@ -8,6 +8,7 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.ClassesAreAbstractOrFinalMessage;
 
 public final class BeAbstractOrFinal extends ArchCondition<JavaClass> {
+
   public BeAbstractOrFinal() {
     super("be final or abstract");
   }

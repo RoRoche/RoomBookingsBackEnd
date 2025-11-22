@@ -1,5 +1,8 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.delete;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.mashape.unirest.request.HttpRequestWithBody;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
@@ -15,10 +18,8 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.delete;
-import static org.assertj.core.api.Assertions.assertThat;
-
 final class DeleteBookingRequestTest {
+
   @RegisterExtension
   static ApiExternalExtension api = new ApiExternalExtension();
 
@@ -47,26 +48,16 @@ final class DeleteBookingRequestTest {
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     new CreateRoomFixture(api.rooms(), room).perform();
     final long timestampStart = Instant.now().getMillis() / 1000;
-    final long timestampEnd = Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
+    final long timestampEnd =
+      Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
     final long id = new CreateBookingFixture(
       api.bookings(),
-      new SimpleBooking(
-        null,
-        "test_user_id",
-        room,
-        new LogicalSlot(
-          timestampStart,
-          timestampEnd
-        )
-      )
+      new SimpleBooking(null, "test_user_id", room, new LogicalSlot(timestampStart, timestampEnd))
     ).perform();
 
     // when
     final HttpRequestWithBody delete = delete(
-      String.format(
-        "http://localhost:7000/bookings/%d",
-        id
-      )
+      String.format("http://localhost:7000/bookings/%d", id)
     );
 
     // then
@@ -79,8 +70,6 @@ final class DeleteBookingRequestTest {
         timestampEnd
       )
     ).check();
-    assertThat(
-      api.bookings().byId(id)
-    ).isEmpty();
+    assertThat(api.bookings().byId(id)).isEmpty();
   }
 }

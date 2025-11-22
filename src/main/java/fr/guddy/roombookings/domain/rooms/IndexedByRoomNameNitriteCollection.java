@@ -7,6 +7,7 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
 
 public final class IndexedByRoomNameNitriteCollection implements Scalar<NitriteCollection> {
+
   private static final String INDEX_ROOM_NAME = "room_name";
 
   private final Nitrite database;

@@ -19,6 +19,6 @@ public final class MatchersAssertion<T> implements Assertion {
 
   @Override
   public void check() {
-    matchers.forEach(matcher -> matcher.check(sut));
+    matchers.forEach((matcher) -> matcher.check(sut));
   }
 }

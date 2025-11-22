@@ -1,13 +1,12 @@
 package fr.guddy.roombookings.domain.room.matchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fr.guddy.roombookings.assertions.Matcher;
 import fr.guddy.roombookings.domain.room.Room;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class HasMapMatcher implements Matcher<Room> {
 
@@ -20,17 +19,10 @@ public final class HasMapMatcher implements Matcher<Room> {
 
   @Override
   public void check(final Room room) {
-    final List<String> keys = Stream.of(expectedEntries)
-      .map(Pair::getKey)
-      .toList();
-    assertThat(room.map().keySet())
-      .describedAs("Room map")
-      .containsExactlyElementsOf(keys);
-    Stream.of(expectedEntries)
-      .forEach(pair -> {
-        assertThat(room.map())
-          .describedAs("Room map")
-          .containsEntry(pair.getKey(), pair.getValue());
-      });
+    final List<String> keys = Stream.of(expectedEntries).map(Pair::getKey).toList();
+    assertThat(room.map().keySet()).describedAs("Room map").containsExactlyElementsOf(keys);
+    Stream.of(expectedEntries).forEach((pair) -> {
+      assertThat(room.map()).describedAs("Room map").containsEntry(pair.getKey(), pair.getValue());
+    });
   }
 }

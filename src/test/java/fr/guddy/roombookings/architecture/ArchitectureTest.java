@@ -9,6 +9,7 @@ import fr.guddy.roombookings.architecture.rules.*;
 import org.junit.jupiter.api.Test;
 
 final class ArchitectureTest {
+
   private static final JavaClasses CLASSES = new ClassFileImporter()
     .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
     .importPackages("fr.guddy.roombookings");
@@ -16,8 +17,11 @@ final class ArchitectureTest {
   @Test
   void testDomainClassesShouldNotAccessInfra() {
     final ArchRule rule = ArchRuleDefinition.noClasses()
-      .that().resideInAPackage("..domain..")
-      .should().accessClassesThat().resideInAPackage("..infra..")
+      .that()
+      .resideInAPackage("..domain..")
+      .should()
+      .accessClassesThat()
+      .resideInAPackage("..infra..")
       .because("domain logic must not be dependent of infrastructure code");
     rule.check(CLASSES);
   }

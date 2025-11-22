@@ -2,15 +2,15 @@ package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
 import fr.guddy.roombookings.domain.slot.JsonSlot;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.Unchecked;
-
-import javax.json.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.json.JsonObject;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 
 public final class JsonBooking extends Booking.Envelope {
+
   private static final String JSON_KEY_ID = "id";
   private static final String JSON_KEY_USER_ID = "user_id";
   private static final String JSON_KEY_ROOM = "room";
@@ -29,20 +29,16 @@ public final class JsonBooking extends Booking.Envelope {
       new SimpleBooking(
         (long) jsonObject.getInt(JSON_KEY_ID, -1),
         jsonObject.getString(JSON_KEY_USER_ID),
-        Optional.ofNullable(
-          jsonObject.getJsonObject(JSON_KEY_ROOM)
-        ).map(JsonRoom::new).orElse(null),
-        Optional.ofNullable(
-          jsonObject.getJsonObject(JSON_KEY_SLOT)
-        ).map(JsonSlot::new).orElse(null)
+        Optional.ofNullable(jsonObject.getJsonObject(JSON_KEY_ROOM))
+          .map(JsonRoom::new)
+          .orElse(null),
+        Optional.ofNullable(jsonObject.getJsonObject(JSON_KEY_SLOT)).map(JsonSlot::new).orElse(null)
       )
     );
   }
 
   public JsonBooking(final Scalar<JsonObject> json) {
-    this(
-      new Unchecked<>(json).value()
-    );
+    this(new Unchecked<>(json).value());
   }
 
   @Override
@@ -50,14 +46,8 @@ public final class JsonBooking extends Booking.Envelope {
     final Map<String, Object> map = new LinkedHashMap<>();
     map.put(JSON_KEY_ID, id());
     map.put(JSON_KEY_USER_ID, userId());
-    map.put(
-      JSON_KEY_ROOM,
-      new JsonRoom(room()).map()
-    );
-    map.put(
-      JSON_KEY_SLOT,
-      new JsonSlot(slot()).map()
-    );
+    map.put(JSON_KEY_ROOM, new JsonRoom(room()).map());
+    map.put(JSON_KEY_SLOT, new JsonSlot(slot()).map());
     return map;
   }
 }

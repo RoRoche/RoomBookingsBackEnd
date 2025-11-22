@@ -1,7 +1,6 @@
 package fr.guddy.roombookings.domain.rooms;
 
 import fr.guddy.roombookings.domain.room.Room;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,13 +1,13 @@
 package fr.guddy.roombookings.domain.booking;
 
-import org.cactoos.Scalar;
-
+import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import java.io.StringReader;
+import org.cactoos.Scalar;
 
 public final class JsonFromBody implements Scalar<JsonObject> {
+
   private final String body;
 
   public JsonFromBody(final String body) {

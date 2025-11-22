@@ -1,5 +1,7 @@
 package fr.guddy.roombookings.infra.requests;
 
+import static com.mashape.unirest.http.Unirest.get;
+
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.fixtures.*;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
@@ -14,9 +16,8 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.mashape.unirest.http.Unirest.get;
-
 final class GetAvailableRoomsRequestTest {
+
   @RegisterExtension
   static ApiExternalExtension api = new ApiExternalExtension();
 
@@ -34,7 +35,8 @@ final class GetAvailableRoomsRequestTest {
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          ).getHttpRequest(),
+          )
+          .getHttpRequest(),
         HttpStatus.NO_CONTENT_204
       )
     ).check();
@@ -66,10 +68,7 @@ final class GetAvailableRoomsRequestTest {
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
         new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        )
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
       ),
       new RequestWithBodyAssertion(
         new RequestHasStatusCodeAssertion(
@@ -79,7 +78,8 @@ final class GetAvailableRoomsRequestTest {
             .queryString(
               "timestamp_end",
               Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-            ).getHttpRequest(),
+            )
+            .getHttpRequest(),
           HttpStatus.OK_200
         ),
         "[{\"name\":\"test_name\",\"capacity\":12}]"
@@ -93,10 +93,7 @@ final class GetAvailableRoomsRequestTest {
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
         new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(
-          api.rooms(),
-          new SimpleRoom("test_name", 12)
-        ),
+        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12)),
         new CreateBookingFixture(
           api.bookings(),
           new SimpleBooking(
@@ -117,7 +114,8 @@ final class GetAvailableRoomsRequestTest {
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          ).getHttpRequest(),
+          )
+          .getHttpRequest(),
         HttpStatus.NO_CONTENT_204
       )
     ).check();

@@ -10,16 +10,20 @@ import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
 import fr.guddy.roombookings.infra.params.*;
 import io.javalin.http.Context;
+import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
 
-import java.util.List;
-
 public final class GetBookingsForRoomInSlotRequest implements Request {
+
   private final Bookings bookings;
   private final Room room;
   private final Slot slot;
 
-  public GetBookingsForRoomInSlotRequest(final Bookings bookings, final Room room, final Slot slot) {
+  public GetBookingsForRoomInSlotRequest(
+    final Bookings bookings,
+    final Room room,
+    final Slot slot
+  ) {
     this.bookings = bookings;
     this.room = room;
     this.slot = slot;
@@ -28,23 +32,14 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
   public GetBookingsForRoomInSlotRequest(
     final Rooms rooms,
     final Bookings bookings,
-    final Context context) {
+    final Context context
+  ) {
     this(
       rooms,
       bookings,
-      new RequiredParameter<>(
-        new PathParameter("name", context)
-      ),
-      new LongParameter(
-        new RequiredParameter<>(
-          new QueryParameter("timestamp_start", context)
-        )
-      ),
-      new LongParameter(
-        new RequiredParameter<>(
-          new QueryParameter("timestamp_end", context)
-        )
-      )
+      new RequiredParameter<>(new PathParameter("name", context)),
+      new LongParameter(new RequiredParameter<>(new QueryParameter("timestamp_start", context))),
+      new LongParameter(new RequiredParameter<>(new QueryParameter("timestamp_end", context)))
     );
   }
 
@@ -57,11 +52,10 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
   ) {
     this(
       bookings,
-      rooms.withName(roomName.value()).orElseThrow(() -> new RoomNotFoundException(roomName.value())),
-      new LogicalSlot(
-        timestampStart.value(),
-        timestampEnd.value()
-      )
+      rooms
+        .withName(roomName.value())
+        .orElseThrow(() -> new RoomNotFoundException(roomName.value())),
+      new LogicalSlot(timestampStart.value(), timestampEnd.value())
     );
   }
 
@@ -71,12 +65,9 @@ public final class GetBookingsForRoomInSlotRequest implements Request {
     if (existingBookings.isEmpty()) {
       context.status(HttpStatus.NO_CONTENT_204);
     } else {
-      context.json(
-        existingBookings.stream()
-          .map(JsonBooking::new)
-          .map(JsonBooking::map)
-          .toList()
-      ).status(HttpStatus.OK_200);
+      context
+        .json(existingBookings.stream().map(JsonBooking::new).map(JsonBooking::map).toList())
+        .status(HttpStatus.OK_200);
     }
   }
 }

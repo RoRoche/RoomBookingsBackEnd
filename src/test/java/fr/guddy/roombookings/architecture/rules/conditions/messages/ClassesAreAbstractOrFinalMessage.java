@@ -5,7 +5,12 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
 public final class ClassesAreAbstractOrFinalMessage extends TextEnvelope {
-  public ClassesAreAbstractOrFinalMessage(final JavaClass javaClass, final boolean isAbstract, final boolean isFinal) {
+
+  public ClassesAreAbstractOrFinalMessage(
+    final JavaClass javaClass,
+    final boolean isAbstract,
+    final boolean isFinal
+  ) {
     super(
       new FormattedText(
         "Class %s should be either final or abstract (currently: abstract=%s, final=%s)",

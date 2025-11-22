@@ -5,13 +5,13 @@ import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
+import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.dizitart.no2.Document;
 
-import java.util.Map;
-
 public final class NitriteBooking extends Booking.Envelope {
+
   private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
   private static final String DOCUMENT_KEY_USER_ID = "user_id";
   private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
@@ -22,9 +22,7 @@ public final class NitriteBooking extends Booking.Envelope {
   }
 
   public NitriteBooking(final Long id, final String userId, final Room room, final Slot slot) {
-    this(
-      new SimpleBooking(id, userId, room, slot)
-    );
+    this(new SimpleBooking(id, userId, room, slot));
   }
 
   public NitriteBooking(final Document document, final Rooms rooms) throws RoomNotFoundException {
@@ -49,9 +47,7 @@ public final class NitriteBooking extends Booking.Envelope {
     this(
       id,
       userId,
-      rooms.withName(roomName).orElseThrow(() ->
-        new RoomNotFoundException(roomName)
-      ),
+      rooms.withName(roomName).orElseThrow(() -> new RoomNotFoundException(roomName)),
       new LogicalSlot(timestampStart, timestampEnd)
     );
   }

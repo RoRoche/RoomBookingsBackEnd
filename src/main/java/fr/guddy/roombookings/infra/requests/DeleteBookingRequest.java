@@ -24,18 +24,13 @@ public final class DeleteBookingRequest implements Request {
   public DeleteBookingRequest(final Bookings bookings, final Context context) {
     this(
       bookings,
-      new LongParameter(
-        new RequiredParameter<>(
-          new PathParameter("id", context)
-        )
-      ).value()
+      new LongParameter(new RequiredParameter<>(new PathParameter("id", context))).value()
     );
   }
 
   @Override
   public void perform(final Context context) {
-    final Booking booking = bookings.byId(id)
-      .orElseThrow(() -> new BookingNotFoundException(id));
+    final Booking booking = bookings.byId(id).orElseThrow(() -> new BookingNotFoundException(id));
     final boolean result = bookings.delete(booking);
     if (result) {
       context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);

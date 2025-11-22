@@ -16,8 +16,6 @@ public final class HerokuAssignedPort implements Port {
   public int value() {
     final ProcessBuilder processBuilder = new ProcessBuilder();
     final String envVar = processBuilder.environment().get(PORT);
-    return Optional.ofNullable(envVar)
-      .map(Integer::parseInt)
-      .orElseGet(defaultPort::value);
+    return Optional.ofNullable(envVar).map(Integer::parseInt).orElseGet(defaultPort::value);
   }
 }

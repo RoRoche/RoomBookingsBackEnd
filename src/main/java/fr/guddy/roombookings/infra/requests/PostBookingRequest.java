@@ -28,25 +28,25 @@ public final class PostBookingRequest implements Request {
     this(
       rooms,
       bookings,
-      new RequiredParameter<>(
-        new PathParameter("name", context)
-      ),
+      new RequiredParameter<>(new PathParameter("name", context)),
       new JsonBooking(context.body())
     );
   }
 
-  public PostBookingRequest(final Rooms rooms,
-                            final Bookings bookings,
-                            final Parameter<String> roomName,
-                            final Booking booking) {
+  public PostBookingRequest(
+    final Rooms rooms,
+    final Bookings bookings,
+    final Parameter<String> roomName,
+    final Booking booking
+  ) {
     this(
       bookings,
       new SimpleBooking(
         null,
         booking.userId(),
-        rooms.withName(roomName.value()).orElseThrow(() ->
-          new RoomNotFoundException(roomName.value())
-        ),
+        rooms
+          .withName(roomName.value())
+          .orElseThrow(() -> new RoomNotFoundException(roomName.value())),
         booking.slot()
       )
     );
@@ -58,9 +58,9 @@ public final class PostBookingRequest implements Request {
       throw new CreateBookingConflictException(booking.room().name());
     } else {
       final Long id = bookings.create(booking);
-      final Booking actual = bookings.byId(id)
-        .orElseThrow(() -> new BookingNotFoundException(id));
-      context.header("location", String.format("/bookings/%d", id))
+      final Booking actual = bookings.byId(id).orElseThrow(() -> new BookingNotFoundException(id));
+      context
+        .header("location", String.format("/bookings/%d", id))
         .json(new JsonBooking(actual).map())
         .status(HttpStatus.CREATED_201);
     }
