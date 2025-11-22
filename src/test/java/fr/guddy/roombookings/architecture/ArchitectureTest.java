@@ -15,7 +15,7 @@ final class ArchitectureTest {
     .importPackages("fr.guddy.roombookings");
 
   @Test
-  void domainClassesAreNotAccessInfra() {
+  void checksDomainClassesDoNotAccessInfra() {
     final ArchRule rule = ArchRuleDefinition.noClasses()
       .that()
       .resideInAPackage("..domain..")
@@ -27,32 +27,32 @@ final class ArchitectureTest {
   }
 
   @Test
-  void publicMethodsAreDeclaredInInterface() {
+  void checksPublicMethodsAreDeclaredInInterfaces() {
     new PublicMethodsDeclaredInInterfacesRule().check(classes);
   }
 
   @Test
-  void classesAreAbstractOrFinal() {
+  void checksClassesAreAbstractOrFinal() {
     new ClassesAreAbstractOrFinalRule().check(classes);
   }
 
   @Test
-  void fieldsAreFinal() {
+  void checksFieldsAreFinal() {
     new FieldsShouldBeFinalRule().check(classes);
   }
 
   @Test
-  void noStaticMethods() {
+  void checksThereAreNoStaticMethods() {
     new ClassesShouldHaveNoStaticMethodsRule().check(classes);
   }
 
   @Test
-  void classesDoNotHavePrivateMethods() {
+  void checksClassesDoNotHavePrivateMethods() {
     new ClassesShouldNotHavePrivateMethodsRule().check(classes);
   }
 
   @Test
-  void classesDoNotHaveGettersOrSetters() {
+  void checksClassesDoNotHaveGettersOrSetters() {
     new ClassesShouldNotHaveGettersOrSettersRule().check(classes);
   }
 }

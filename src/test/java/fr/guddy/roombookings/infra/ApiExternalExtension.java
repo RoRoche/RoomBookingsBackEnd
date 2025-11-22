@@ -48,22 +48,22 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
   }
 
   public Rooms rooms() {
-    return rooms;
+    return this.rooms;
   }
 
   public Bookings bookings() {
-    return bookings;
+    return this.bookings;
   }
 
   @Override
   public void beforeAll(final ExtensionContext context) throws InterruptedException {
-    api.start();
+    this.api.start();
     waitForServer();
   }
 
   @Override
   public void afterAll(final ExtensionContext context) {
-    api.stop();
+    this.api.stop();
   }
 
   public void waitForServer() throws InterruptedException {
@@ -74,7 +74,7 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
     while (retries-- > 0 && !isReady) {
       try {
         final HttpResponse<String> response = Unirest.get(
-          String.format("http://localhost:%d/ready", api.port().value())
+          String.format("http://localhost:%d/ready", this.api.port().value())
         ).asString();
         if (response.getStatus() == 200 && "READY".equals(response.getBody())) {
           isReady = true;
