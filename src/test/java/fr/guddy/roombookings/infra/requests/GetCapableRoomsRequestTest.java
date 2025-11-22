@@ -17,10 +17,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetCapableRoomsRequestTest {
 
   @RegisterExtension
-  static ApiExternalExtension api = new ApiExternalExtension();
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNoContent() {
+  void hasNoContent() {
     new WithFixtureAssertion(
       new ClearAllRoomsFixture(api.rooms()),
       new RequestHasStatusCodeAssertion(
@@ -31,7 +31,7 @@ final class GetCapableRoomsRequestTest {
   }
 
   @Test
-  void testNotProcessableParameter() {
+  void isNotProcessableParameter() {
     new WithFixtureAssertion(
       new ClearAllRoomsFixture(api.rooms()),
       new RequestWithBodyAssertion(
@@ -45,7 +45,7 @@ final class GetCapableRoomsRequestTest {
   }
 
   @Test
-  void testOK() {
+  void isOK() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

@@ -23,7 +23,7 @@ final class GetRemindersRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testMissingParameter() {
+  void isMissingParameter() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -40,7 +40,7 @@ final class GetRemindersRequestTest {
   }
 
   @Test
-  void testNoContent() {
+  void hasNoContent() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -56,7 +56,7 @@ final class GetRemindersRequestTest {
   }
 
   @Test
-  void testContent() {
+  void hasContent() {
     // given
     final long nowMinus45m =
       Instant.now().minus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;

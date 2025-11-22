@@ -20,7 +20,7 @@ final class GetRoomsRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNoContent() {
+  void hasNoContent() {
     new WithFixtureAssertion(
       new ClearAllRoomsFixture(api.rooms()),
       new RequestHasStatusCodeAssertion(
@@ -31,7 +31,7 @@ final class GetRoomsRequestTest {
   }
 
   @Test
-  void testOK() {
+  void isOK() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

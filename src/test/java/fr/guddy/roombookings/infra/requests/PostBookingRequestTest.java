@@ -24,7 +24,7 @@ final class PostBookingRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testOK() {
+  void isOK() {
     final long timestampStart = Instant.now().getMillis() / 1000;
     final long timestampEnd =
       Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
@@ -60,7 +60,7 @@ final class PostBookingRequestTest {
   }
 
   @Test
-  void testConflict() {
+  void isConflict() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -98,7 +98,7 @@ final class PostBookingRequestTest {
   }
 
   @Test
-  void testRoomNotFound() {
+  void isRoomNotFound() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

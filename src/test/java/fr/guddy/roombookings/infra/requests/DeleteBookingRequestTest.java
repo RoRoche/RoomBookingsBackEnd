@@ -22,10 +22,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class DeleteBookingRequestTest {
 
   @RegisterExtension
-  static ApiExternalExtension api = new ApiExternalExtension();
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNotFound() {
+  void isNotFound() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -42,7 +42,7 @@ final class DeleteBookingRequestTest {
   }
 
   @Test
-  void testOk() {
+  void isOK() {
     // given
     new ClearAllRoomsFixture(api.rooms()).perform();
     new ClearAllBookingsFixture(api.bookings()).perform();

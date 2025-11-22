@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 final class JsonRoomTest {
 
   @Test
-  void testOk() {
+  void isOK() {
     new MatchersAssertion<>(
       new JsonRoom(new SimpleRoom("test", 12)),
       new HasNameMatcher("test"),

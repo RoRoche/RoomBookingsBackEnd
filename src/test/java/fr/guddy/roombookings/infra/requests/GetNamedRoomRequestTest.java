@@ -17,10 +17,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetNamedRoomRequestTest {
 
   @RegisterExtension
-  static ApiExternalExtension api = new ApiExternalExtension();
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNotFound() {
+  void hasNotFound() {
     new WithFixtureAssertion(
       new ChainedFixtures(new ClearAllRoomsFixture(api.rooms())),
       new RequestWithBodyAssertion(
@@ -34,7 +34,7 @@ final class GetNamedRoomRequestTest {
   }
 
   @Test
-  void testOK() {
+  void isOK() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

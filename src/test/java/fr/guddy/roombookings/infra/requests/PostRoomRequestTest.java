@@ -21,7 +21,7 @@ final class PostRoomRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testOK() {
+  void isOK() {
     new WithFixtureAssertion(
       new ClearAllRoomsFixture(api.rooms()),
       new RequestWithLocationHeaderAssertion(
@@ -37,7 +37,7 @@ final class PostRoomRequestTest {
   }
 
   @Test
-  void testConflict() {
+  void isConflict() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

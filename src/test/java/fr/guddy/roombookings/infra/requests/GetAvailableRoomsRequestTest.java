@@ -19,10 +19,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetAvailableRoomsRequestTest {
 
   @RegisterExtension
-  static ApiExternalExtension api = new ApiExternalExtension();
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNoContent() {
+  void hasNoContent() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -43,7 +43,7 @@ final class GetAvailableRoomsRequestTest {
   }
 
   @Test
-  void testMissingParameter() {
+  void isMissingParameter() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -63,7 +63,7 @@ final class GetAvailableRoomsRequestTest {
   }
 
   @Test
-  void testOkWithAvailableRooms() {
+  void isOkWithAvailableRooms() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -88,7 +88,7 @@ final class GetAvailableRoomsRequestTest {
   }
 
   @Test
-  void testOkWithNoAvailableRooms() {
+  void isOkWithNoAvailableRooms() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

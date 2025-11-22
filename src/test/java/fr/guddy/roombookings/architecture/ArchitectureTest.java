@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 
 final class ArchitectureTest {
 
-  private static final JavaClasses CLASSES = new ClassFileImporter()
+  private final JavaClasses classes = new ClassFileImporter()
     .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
     .importPackages("fr.guddy.roombookings");
 
   @Test
-  void testDomainClassesShouldNotAccessInfra() {
+  void domainClassesAreNotAccessInfra() {
     final ArchRule rule = ArchRuleDefinition.noClasses()
       .that()
       .resideInAPackage("..domain..")
@@ -23,36 +23,36 @@ final class ArchitectureTest {
       .accessClassesThat()
       .resideInAPackage("..infra..")
       .because("domain logic must not be dependent of infrastructure code");
-    rule.check(CLASSES);
+    rule.check(classes);
   }
 
   @Test
-  void testPublicMethodsAreDeclaredInInterface() {
-    new PublicMethodsDeclaredInInterfacesRule().check(CLASSES);
+  void publicMethodsAreDeclaredInInterface() {
+    new PublicMethodsDeclaredInInterfacesRule().check(classes);
   }
 
   @Test
-  void testClassesAreAbstractOrFinal() {
-    new ClassesAreAbstractOrFinalRule().check(CLASSES);
+  void classesAreAbstractOrFinal() {
+    new ClassesAreAbstractOrFinalRule().check(classes);
   }
 
   @Test
-  void testFieldsShouldBeFinalRule() {
-    new FieldsShouldBeFinalRule().check(CLASSES);
+  void fieldsAreFinal() {
+    new FieldsShouldBeFinalRule().check(classes);
   }
 
   @Test
-  void testNoStaticMethodsRule() {
-    new ClassesShouldHaveNoStaticMethodsRule().check(CLASSES);
+  void noStaticMethods() {
+    new ClassesShouldHaveNoStaticMethodsRule().check(classes);
   }
 
   @Test
-  void testClassesShouldNotHavePrivateMethodsRule() {
-    new ClassesShouldNotHavePrivateMethodsRule().check(CLASSES);
+  void classesDoNotHavePrivateMethods() {
+    new ClassesShouldNotHavePrivateMethodsRule().check(classes);
   }
 
   @Test
-  void testClassesShouldNotHaveGettersOrSettersRule() {
-    new ClassesShouldNotHaveGettersOrSettersRule().check(CLASSES);
+  void classesDoNotHaveGettersOrSetters() {
+    new ClassesShouldNotHaveGettersOrSettersRule().check(classes);
   }
 }

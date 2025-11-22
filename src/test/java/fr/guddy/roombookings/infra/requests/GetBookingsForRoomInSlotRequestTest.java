@@ -20,10 +20,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetBookingsForRoomInSlotRequestTest {
 
   @RegisterExtension
-  static ApiExternalExtension api = new ApiExternalExtension();
+  static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void testNoContent() {
+  void hasNoContent() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),
@@ -44,7 +44,7 @@ final class GetBookingsForRoomInSlotRequestTest {
   }
 
   @Test
-  void testOk() {
+  void isOK() {
     // given
     final long timestampStart =
       Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
@@ -83,7 +83,7 @@ final class GetBookingsForRoomInSlotRequestTest {
   }
 
   @Test
-  void testRoomNotFound() {
+  void isRoomNotFound() {
     new WithFixtureAssertion(
       new ChainedFixtures(
         new ClearAllRoomsFixture(api.rooms()),

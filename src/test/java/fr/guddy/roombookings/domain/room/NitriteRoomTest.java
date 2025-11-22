@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 final class NitriteRoomTest {
 
   @Test
-  void testOk() {
+  void isOK() {
     new MatchersAssertion<>(
       new NitriteRoom(new SimpleRoom("test", 12)),
       new HasNameMatcher("test"),
