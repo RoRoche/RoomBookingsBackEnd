@@ -6,16 +6,22 @@ import org.cactoos.map.MapOf;
 import java.util.Map;
 
 public record LogicalSlot(long timestampStart, long timestampEnd) implements Slot {
-    public LogicalSlot(final long timestampStart, final long timestampEnd) {
-        this.timestampStart = Long.min(timestampStart, timestampEnd);
-        this.timestampEnd = Long.max(timestampStart, timestampEnd);
+
+    @Override
+    public long timestampStart() {
+        return Long.min(timestampStart, timestampEnd);
+    }
+
+    @Override
+    public long timestampEnd() {
+        return Long.max(timestampStart, timestampEnd);
     }
 
     @Override
     public Map<String, Object> map() {
         return new MapOf<String, Object>(
-                new MapEntry<>("timestampStart", timestampStart),
-                new MapEntry<>("timestampEnd", timestampEnd)
+                new MapEntry<>("timestampStart", this.timestampStart),
+                new MapEntry<>("timestampEnd", this.timestampEnd)
         );
     }
 }
