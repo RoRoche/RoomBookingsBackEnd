@@ -6,7 +6,6 @@ import fr.guddy.roombookings.infra.matchers.HttpResponseStatusMatcher;
 import io.vavr.Lazy;
 import io.vavr.control.Try;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
 
 public final class RequestHasStatusCodeAssertion implements RequestAssertion {
 

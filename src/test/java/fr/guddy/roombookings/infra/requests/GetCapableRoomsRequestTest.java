@@ -2,6 +2,8 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
 import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
 import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
@@ -10,7 +12,11 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
 import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
+import fr.guddy.roombookings.infra.matchers.HttpResponseBodyMatcher;
+import fr.guddy.roombookings.infra.matchers.HttpResponseStatusMatcher;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -31,17 +37,21 @@ final class GetCapableRoomsRequestTest {
   }
 
   @Test
-  void isNotProcessableParameter() {
-    new WithFixtureAssertion(
-      new ClearAllRoomsFixture(api.rooms()),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/rooms").queryString("capacity", "test").getHttpRequest(),
-          HttpStatus.BAD_REQUEST_400
-        ),
-        "Parameter 'capacity' could not be processed, it should be of type Integer"
+  void isNotProcessableParameter() throws UnirestException {
+    new ClearAllRoomsFixture(api.rooms()).perform();
+    final HttpResponse<String> response = get("http://localhost:7000/rooms")
+      .queryString("capacity", "test")
+      .getHttpRequest()
+      .asString();
+    MatcherAssert.assertThat(
+      response,
+      Matchers.allOf(
+        new HttpResponseStatusMatcher(HttpStatus.BAD_REQUEST_400),
+        new HttpResponseBodyMatcher(
+          "Parameter 'capacity' could not be processed, it should be of type Integer"
+        )
       )
-    ).check();
+    );
   }
 
   @Test

@@ -1,7 +1,5 @@
 package fr.guddy.roombookings.infra.assertions.requests;
 
-import static org.hamcrest.Matchers.containsString;
-
 import com.mashape.unirest.http.HttpResponse;
 import fr.guddy.roombookings.infra.matchers.HttpResponseBodyContainsMatcher;
 import org.hamcrest.MatcherAssert;
