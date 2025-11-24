@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetNamedRoomRequestTest {
 
   @RegisterExtension
+  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test

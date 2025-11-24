@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 final class GetAvailableRoomsRequestTest {
 
   @RegisterExtension
+  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
