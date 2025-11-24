@@ -7,10 +7,11 @@ import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.Slot;
-import io.vavr.control.Try;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.NitriteCollection;
@@ -70,7 +71,9 @@ public final class NitriteBookings implements Bookings {
       .toList();
     return documents
       .stream()
-      .map((document) -> Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get())
+      .map((document) ->
+        new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
+      )
       .toList();
   }
 
@@ -89,7 +92,9 @@ public final class NitriteBookings implements Bookings {
       .toList();
     return documents
       .stream()
-      .map((document) -> Try.of(() -> (Booking) new NitriteBooking(document, rooms)).get())
+      .map((document) ->
+        new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
+      )
       .sorted(Comparator.comparingLong((booking) -> booking.slot().timestampStart()))
       .toList();
   }
