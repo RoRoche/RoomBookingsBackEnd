@@ -3,14 +3,15 @@ package fr.guddy.roombookings.infra.requests;
 import static com.mashape.unirest.http.Unirest.get;
 
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
-import fr.guddy.roombookings.domain.fixtures.*;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
-import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
+import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.AllOf;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
@@ -23,56 +24,50 @@ final class GetAvailableRoomsRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNoContent() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings())
-      ),
-      new RequestHasStatusCodeAssertion(
+  void hasNoContent() throws Exception {
+    MatcherAssert.assertThat(
+      "No available room",
+      new HttpTestCase.WithFixtures<>(
         get("http://localhost:7000/rooms")
           .queryString("capacity", 10)
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          )
-          .getHttpRequest(),
-        HttpStatus.NO_CONTENT_204
-      )
-    ).check();
+          )::asString,
+        api.rooms()::clearAll,
+        api.bookings()::clearAll
+      ).response(),
+      new HasStatus(HttpStatus.NO_CONTENT_204)
+    );
   }
 
   @Test
-  void isMissingParameter() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings())
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
+  void isMissingParameter() throws Exception {
+    MatcherAssert.assertThat(
+      "A parameter is missing",
+      new HttpTestCase.WithFixtures<>(
+        () ->
           get("http://localhost:7000/rooms")
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
-            .getHttpRequest(),
-          HttpStatus.BAD_REQUEST_400
-        ),
-        "Parameter named 'timestamp_end' is missing"
+            .asString(),
+        api.rooms()::clearAll,
+        api.bookings()::clearAll
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.BAD_REQUEST_400),
+        new HasBody("Parameter named 'timestamp_end' is missing")
       )
-    ).check();
+    );
   }
 
   @Test
-  void isOkWithAvailableRooms() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
+  void isOkWithAvailableRooms() throws Exception {
+    MatcherAssert.assertThat(
+      "A room is available on the given slot",
+      new HttpTestCase.WithFixtures<>(
+        () ->
           get("http://localhost:7000/rooms")
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
@@ -80,45 +75,51 @@ final class GetAvailableRoomsRequestTest {
               "timestamp_end",
               Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
             )
-            .getHttpRequest(),
-          HttpStatus.OK_200
-        ),
-        "[{\"name\":\"test_name\",\"capacity\":12}]"
+            .asString(),
+        api.rooms()::clearAll,
+        api.bookings()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.OK_200),
+        new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
       )
-    ).check();
+    );
   }
 
   @Test
-  void isOkWithNoAvailableRooms() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12)),
-        new CreateBookingFixture(
-          api.bookings(),
-          new SimpleBooking(
-            null,
-            "test_user_id",
-            new SimpleRoom("test_name", 12),
-            new LogicalSlot(
-              Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-              Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+  void isOkWithNoAvailableRooms() throws Exception {
+    MatcherAssert.assertThat(
+      "No room is available on the given slot",
+      new HttpTestCase.WithFixtures<>(
+        () ->
+          get("http://localhost:7000/rooms")
+            .queryString("capacity", 10)
+            .queryString("timestamp_start", Instant.now().getMillis() / 1000)
+            .queryString(
+              "timestamp_end",
+              Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
             )
-          )
-        )
-      ),
-      new RequestHasStatusCodeAssertion(
-        get("http://localhost:7000/rooms")
-          .queryString("capacity", 10)
-          .queryString("timestamp_start", Instant.now().getMillis() / 1000)
-          .queryString(
-            "timestamp_end",
-            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          )
-          .getHttpRequest(),
-        HttpStatus.NO_CONTENT_204
-      )
-    ).check();
+            .asString(),
+        api.rooms()::clearAll,
+        api.bookings()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+        () ->
+          api
+            .bookings()
+            .create(
+              new SimpleBooking(
+                null,
+                "test_user_id",
+                new SimpleRoom("test_name", 12),
+                new LogicalSlot(
+                  Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
+                  Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+                )
+              )
+            )
+      ).response(),
+      new AllOf<>(new HasStatus(HttpStatus.NO_CONTENT_204))
+    );
   }
 }

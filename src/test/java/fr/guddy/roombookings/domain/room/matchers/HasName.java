@@ -4,11 +4,11 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasNameMatcher extends TypeSafeMatcher<Room> {
+public final class HasName extends TypeSafeMatcher<Room> {
 
   private final String expectedName;
 
-  public HasNameMatcher(final String expectedName) {
+  public HasName(final String expectedName) {
     this.expectedName = expectedName;
   }
 

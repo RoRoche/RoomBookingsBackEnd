@@ -2,15 +2,14 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
-import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
-import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
-import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
+import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -21,33 +20,33 @@ final class GetNamedRoomRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNotFound() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(new ClearAllRoomsFixture(api.rooms())),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/rooms/test_name"),
-          HttpStatus.NOT_FOUND_404
-        ),
-        "No room found for name 'test_name'"
+  void hasNotFound() throws Exception {
+    MatcherAssert.assertThat(
+      "No room found for given name",
+      new HttpTestCase.WithFixtures<>(
+        get("http://localhost:7000/rooms/test_name")::asString,
+        api.rooms()::clearAll
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.NOT_FOUND_404),
+        new HasBody("No room found for name 'test_name'")
       )
-    ).check();
+    );
   }
 
   @Test
-  void isOK() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          get("http://localhost:7000/rooms/test_name"),
-          HttpStatus.OK_200
-        ),
-        "{\"name\":\"test_name\",\"capacity\":12}"
+  void isOK() throws Exception {
+    MatcherAssert.assertThat(
+      "Room found for given name",
+      new HttpTestCase.WithFixtures<>(
+        get("http://localhost:7000/rooms/test_name")::asString,
+        api.rooms()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.OK_200),
+        new HasBody("{\"name\":\"test_name\",\"capacity\":12}")
       )
-    ).check();
+    );
   }
 }

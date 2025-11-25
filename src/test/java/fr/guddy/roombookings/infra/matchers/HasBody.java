@@ -4,11 +4,11 @@ import com.mashape.unirest.http.HttpResponse;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HttpResponseBodyMatcher extends TypeSafeMatcher<HttpResponse<String>> {
+public final class HasBody extends TypeSafeMatcher<HttpResponse<String>> {
 
   private final String expectedBody;
 
-  public HttpResponseBodyMatcher(final String expectedBody) {
+  public HasBody(final String expectedBody) {
     this.expectedBody = expectedBody;
   }
 

@@ -6,15 +6,12 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HeadersHasHeaderWithValueMatcher extends TypeSafeMatcher<HttpResponse<?>> {
+public final class HasHeaderWithValue extends TypeSafeMatcher<HttpResponse<?>> {
 
   private final String headerName;
   private final Matcher<? super String> valueMatcher;
 
-  public HeadersHasHeaderWithValueMatcher(
-    final String headerName,
-    final Matcher<? super String> valueMatcher
-  ) {
+  public HasHeaderWithValue(final String headerName, final Matcher<? super String> valueMatcher) {
     this.headerName = headerName;
     this.valueMatcher = valueMatcher;
   }

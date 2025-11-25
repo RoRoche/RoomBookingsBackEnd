@@ -8,7 +8,7 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import fr.guddy.roombookings.architecture.rules.*;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({ "JTCOP. RuleEveryTestHasProductionClass", "JTCOP.RuleAssertionMessage" })
+@SuppressWarnings({ "JTCOP.RuleEveryTestHasProductionClass", "JTCOP.RuleAssertionMessage" })
 final class ArchitectureTest {
 
   private final JavaClasses classes = new ClassFileImporter()

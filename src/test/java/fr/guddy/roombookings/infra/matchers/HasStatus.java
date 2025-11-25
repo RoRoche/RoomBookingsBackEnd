@@ -4,11 +4,11 @@ import com.mashape.unirest.http.HttpResponse;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HttpResponseStatusMatcher extends TypeSafeMatcher<HttpResponse<?>> {
+public final class HasStatus extends TypeSafeMatcher<HttpResponse<?>> {
 
   private final int expectedStatus;
 
-  public HttpResponseStatusMatcher(final int expectedStatus) {
+  public HasStatus(final int expectedStatus) {
     this.expectedStatus = expectedStatus;
   }
 

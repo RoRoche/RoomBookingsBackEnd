@@ -3,16 +3,18 @@ package fr.guddy.roombookings.infra.requests;
 import static com.mashape.unirest.http.Unirest.post;
 
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
-import fr.guddy.roombookings.domain.fixtures.*;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
-import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithLocationHeaderAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithPartialBodyAssertion;
+import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasBodyContaining;
+import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
+import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.AllOf;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
@@ -25,101 +27,94 @@ final class PostBookingRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void isOK() {
+  void isOK() throws Exception {
     final long timestampStart = Instant.now().getMillis() / 1000;
     final long timestampEnd =
       Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
-      ),
-      new RequestWithLocationHeaderAssertion(
-        new RequestWithPartialBodyAssertion(
-          new RequestHasStatusCodeAssertion(
-            post("http://localhost:7000/rooms/test_name/bookings")
-              .body(
-                String.format(
-                  "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                  timestampStart,
-                  timestampEnd
-                )
-              )
-              .getHttpRequest(),
-            HttpStatus.CREATED_201
-          ),
+    MatcherAssert.assertThat(
+      "Create booking is successful",
+      new HttpTestCase.WithFixtures<>(
+        post("http://localhost:7000/rooms/test_name/bookings").body(
+          String.format(
+            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+            timestampStart,
+            timestampEnd
+          )
+        )::asString,
+        api.rooms()::clearAll,
+        api.bookings()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.CREATED_201),
+        new HasBodyContaining(
           String.format(
             "\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             timestampStart,
             timestampEnd
           )
         ),
-        "/bookings/"
+        new HasHeaderWithValue("Location", Matchers.startsWith("/bookings/"))
       )
-    ).check();
+    );
   }
 
   @Test
-  void isConflict() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12)),
-        new CreateBookingFixture(
-          api.bookings(),
-          new SimpleBooking(
-            null,
-            "test_user_id",
-            new SimpleRoom("test_name", 12),
-            new LogicalSlot(
-              Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-              Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
-            )
+  void isConflict() throws Exception {
+    MatcherAssert.assertThat(
+      "Has conflict on room and slot",
+      new HttpTestCase.WithFixtures<>(
+        post("http://localhost:7000/rooms/test_name/bookings").body(
+          String.format(
+            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+            Instant.now().getMillis() / 1000,
+            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
           )
-        )
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          post("http://localhost:7000/rooms/test_name/bookings")
-            .body(
-              String.format(
-                "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                Instant.now().getMillis() / 1000,
-                Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+        )::asString,
+        api.rooms()::clearAll,
+        api.bookings()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+        () ->
+          api
+            .bookings()
+            .create(
+              new SimpleBooking(
+                null,
+                "test_user_id",
+                new SimpleRoom("test_name", 12),
+                new LogicalSlot(
+                  Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
+                  Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+                )
               )
             )
-            .getHttpRequest(),
-          HttpStatus.CONFLICT_409
-        ),
-        "Room named 'test_name' already booked on this slot"
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.CONFLICT_409),
+        new HasBody("Room named 'test_name' already booked on this slot")
       )
-    ).check();
+    );
   }
 
   @Test
-  void isRoomNotFound() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new ClearAllBookingsFixture(api.bookings())
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          post("http://localhost:7000/rooms/test_name/bookings")
-            .body(
-              String.format(
-                "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-                Instant.now().getMillis() / 1000,
-                Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-              )
-            )
-            .getHttpRequest(),
-          HttpStatus.NOT_FOUND_404
-        ),
-        "No room found for name 'test_name'"
+  void isRoomNotFound() throws Exception {
+    MatcherAssert.assertThat(
+      "Room is not found for name",
+      new HttpTestCase.WithFixtures<>(
+        post("http://localhost:7000/rooms/test_name/bookings").body(
+          String.format(
+            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+            Instant.now().getMillis() / 1000,
+            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+          )
+        )::asString,
+        api.rooms()::clearAll,
+        api.bookings()::clearAll
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.NOT_FOUND_404),
+        new HasBody("No room found for name 'test_name'")
       )
-    ).check();
+    );
   }
 }

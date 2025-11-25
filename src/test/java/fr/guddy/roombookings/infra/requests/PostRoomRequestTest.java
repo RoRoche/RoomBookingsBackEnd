@@ -2,16 +2,16 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.post;
 
-import fr.guddy.roombookings.domain.fixtures.ChainedFixtures;
-import fr.guddy.roombookings.domain.fixtures.ClearAllRoomsFixture;
-import fr.guddy.roombookings.domain.fixtures.CreateRoomFixture;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
-import fr.guddy.roombookings.infra.assertions.WithFixtureAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestHasStatusCodeAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithBodyAssertion;
-import fr.guddy.roombookings.infra.assertions.requests.RequestWithLocationHeaderAssertion;
+import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
+import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -22,37 +22,37 @@ final class PostRoomRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void isOK() {
-    new WithFixtureAssertion(
-      new ClearAllRoomsFixture(api.rooms()),
-      new RequestWithLocationHeaderAssertion(
-        new RequestHasStatusCodeAssertion(
-          post("http://localhost:7000/rooms")
-            .body("{\"name\":\"test_name\",\"capacity\":12}")
-            .getHttpRequest(),
-          HttpStatus.CREATED_201
-        ),
-        "/rooms/"
+  void isOK() throws Exception {
+    MatcherAssert.assertThat(
+      "Create room is successful",
+      new HttpTestCase.WithFixtures<>(
+        post("http://localhost:7000/rooms").body(
+          "{\"name\":\"test_name\",\"capacity\":12}"
+        )::asString,
+        api.rooms()::clearAll
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.CREATED_201),
+        new HasHeaderWithValue("Location", Matchers.startsWith("/rooms/"))
       )
-    ).check();
+    );
   }
 
   @Test
-  void isConflict() {
-    new WithFixtureAssertion(
-      new ChainedFixtures(
-        new ClearAllRoomsFixture(api.rooms()),
-        new CreateRoomFixture(api.rooms(), new SimpleRoom("test_name", 12))
-      ),
-      new RequestWithBodyAssertion(
-        new RequestHasStatusCodeAssertion(
-          post("http://localhost:7000/rooms")
-            .body("{\"name\":\"test_name\",\"capacity\":12}")
-            .getHttpRequest(),
-          HttpStatus.CONFLICT_409
-        ),
-        "A room named 'test_name' already exists"
+  void isConflict() throws Exception {
+    MatcherAssert.assertThat(
+      "Is conflicting on name",
+      new HttpTestCase.WithFixtures<>(
+        post("http://localhost:7000/rooms").body(
+          "{\"name\":\"test_name\",\"capacity\":12}"
+        )::asString,
+        api.rooms()::clearAll,
+        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+      ).response(),
+      new AllOf<>(
+        new HasStatus(HttpStatus.CONFLICT_409),
+        new HasBody("A room named 'test_name' already exists")
       )
-    ).check();
+    );
   }
 }

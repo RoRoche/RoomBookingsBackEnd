@@ -9,12 +9,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasMapMatcher extends TypeSafeMatcher<Room> {
+public final class HasMap extends TypeSafeMatcher<Room> {
 
   private final Pair<String, Object>[] expectedEntries;
 
   @SafeVarargs
-  public HasMapMatcher(final Pair<String, Object>... expectedEntries) {
+  public HasMap(final Pair<String, Object>... expectedEntries) {
     this.expectedEntries = expectedEntries;
   }
 

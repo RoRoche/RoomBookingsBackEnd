@@ -4,11 +4,11 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasCapacityMatcher extends TypeSafeMatcher<Room> {
+public final class HasCapacity extends TypeSafeMatcher<Room> {
 
   private final int expectedCapacity;
 
-  public HasCapacityMatcher(final int expectedCapacity) {
+  public HasCapacity(final int expectedCapacity) {
     this.expectedCapacity = expectedCapacity;
   }
 

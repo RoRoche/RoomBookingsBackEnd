@@ -4,11 +4,11 @@ import com.mashape.unirest.http.HttpResponse;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HttpResponseBodyContainsMatcher extends TypeSafeMatcher<HttpResponse<String>> {
+public final class HasBodyContaining extends TypeSafeMatcher<HttpResponse<String>> {
 
   private final String expectedSubstring;
 
-  public HttpResponseBodyContainsMatcher(final String expectedSubstring) {
+  public HasBodyContaining(final String expectedSubstring) {
     this.expectedSubstring = expectedSubstring.toLowerCase(); // insensible à la casse
   }
 
