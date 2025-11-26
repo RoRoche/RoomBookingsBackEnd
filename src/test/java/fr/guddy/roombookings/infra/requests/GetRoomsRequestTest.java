@@ -7,6 +7,7 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
@@ -24,8 +25,8 @@ final class GetRoomsRequestTest {
     MatcherAssert.assertThat(
       "No rooms",
       new HttpTestCase.WithFixtures<>(
-        get("http://localhost:7000/rooms")::asString,
-        api.rooms()::clearAll
+        new ListOf<>(api.rooms()::clearAll),
+        get("http://localhost:7000/rooms")::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
@@ -36,9 +37,10 @@ final class GetRoomsRequestTest {
     MatcherAssert.assertThat(
       "Has rooms",
       new HttpTestCase.WithFixtures<>(
-        get("http://localhost:7000/rooms")::asString,
-        api.rooms()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+        new ListOf<>(api.rooms()::clearAll, () ->
+          api.rooms().create(new SimpleRoom("test_name", 12))
+        ),
+        get("http://localhost:7000/rooms")::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),

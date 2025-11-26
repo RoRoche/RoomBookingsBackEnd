@@ -13,6 +13,7 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.core.AllOf;
 import org.joda.time.Duration;
@@ -31,9 +32,8 @@ final class DeleteBookingRequestTest {
     assertThat(
       "No booking with id 12 were found",
       new HttpTestCase.WithFixtures<>(
-        () -> delete("http://localhost:7000/bookings/12").asString(),
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
+        () -> delete("http://localhost:7000/bookings/12").asString()
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),

@@ -9,6 +9,7 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
@@ -28,15 +29,14 @@ final class GetAvailableRoomsRequestTest {
     MatcherAssert.assertThat(
       "No available room",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         get("http://localhost:7000/rooms")
           .queryString("capacity", 10)
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+          )::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
@@ -47,13 +47,12 @@ final class GetAvailableRoomsRequestTest {
     MatcherAssert.assertThat(
       "A parameter is missing",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         () ->
           get("http://localhost:7000/rooms")
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
-            .asString(),
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+            .asString()
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
@@ -67,6 +66,9 @@ final class GetAvailableRoomsRequestTest {
     MatcherAssert.assertThat(
       "A room is available on the given slot",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
+          api.rooms().create(new SimpleRoom("test_name", 12))
+        ),
         () ->
           get("http://localhost:7000/rooms")
             .queryString("capacity", 10)
@@ -75,10 +77,7 @@ final class GetAvailableRoomsRequestTest {
               "timestamp_end",
               Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
             )
-            .asString(),
-        api.rooms()::clearAll,
-        api.bookings()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+            .asString()
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
@@ -92,6 +91,25 @@ final class GetAvailableRoomsRequestTest {
     MatcherAssert.assertThat(
       "No room is available on the given slot",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(
+          api.rooms()::clearAll,
+          api.bookings()::clearAll,
+          () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+          () ->
+            api
+              .bookings()
+              .create(
+                new SimpleBooking(
+                  null,
+                  "test_user_id",
+                  new SimpleRoom("test_name", 12),
+                  new LogicalSlot(
+                    Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
+                    Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+                  )
+                )
+              )
+        ),
         () ->
           get("http://localhost:7000/rooms")
             .queryString("capacity", 10)
@@ -100,24 +118,7 @@ final class GetAvailableRoomsRequestTest {
               "timestamp_end",
               Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
             )
-            .asString(),
-        api.rooms()::clearAll,
-        api.bookings()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12)),
-        () ->
-          api
-            .bookings()
-            .create(
-              new SimpleBooking(
-                null,
-                "test_user_id",
-                new SimpleRoom("test_name", 12),
-                new LogicalSlot(
-                  Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-                  Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
-                )
-              )
-            )
+            .asString()
       ).response(),
       new AllOf<>(new HasStatus(HttpStatus.NO_CONTENT_204))
     );

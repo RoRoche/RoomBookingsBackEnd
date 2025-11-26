@@ -11,6 +11,7 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
@@ -30,15 +31,15 @@ final class GetBookingsForRoomInSlotRequestTest {
     MatcherAssert.assertThat(
       "No booking for room in slot",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
+          api.rooms().create(new SimpleRoom("test_name", 12))
+        ),
         get("http://localhost:7000/rooms/test_name/bookings")
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+          )::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
@@ -93,14 +94,13 @@ final class GetBookingsForRoomInSlotRequestTest {
     MatcherAssert.assertThat(
       "No room for given name",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         get("http://localhost:7000/rooms/test_name/bookings")
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
-          )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+          )::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),

@@ -10,6 +10,7 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
@@ -29,9 +30,8 @@ final class GetRemindersRequestTest {
     MatcherAssert.assertThat(
       "Is missing parameter",
       new HttpTestCase.WithFixtures<>(
-        get("http://localhost:7000/bookings").getHttpRequest()::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
+        get("http://localhost:7000/bookings").getHttpRequest()::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
@@ -45,9 +45,8 @@ final class GetRemindersRequestTest {
     MatcherAssert.assertThat(
       "Has no content",
       new HttpTestCase.WithFixtures<>(
-        get("http://localhost:7000/bookings").queryString("user_id", "test@test.com")::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
+        get("http://localhost:7000/bookings").queryString("user_id", "test@test.com")::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );

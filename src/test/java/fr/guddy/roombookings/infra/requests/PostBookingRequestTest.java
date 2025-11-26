@@ -11,6 +11,7 @@ import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasBodyContaining;
 import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,16 +35,16 @@ final class PostBookingRequestTest {
     MatcherAssert.assertThat(
       "Create booking is successful",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
+          api.rooms().create(new SimpleRoom("test_name", 12))
+        ),
         post("http://localhost:7000/rooms/test_name/bookings").body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             timestampStart,
             timestampEnd
           )
-        )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12))
+        )::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.CREATED_201),
@@ -64,30 +65,32 @@ final class PostBookingRequestTest {
     MatcherAssert.assertThat(
       "Has conflict on room and slot",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(
+          api.rooms()::clearAll,
+          api.bookings()::clearAll,
+          () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+          () ->
+            api
+              .bookings()
+              .create(
+                new SimpleBooking(
+                  null,
+                  "test_user_id",
+                  new SimpleRoom("test_name", 12),
+                  new LogicalSlot(
+                    Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
+                    Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+                  )
+                )
+              )
+        ),
         post("http://localhost:7000/rooms/test_name/bookings").body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             Instant.now().getMillis() / 1000,
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
           )
-        )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll,
-        () -> api.rooms().create(new SimpleRoom("test_name", 12)),
-        () ->
-          api
-            .bookings()
-            .create(
-              new SimpleBooking(
-                null,
-                "test_user_id",
-                new SimpleRoom("test_name", 12),
-                new LogicalSlot(
-                  Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-                  Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
-                )
-              )
-            )
+        )::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.CONFLICT_409),
@@ -101,15 +104,14 @@ final class PostBookingRequestTest {
     MatcherAssert.assertThat(
       "Room is not found for name",
       new HttpTestCase.WithFixtures<>(
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         post("http://localhost:7000/rooms/test_name/bookings").body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             Instant.now().getMillis() / 1000,
             Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
           )
-        )::asString,
-        api.rooms()::clearAll,
-        api.bookings()::clearAll
+        )::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
