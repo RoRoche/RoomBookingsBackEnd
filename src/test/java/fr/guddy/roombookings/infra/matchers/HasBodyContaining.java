@@ -6,7 +6,7 @@ import com.mashape.unirest.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.cactoos.map.MapOf;
+import java.util.stream.IntStream;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -33,60 +33,32 @@ public final class HasBodyContaining extends TypeSafeMatcher<HttpResponse<String
   }
 
   private boolean deepMatches(final Object actual, final Object expected) {
-    // null
-    if (expected == null) {
-      return actual == null;
-    }
+    if (expected == null) return actual == null;
 
-    // Numbers comparison : int vs long vs double
-    if (actual instanceof Number a && expected instanceof Number e) {
+    if (expected instanceof Number e && actual instanceof Number a) {
       return a.longValue() == e.longValue();
     }
 
-    // Map : recursive comparison
-    if (expected instanceof Map<?, ?> expectedMap) {
-      if (!(actual instanceof Map<?, ?> actualMap)) {
-        return false;
-      }
-
-      for (final Map.Entry<?, ?> entry : expectedMap.entrySet()) {
-        final Object key = entry.getKey();
-        final Object expectedValue = entry.getValue();
-
-        if (!actualMap.containsKey(key)) {
-          return false;
-        }
-
-        final Object actualValue = actualMap.get(key);
-
-        if (!deepMatches(actualValue, expectedValue)) {
-          return false;
-        }
-      }
-
-      return true;
+    if (expected instanceof Map<?, ?> expectedMap && actual instanceof Map<?, ?> actualMap) {
+      return expectedMap
+        .entrySet()
+        .stream()
+        .allMatch(
+          (entry) ->
+            actualMap.containsKey(entry.getKey()) &&
+            deepMatches(actualMap.get(entry.getKey()), entry.getValue())
+        );
     }
 
-    // List
-    if (expected instanceof List<?> expectedList) {
-      if (!(actual instanceof List<?> actualList)) {
-        return false;
-      }
-
-      if (expectedList.size() != actualList.size()) {
-        return false;
-      }
-
-      for (int i = 0; i < expectedList.size(); i++) {
-        if (!deepMatches(actualList.get(i), expectedList.get(i))) {
-          return false;
-        }
-      }
-
-      return true;
+    if (expected instanceof List<?> expectedList && actual instanceof List<?> actualList) {
+      return (
+        expectedList.size() == actualList.size() &&
+        IntStream.range(0, expectedList.size()).allMatch((i) ->
+          deepMatches(actualList.get(i), actualList.get(i))
+        )
+      );
     }
 
-    // Simple comparison
     return Objects.equals(actual, expected);
   }
 
