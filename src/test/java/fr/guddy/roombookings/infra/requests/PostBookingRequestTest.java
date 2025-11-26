@@ -11,7 +11,10 @@ import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasBodyContaining;
 import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
+import java.util.Map;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,10 +52,13 @@ final class PostBookingRequestTest {
       new AllOf<>(
         new HasStatus(HttpStatus.CREATED_201),
         new HasBodyContaining(
-          String.format(
-            "\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            timestampStart,
-            timestampEnd
+          Map.of(
+            "user_id",
+            "test_user_id",
+            "room",
+            Map.of("name", "test_name", "capacity", 12),
+            "slot",
+            Map.of("timestamp_start", timestampStart, "timestamp_end", timestampEnd)
           )
         ),
         new HasHeaderWithValue("Location", Matchers.startsWith("/bookings/"))
