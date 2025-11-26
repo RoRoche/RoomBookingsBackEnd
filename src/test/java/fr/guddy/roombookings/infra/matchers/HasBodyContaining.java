@@ -18,11 +18,6 @@ public final class HasBodyContaining extends TypeSafeMatcher<HttpResponse<String
     this.expectedEntries = expectedEntries;
   }
 
-  @SafeVarargs
-  public HasBodyContaining(final Map.Entry<String, Object>... expectedEntries) {
-    this(new MapOf<>(expectedEntries));
-  }
-
   @Override
   protected boolean matchesSafely(final HttpResponse<String> response) {
     try {
