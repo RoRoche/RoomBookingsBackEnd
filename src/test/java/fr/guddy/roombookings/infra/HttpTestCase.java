@@ -7,7 +7,7 @@ import org.cactoos.list.ListOf;
 public interface HttpTestCase<T> {
   HttpResponse<T> response() throws Exception;
 
-  class WithFixtures<T> implements HttpTestCase<T> {
+  final class WithFixtures<T> implements HttpTestCase<T> {
 
     private final HttpTestCase<T> delegate;
     private final List<Runnable> fixtures;
