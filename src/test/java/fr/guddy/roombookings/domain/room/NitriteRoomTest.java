@@ -3,7 +3,7 @@ package fr.guddy.roombookings.domain.room;
 import fr.guddy.roombookings.domain.room.matchers.HasCapacity;
 import fr.guddy.roombookings.domain.room.matchers.HasMap;
 import fr.guddy.roombookings.domain.room.matchers.HasName;
-import org.apache.commons.lang3.tuple.Pair;
+import org.cactoos.map.MapEntry;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ final class NitriteRoomTest {
       new AllOf<>(
         new HasName("test"),
         new HasCapacity(12),
-        new HasMap(Pair.of("room_name", "test"), Pair.of("room_capacity", 12))
+        new HasMap(new MapEntry<>("room_name", "test"), new MapEntry<>("room_capacity", 12))
       )
     );
   }

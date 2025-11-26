@@ -1,46 +1,32 @@
 package fr.guddy.roombookings.domain.room.matchers;
 
 import fr.guddy.roombookings.domain.room.Room;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
+import org.cactoos.map.MapOf;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 public final class HasMap extends TypeSafeMatcher<Room> {
 
-  private final Pair<String, Object>[] expectedEntries;
+  private final Map<String, Object> expected;
+
+  public HasMap(final Map<String, Object> expected) {
+    this.expected = expected;
+  }
 
   @SafeVarargs
-  public HasMap(final Pair<String, Object>... expectedEntries) {
-    this.expectedEntries = expectedEntries;
+  public HasMap(final Map.Entry<String, Object>... expected) {
+    this(new MapOf<>(expected));
   }
 
   @Override
-  protected boolean matchesSafely(final Room room) {
-    final Map<String, Object> roomMap = room.map();
-
-    final Set<String> expectedKeys = Arrays.stream(expectedEntries)
-      .map(Pair::getKey)
-      .collect(Collectors.toSet());
-
-    if (!roomMap.keySet().equals(expectedKeys)) {
-      return false;
-    }
-
-    return Arrays.stream(expectedEntries).allMatch(
-      (pair) ->
-        roomMap.containsKey(pair.getKey()) && roomMap.get(pair.getKey()).equals(pair.getValue())
-    );
+  protected boolean matchesSafely(final Room actual) {
+    return this.expected.equals(actual.map());
   }
 
   @Override
   public void describeTo(final Description description) {
-    description
-      .appendText("a Room with map entries: ")
-      .appendValueList("{", ", ", "}", expectedEntries);
+    description.appendText("a Room with map entries: ").appendValue(this.expected);
   }
 
   @Override
