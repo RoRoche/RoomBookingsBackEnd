@@ -31,7 +31,7 @@ final class GetRemindersRequestTest {
       "Is missing parameter",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:7000/bookings").getHttpRequest()::asString
+        get("http://localhost:%d/bookings".formatted(api.port().value())).getHttpRequest()::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
@@ -46,7 +46,10 @@ final class GetRemindersRequestTest {
       "Has no content",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:7000/bookings").queryString("user_id", "test@test.com")::asString
+        get("http://localhost:%d/bookings".formatted(api.port().value())).queryString(
+          "user_id",
+          "test@test.com"
+        )::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
@@ -86,7 +89,9 @@ final class GetRemindersRequestTest {
     // then
     MatcherAssert.assertThat(
       "Has reminders",
-      get("http://localhost:7000/bookings").queryString("user_id", "test@test.com").asString(),
+      get("http://localhost:%d/bookings".formatted(api.port().value()))
+        .queryString("user_id", "test@test.com")
+        .asString(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody(

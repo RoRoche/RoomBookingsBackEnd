@@ -55,6 +55,10 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
     return this.bookings;
   }
 
+  public Port port() {
+    return this.api.port();
+  }
+
   @Override
   public void beforeAll(final ExtensionContext context) throws InterruptedException {
     this.api.start();

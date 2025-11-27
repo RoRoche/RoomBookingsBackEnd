@@ -30,7 +30,7 @@ final class GetAvailableRoomsRequestTest {
       "No available room",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:7000/rooms")
+        get("http://localhost:%d/rooms".formatted(api.port().value()))
           .queryString("capacity", 10)
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
@@ -49,7 +49,7 @@ final class GetAvailableRoomsRequestTest {
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         () ->
-          get("http://localhost:7000/rooms")
+          get("http://localhost:%d/rooms".formatted(api.port().value()))
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
             .asString()
@@ -70,7 +70,7 @@ final class GetAvailableRoomsRequestTest {
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
         () ->
-          get("http://localhost:7000/rooms")
+          get("http://localhost:%d/rooms".formatted(api.port().value()))
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
             .queryString(
@@ -111,7 +111,7 @@ final class GetAvailableRoomsRequestTest {
               )
         ),
         () ->
-          get("http://localhost:7000/rooms")
+          get("http://localhost:%d/rooms".formatted(api.port().value()))
             .queryString("capacity", 10)
             .queryString("timestamp_start", Instant.now().getMillis() / 1000)
             .queryString(

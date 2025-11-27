@@ -33,7 +33,7 @@ final class DeleteBookingRequestTest {
       "No booking with id 12 were found",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        () -> delete("http://localhost:7000/bookings/12").asString()
+        () -> delete("http://localhost:%d/bookings/12".formatted(api.port().value())).asString()
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
@@ -60,7 +60,7 @@ final class DeleteBookingRequestTest {
 
     // when
     final HttpResponse<String> response = delete(
-      String.format("http://localhost:7000/bookings/%d", id)
+      String.format("http://localhost:%d/bookings/%d", api.port().value(), id)
     ).asString();
 
     // then

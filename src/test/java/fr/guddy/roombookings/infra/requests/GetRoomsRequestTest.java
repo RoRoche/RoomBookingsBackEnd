@@ -26,7 +26,7 @@ final class GetRoomsRequestTest {
       "No rooms",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll),
-        get("http://localhost:7000/rooms")::asString
+        get("http://localhost:%d/rooms".formatted(api.port().value()))::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
@@ -40,7 +40,7 @@ final class GetRoomsRequestTest {
         new ListOf<>(api.rooms()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        get("http://localhost:7000/rooms")::asString
+        get("http://localhost:%d/rooms".formatted(api.port().value()))::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),

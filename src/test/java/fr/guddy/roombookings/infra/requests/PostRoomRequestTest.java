@@ -28,7 +28,7 @@ final class PostRoomRequestTest {
       "Create room is successful",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll),
-        post("http://localhost:7000/rooms").body(
+        post("http://localhost:%d/rooms".formatted(api.port().value())).body(
           "{\"name\":\"test_name\",\"capacity\":12}"
         )::asString
       ).response(),
@@ -47,7 +47,7 @@ final class PostRoomRequestTest {
         new ListOf<>(api.rooms()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        post("http://localhost:7000/rooms").body(
+        post("http://localhost:%d/rooms".formatted(api.port().value())).body(
           "{\"name\":\"test_name\",\"capacity\":12}"
         )::asString
       ).response(),

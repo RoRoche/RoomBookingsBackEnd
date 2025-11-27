@@ -26,7 +26,7 @@ final class GetNamedRoomRequestTest {
       "No room found for given name",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll),
-        get("http://localhost:7000/rooms/test_name")::asString
+        get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
@@ -43,7 +43,7 @@ final class GetNamedRoomRequestTest {
         new ListOf<>(api.rooms()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        get("http://localhost:7000/rooms/test_name")::asString
+        get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
       ).response(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),

@@ -34,7 +34,7 @@ final class GetBookingsForRoomInSlotRequestTest {
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        get("http://localhost:7000/rooms/test_name/bookings")
+        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",
@@ -63,7 +63,9 @@ final class GetBookingsForRoomInSlotRequestTest {
       );
 
     // when
-    final HttpResponse<String> response = get("http://localhost:7000/rooms/test_name/bookings")
+    final HttpResponse<String> response = get(
+      "http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())
+    )
       .queryString("timestamp_start", Instant.now().getMillis() / 1000)
       .queryString(
         "timestamp_end",
@@ -95,7 +97,7 @@ final class GetBookingsForRoomInSlotRequestTest {
       "No room for given name",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:7000/rooms/test_name/bookings")
+        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
           .queryString("timestamp_start", Instant.now().getMillis() / 1000)
           .queryString(
             "timestamp_end",

@@ -39,7 +39,7 @@ final class PostBookingRequestTest {
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        post("http://localhost:7000/rooms/test_name/bookings").body(
+        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             timestampStart,
@@ -88,7 +88,7 @@ final class PostBookingRequestTest {
                 )
               )
         ),
-        post("http://localhost:7000/rooms/test_name/bookings").body(
+        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             Instant.now().getMillis() / 1000,
@@ -109,7 +109,7 @@ final class PostBookingRequestTest {
       "Room is not found for name",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        post("http://localhost:7000/rooms/test_name/bookings").body(
+        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
             Instant.now().getMillis() / 1000,
