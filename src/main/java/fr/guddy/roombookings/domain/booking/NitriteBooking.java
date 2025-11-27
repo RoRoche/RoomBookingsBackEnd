@@ -8,7 +8,7 @@ import fr.guddy.roombookings.domain.slot.Slot;
 import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
-import org.dizitart.no2.Document;
+import org.dizitart.no2.collection.Document;
 
 public final class NitriteBooking extends Booking.Envelope {
 

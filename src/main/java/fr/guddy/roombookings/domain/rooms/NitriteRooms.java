@@ -1,6 +1,6 @@
 package fr.guddy.roombookings.domain.rooms;
 
-import static org.dizitart.no2.filters.Filters.eq;
+import static org.dizitart.no2.filters.FluentFilter.where;
 
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
-import org.dizitart.no2.Document;
 import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.NitriteCollection;
-import org.dizitart.no2.filters.Filters;
+import org.dizitart.no2.collection.Document;
+import org.dizitart.no2.collection.NitriteCollection;
+import org.dizitart.no2.filters.Filter;
 
 public final class NitriteRooms implements Rooms {
 
@@ -31,8 +31,7 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public Long create(final Room room) {
-    return collection
-      .insert(new Document(new NitriteRoom(room).map()))
+    return this.collection.insert(Document.createDocument(new NitriteRoom(room).map()))
       .iterator()
       .next()
       .getIdValue();
@@ -40,8 +39,7 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public List<Room> all() {
-    return collection
-      .find()
+    return this.collection.find()
       .toList()
       .stream()
       .map((document) -> (Room) new NitriteRoom(document))
@@ -50,8 +48,7 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public List<Room> withCapacity(final int capacity) {
-    return collection
-      .find(Filters.gte("room_capacity", capacity))
+    return this.collection.find(where("room_capacity").gte(capacity))
       .toList()
       .stream()
       .map((document) -> (Room) new NitriteRoom(document))
@@ -60,8 +57,7 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public Optional<Room> withName(final String name) {
-    return collection
-      .find(eq("room_name", name))
+    return this.collection.find(where("room_name").eq(name))
       .toList()
       .stream()
       .findFirst()
@@ -70,6 +66,6 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public int clearAll() {
-    return collection.remove(Filters.ALL).getAffectedCount();
+    return this.collection.remove(Filter.ALL).getAffectedCount();
   }
 }
