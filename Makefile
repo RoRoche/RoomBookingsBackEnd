@@ -7,6 +7,9 @@ lint: ## Check code formatting
 lint-fix: ## Fix formatting automatically
 	@npx prettier --write .
 
+deps-updates: ## Use Maven plugin to list if there are dependencies updates
+	@mvn clean validate -Pfail-on-update
+
 help: ## Show this help message
 	@echo ""
 	@echo "Available targets:"
