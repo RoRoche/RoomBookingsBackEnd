@@ -204,7 +204,7 @@
       <plugin>
         <groupId>com.github.volodya-lombrozo</groupId>
         <artifactId>jtcop-maven-plugin</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3</version>
         <executions>
           <execution>
             <goals>
@@ -213,6 +213,7 @@
           </execution>
         </executions>
         <configuration>
+          <languageLevel>JAVA_21</languageLevel>
           <failOnError>true</failOnError>
         </configuration>
       </plugin>
