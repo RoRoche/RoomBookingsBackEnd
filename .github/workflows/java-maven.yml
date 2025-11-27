@@ -37,6 +37,17 @@ jobs:
       - name: Build project (compile + package) without tests
         run: mvn clean package -DskipTests
 
+      - name: Check for dependency updates
+        continue-on-error: true # allow this step to fail without failing the workflow
+        run: |
+          mvn clean validate -Pfail-on-update > updates.txt
+          if grep -q '->' updates.txt; then
+            echo "⚠️ Some dependencies have newer versions available!"
+            cat updates.txt
+          else
+            echo "✅ All dependencies are up to date."
+          fi
+
       - name: Run tests and generate JaCoCo coverage
         run: mvn clean verify
 
