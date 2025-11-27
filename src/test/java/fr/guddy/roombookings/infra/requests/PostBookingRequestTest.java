@@ -13,8 +13,6 @@ import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import java.util.Map;
 import org.cactoos.list.ListOf;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
