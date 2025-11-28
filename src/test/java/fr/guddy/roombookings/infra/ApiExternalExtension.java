@@ -9,6 +9,7 @@ import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.ports.DefaultPort;
 import fr.guddy.roombookings.infra.ports.Port;
+import fr.guddy.roombookings.infra.ports.SimplePort;
 import org.dizitart.no2.Nitrite;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -44,7 +45,7 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
   }
 
   public ApiExternalExtension() {
-    this(Nitrite.builder().openOrCreate(), new DefaultPort());
+    this(Nitrite.builder().openOrCreate(), new SimplePort(0));
   }
 
   public Rooms rooms() {
