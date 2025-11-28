@@ -135,7 +135,7 @@ final class GetAvailableRoomsRequestTest {
             )
             .asString()
       ).response(),
-      new AllOf<>(new HasStatus(HttpStatus.NO_CONTENT_204))
+      new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
 }
