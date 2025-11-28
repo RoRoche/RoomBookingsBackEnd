@@ -13,6 +13,7 @@ import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterExce
 import fr.guddy.roombookings.infra.ports.DefaultPort;
 import fr.guddy.roombookings.infra.ports.HerokuAssignedPort;
 import fr.guddy.roombookings.infra.ports.Port;
+import fr.guddy.roombookings.infra.ports.SimplePort;
 import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.ReadinessRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
@@ -81,6 +82,6 @@ public final class Api implements Application, Exposed {
 
   @Override
   public Port port() {
-    return this.port;
+    return new SimplePort(this.app.port());
   }
 }
