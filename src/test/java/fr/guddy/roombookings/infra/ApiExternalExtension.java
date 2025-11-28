@@ -7,7 +7,6 @@ import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.bookings.NitriteBookings;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.infra.ports.DefaultPort;
 import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.ports.SimplePort;
 import org.dizitart.no2.Nitrite;
