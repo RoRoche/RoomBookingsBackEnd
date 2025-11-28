@@ -49,13 +49,21 @@ final class DeleteBookingRequestTest {
     api.bookings().clearAll();
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     api.rooms().create(room);
-    final long timestampStart = Instant.now().getMillis() / 1000;
-    final long timestampEnd =
-      Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
     final long id = api
       .bookings()
       .create(
-        new SimpleBooking(null, "test_user_id", room, new LogicalSlot(timestampStart, timestampEnd))
+        new SimpleBooking(
+          null,
+          "test_user_id",
+          room,
+          new LogicalSlot(
+            1764352800,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
+          )
+        )
       );
 
     // when
@@ -71,8 +79,11 @@ final class DeleteBookingRequestTest {
         String.format(
           "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
           id,
-          timestampStart,
-          timestampEnd
+          1764352800,
+          Instant.ofEpochSecond(1764352800)
+              .plus(Duration.standardHours(1).getMillis())
+              .getMillis() /
+            1000
         )
       )
     );

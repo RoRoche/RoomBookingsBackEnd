@@ -30,9 +30,6 @@ final class PostBookingRequestTest {
 
   @Test
   void isOK() throws Exception {
-    final long timestampStart = Instant.now().getMillis() / 1000;
-    final long timestampEnd =
-      Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000;
     MatcherAssert.assertThat(
       "Create booking is successful",
       new HttpTestCase.WithFixtures<>(
@@ -42,8 +39,11 @@ final class PostBookingRequestTest {
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            timestampStart,
-            timestampEnd
+            1764352800,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
           )
         )::asString
       ).response(),
@@ -56,7 +56,15 @@ final class PostBookingRequestTest {
             "room",
             Map.of("name", "test_name", "capacity", 12),
             "slot",
-            Map.of("timestamp_start", timestampStart, "timestamp_end", timestampEnd)
+            Map.of(
+              "timestamp_start",
+              1764352800,
+              "timestamp_end",
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardHours(1).getMillis())
+                  .getMillis() /
+                1000
+            )
           )
         ),
         new HasHeaderWithValue("Location", Matchers.startsWith("/bookings/"))
@@ -82,8 +90,14 @@ final class PostBookingRequestTest {
                   "test_user_id",
                   new SimpleRoom("test_name", 12),
                   new LogicalSlot(
-                    Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000,
-                    Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000
+                    Instant.ofEpochSecond(1764352800)
+                        .plus(Duration.standardMinutes(15).getMillis())
+                        .getMillis() /
+                      1000,
+                    Instant.ofEpochSecond(1764352800)
+                        .plus(Duration.standardMinutes(45).getMillis())
+                        .getMillis() /
+                      1000
                   )
                 )
               )
@@ -91,8 +105,11 @@ final class PostBookingRequestTest {
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            Instant.now().getMillis() / 1000,
-            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+            1764352800,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
           )
         )::asString
       ).response(),
@@ -112,8 +129,11 @@ final class PostBookingRequestTest {
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            Instant.now().getMillis() / 1000,
-            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+            1764352800,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
           )
         )::asString
       ).response(),

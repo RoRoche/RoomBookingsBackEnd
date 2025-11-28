@@ -35,10 +35,13 @@ final class GetBookingsForRoomInSlotRequestTest {
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
         get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-          .queryString("timestamp_start", Instant.now().getMillis() / 1000)
+          .queryString("timestamp_start", 1764352800)
           .queryString(
             "timestamp_end",
-            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
           )::asString
       ).response(),
       new HasStatus(HttpStatus.NO_CONTENT_204)
@@ -48,10 +51,6 @@ final class GetBookingsForRoomInSlotRequestTest {
   @Test
   void isOK() throws UnirestException {
     // given
-    final long timestampStart =
-      Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
-    final long timestampEnd =
-      Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     api.rooms().clearAll();
     api.bookings().clearAll();
@@ -59,17 +58,32 @@ final class GetBookingsForRoomInSlotRequestTest {
     final long id = api
       .bookings()
       .create(
-        new SimpleBooking(null, "test_user_id", room, new LogicalSlot(timestampStart, timestampEnd))
+        new SimpleBooking(
+          null,
+          "test_user_id",
+          room,
+          new LogicalSlot(
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardMinutes(15).getMillis())
+                .getMillis() /
+              1000,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardMinutes(45).getMillis())
+                .getMillis() /
+              1000
+          )
+        )
       );
 
     // when
     final HttpResponse<String> response = get(
       "http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())
     )
-      .queryString("timestamp_start", Instant.now().getMillis() / 1000)
+      .queryString("timestamp_start", 1764352800)
       .queryString(
         "timestamp_end",
-        Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
+          1000
       )
       .asString();
 
@@ -83,8 +97,14 @@ final class GetBookingsForRoomInSlotRequestTest {
           String.format(
             "[{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}]",
             id,
-            timestampStart,
-            timestampEnd
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardMinutes(15).getMillis())
+                .getMillis() /
+              1000,
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardMinutes(45).getMillis())
+                .getMillis() /
+              1000
           )
         )
       )
@@ -98,10 +118,13 @@ final class GetBookingsForRoomInSlotRequestTest {
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-          .queryString("timestamp_start", Instant.now().getMillis() / 1000)
+          .queryString("timestamp_start", 1764352800)
           .queryString(
             "timestamp_end",
-            Instant.now().plus(Duration.standardHours(1).getMillis()).getMillis() / 1000
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
           )::asString
       ).response(),
       new AllOf<>(

@@ -59,13 +59,21 @@ final class GetRemindersRequestTest {
   void hasContent() throws UnirestException {
     // given
     final long nowMinus45m =
-      Instant.now().minus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
+      Instant.ofEpochSecond(1764352800)
+        .minus(Duration.standardMinutes(45).getMillis())
+        .getMillis() /
+      1000;
     final long nowMinus15m =
-      Instant.now().minus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
+      Instant.ofEpochSecond(1764352800)
+        .minus(Duration.standardMinutes(15).getMillis())
+        .getMillis() /
+      1000;
     final long nowPlus15m =
-      Instant.now().plus(Duration.standardMinutes(15).getMillis()).getMillis() / 1000;
+      Instant.ofEpochSecond(1764352800).plus(Duration.standardMinutes(15).getMillis()).getMillis() /
+      1000;
     final long nowPlus45m =
-      Instant.now().plus(Duration.standardMinutes(45).getMillis()).getMillis() / 1000;
+      Instant.ofEpochSecond(1764352800).plus(Duration.standardMinutes(45).getMillis()).getMillis() /
+      1000;
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     api.rooms().clearAll();
     api.bookings().clearAll();

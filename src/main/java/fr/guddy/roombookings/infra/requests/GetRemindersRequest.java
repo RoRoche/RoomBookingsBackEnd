@@ -9,7 +9,6 @@ import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.http.Context;
 import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
-import org.joda.time.Instant;
 
 public final class GetRemindersRequest implements Request {
 
@@ -31,10 +30,7 @@ public final class GetRemindersRequest implements Request {
 
   @Override
   public void perform(final Context context) {
-    final List<Booking> reminders = bookings.forUserFromStartDate(
-      userId,
-      Instant.now().getMillis() / 1000
-    );
+    final List<Booking> reminders = bookings.forUserFromStartDate(userId, 1764352800);
     if (reminders.isEmpty()) {
       context.status(HttpStatus.NO_CONTENT_204);
     } else {
