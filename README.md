@@ -3,7 +3,7 @@
 <img src="assets/logo.png" width="200" />
 
 [![Build Status](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/java-maven.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions)
-[![NPM commands](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/npm.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/npm.yml)
+[![NPM CI](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/npm.yml/badge.svg)](https://github.com/RoRoche/RoomBookingsBackEnd/actions/workflows/npm.yml)
 
 ![Elegant Objects](https://www.elegantobjects.org/badge.svg)
 ![intellij-idea](https://www.elegantobjects.org/intellij-idea.svg)
