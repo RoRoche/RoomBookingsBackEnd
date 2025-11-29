@@ -17,9 +17,10 @@ public final class HasBody extends TypeSafeDiagnosingMatcher<HttpTestCase<String
   protected boolean matchesSafely(final HttpTestCase<String> testCase, final Description mismatch) {
     try {
       final HttpResponse<String> response = testCase.response();
-      final boolean matches = expectedBody.equalsIgnoreCase(response.getBody());
+      final String actualBody = response.getBody();
+      final boolean matches = expectedBody.equalsIgnoreCase(actualBody);
       if (!matches) {
-        mismatch.appendText("was HttpResponse with body ").appendValue(response.getBody());
+        mismatch.appendText("was HttpResponse with body ").appendValue(actualBody);
       }
       return matches;
     } catch (Exception e) {
