@@ -21,13 +21,13 @@ final class GetNamedRoomRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNotFound() throws Exception {
+  void hasNotFound() {
     MatcherAssert.assertThat(
       "No room found for given name",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll),
         get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
         new HasBody("No room found for name 'test_name'")
@@ -36,7 +36,7 @@ final class GetNamedRoomRequestTest {
   }
 
   @Test
-  void isOK() throws Exception {
+  void isOK() {
     MatcherAssert.assertThat(
       "Room found for given name",
       new HttpTestCase.WithFixtures<>(
@@ -44,7 +44,7 @@ final class GetNamedRoomRequestTest {
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
         get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody("{\"name\":\"test_name\",\"capacity\":12}")

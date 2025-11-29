@@ -21,7 +21,7 @@ final class GetCapableRoomsRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNoContent() throws Exception {
+  void hasNoContent() {
     MatcherAssert.assertThat(
       "Rooms has no content",
       new HttpTestCase.WithFixtures<>(
@@ -30,7 +30,7 @@ final class GetCapableRoomsRequestTest {
           "capacity",
           10
         )::asString
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
@@ -45,7 +45,7 @@ final class GetCapableRoomsRequestTest {
           "capacity",
           "test"
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
         new HasBody("Parameter 'capacity' could not be processed, it should be of type Integer")
@@ -54,7 +54,7 @@ final class GetCapableRoomsRequestTest {
   }
 
   @Test
-  void isOK() throws Exception {
+  void isOK() {
     MatcherAssert.assertThat(
       "Has capable rooms",
       new HttpTestCase.WithFixtures<>(
@@ -65,7 +65,7 @@ final class GetCapableRoomsRequestTest {
           "capacity",
           10
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")

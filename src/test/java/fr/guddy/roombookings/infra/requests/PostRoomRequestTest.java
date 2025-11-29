@@ -23,7 +23,7 @@ final class PostRoomRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void isOK() throws Exception {
+  void isOK() {
     MatcherAssert.assertThat(
       "Create room is successful",
       new HttpTestCase.WithFixtures<>(
@@ -31,7 +31,7 @@ final class PostRoomRequestTest {
         post("http://localhost:%d/rooms".formatted(api.port().value())).body(
           "{\"name\":\"test_name\",\"capacity\":12}"
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.CREATED_201),
         new HasHeaderWithValue("Location", Matchers.startsWith("/rooms/"))
@@ -40,7 +40,7 @@ final class PostRoomRequestTest {
   }
 
   @Test
-  void isConflict() throws Exception {
+  void isConflict() {
     MatcherAssert.assertThat(
       "Is conflicting on name",
       new HttpTestCase.WithFixtures<>(
@@ -50,7 +50,7 @@ final class PostRoomRequestTest {
         post("http://localhost:%d/rooms".formatted(api.port().value())).body(
           "{\"name\":\"test_name\",\"capacity\":12}"
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.CONFLICT_409),
         new HasBody("A room named 'test_name' already exists")

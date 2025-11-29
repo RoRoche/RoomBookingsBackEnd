@@ -2,8 +2,6 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
@@ -27,7 +25,7 @@ final class GetBookingsForRoomInSlotRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNoContent() throws Exception {
+  void hasNoContent() {
     MatcherAssert.assertThat(
       "No booking for room in slot",
       new HttpTestCase.WithFixtures<>(
@@ -43,13 +41,13 @@ final class GetBookingsForRoomInSlotRequestTest {
                 .getMillis() /
               1000
           )::asString
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
 
   @Test
-  void isOK() throws UnirestException {
+  void isOK() {
     // given
     final SimpleRoom room = new SimpleRoom("test_name", 12);
     api.rooms().clearAll();
@@ -75,22 +73,20 @@ final class GetBookingsForRoomInSlotRequestTest {
         )
       );
 
-    // when
-    final HttpResponse<String> response = get(
-      "http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())
-    )
-      .queryString("timestamp_start", 1764352800)
-      .queryString(
-        "timestamp_end",
-        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
-          1000
-      )
-      .asString();
-
     // then
     MatcherAssert.assertThat(
       "Have booking for room in slot",
-      response,
+      () ->
+        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
+          .queryString("timestamp_start", 1764352800)
+          .queryString(
+            "timestamp_end",
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
+          )
+          .asString(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody(
@@ -112,7 +108,7 @@ final class GetBookingsForRoomInSlotRequestTest {
   }
 
   @Test
-  void isRoomNotFound() throws Exception {
+  void isRoomNotFound() {
     MatcherAssert.assertThat(
       "No room for given name",
       new HttpTestCase.WithFixtures<>(
@@ -126,7 +122,7 @@ final class GetBookingsForRoomInSlotRequestTest {
                 .getMillis() /
               1000
           )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
         new HasBody("No room found for name 'test_name'")

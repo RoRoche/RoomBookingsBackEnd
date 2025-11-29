@@ -1,10 +1,11 @@
 package fr.guddy.roombookings.infra.matchers;
 
 import com.mashape.unirest.http.HttpResponse;
+import fr.guddy.roombookings.infra.HttpTestCase;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasStatus extends TypeSafeMatcher<HttpResponse<?>> {
+public final class HasStatus extends TypeSafeDiagnosingMatcher<HttpTestCase<?>> {
 
   private final int expectedStatus;
 
@@ -13,22 +14,22 @@ public final class HasStatus extends TypeSafeMatcher<HttpResponse<?>> {
   }
 
   @Override
-  protected boolean matchesSafely(final HttpResponse<?> response) {
-    return response.getStatus() == expectedStatus;
+  protected boolean matchesSafely(final HttpTestCase<?> testCase, final Description mismatch) {
+    try {
+      final HttpResponse<?> response = testCase.response();
+      final boolean matches = response.getStatus() == expectedStatus;
+      if (!matches) {
+        mismatch.appendText("was HttpResponse with status ").appendValue(response.getStatus());
+      }
+      return matches;
+    } catch (final Exception e) {
+      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
+      return false;
+    }
   }
 
   @Override
   public void describeTo(final Description description) {
     description.appendText("an HttpResponse with status ").appendValue(expectedStatus);
-  }
-
-  @Override
-  protected void describeMismatchSafely(
-    final HttpResponse<?> response,
-    final Description mismatchDescription
-  ) {
-    mismatchDescription
-      .appendText("was HttpResponse with status ")
-      .appendValue(response.getStatus());
   }
 }

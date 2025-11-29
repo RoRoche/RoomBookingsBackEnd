@@ -21,19 +21,19 @@ final class GetRoomsRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNoContent() throws Exception {
+  void hasNoContent() {
     MatcherAssert.assertThat(
       "No rooms",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll),
         get("http://localhost:%d/rooms".formatted(api.port().value()))::asString
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
 
   @Test
-  void isOK() throws Exception {
+  void isOK() {
     MatcherAssert.assertThat(
       "Has rooms",
       new HttpTestCase.WithFixtures<>(
@@ -41,7 +41,7 @@ final class GetRoomsRequestTest {
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
         get("http://localhost:%d/rooms".formatted(api.port().value()))::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")

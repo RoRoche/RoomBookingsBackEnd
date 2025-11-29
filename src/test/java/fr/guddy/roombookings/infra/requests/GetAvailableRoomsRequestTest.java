@@ -25,7 +25,7 @@ final class GetAvailableRoomsRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void hasNoContent() throws Exception {
+  void hasNoContent() {
     MatcherAssert.assertThat(
       "No available room",
       new HttpTestCase.WithFixtures<>(
@@ -40,13 +40,13 @@ final class GetAvailableRoomsRequestTest {
                 .getMillis() /
               1000
           )::asString
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
 
   @Test
-  void isMissingParameter() throws Exception {
+  void isMissingParameter() {
     MatcherAssert.assertThat(
       "A parameter is missing",
       new HttpTestCase.WithFixtures<>(
@@ -56,7 +56,7 @@ final class GetAvailableRoomsRequestTest {
             .queryString("capacity", 10)
             .queryString("timestamp_start", 1764352800)
             .asString()
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
         new HasBody("Parameter named 'timestamp_end' is missing")
@@ -65,7 +65,7 @@ final class GetAvailableRoomsRequestTest {
   }
 
   @Test
-  void isOkWithAvailableRooms() throws Exception {
+  void isOkWithAvailableRooms() {
     MatcherAssert.assertThat(
       "A room is available on the given slot",
       new HttpTestCase.WithFixtures<>(
@@ -84,7 +84,7 @@ final class GetAvailableRoomsRequestTest {
                 1000
             )
             .asString()
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
@@ -93,7 +93,7 @@ final class GetAvailableRoomsRequestTest {
   }
 
   @Test
-  void isOkWithNoAvailableRooms() throws Exception {
+  void isOkWithNoAvailableRooms() {
     MatcherAssert.assertThat(
       "No room is available on the given slot",
       new HttpTestCase.WithFixtures<>(
@@ -134,7 +134,7 @@ final class GetAvailableRoomsRequestTest {
                 1000
             )
             .asString()
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }

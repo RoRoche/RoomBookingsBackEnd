@@ -29,7 +29,7 @@ final class PostBookingRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void isOK() throws Exception {
+  void isOK() {
     MatcherAssert.assertThat(
       "Create booking is successful",
       new HttpTestCase.WithFixtures<>(
@@ -46,7 +46,7 @@ final class PostBookingRequestTest {
               1000
           )
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.CREATED_201),
         new HasBodyContaining(
@@ -73,7 +73,7 @@ final class PostBookingRequestTest {
   }
 
   @Test
-  void isConflict() throws Exception {
+  void isConflict() {
     MatcherAssert.assertThat(
       "Has conflict on room and slot",
       new HttpTestCase.WithFixtures<>(
@@ -112,7 +112,7 @@ final class PostBookingRequestTest {
               1000
           )
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.CONFLICT_409),
         new HasBody("Room named 'test_name' already booked on this slot")
@@ -121,7 +121,7 @@ final class PostBookingRequestTest {
   }
 
   @Test
-  void isRoomNotFound() throws Exception {
+  void isRoomNotFound() {
     MatcherAssert.assertThat(
       "Room is not found for name",
       new HttpTestCase.WithFixtures<>(
@@ -136,7 +136,7 @@ final class PostBookingRequestTest {
               1000
           )
         )::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
         new HasBody("No room found for name 'test_name'")

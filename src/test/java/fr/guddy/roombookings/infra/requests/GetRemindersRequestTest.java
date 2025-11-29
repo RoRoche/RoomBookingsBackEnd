@@ -2,7 +2,6 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
@@ -26,13 +25,13 @@ final class GetRemindersRequestTest {
   static final ApiExternalExtension api = new ApiExternalExtension();
 
   @Test
-  void isMissingParameter() throws Exception {
+  void isMissingParameter() {
     MatcherAssert.assertThat(
       "Is missing parameter",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         get("http://localhost:%d/bookings".formatted(api.port().value())).getHttpRequest()::asString
-      ).response(),
+      ),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
         new HasBody("Parameter named 'user_id' is missing")
@@ -41,7 +40,7 @@ final class GetRemindersRequestTest {
   }
 
   @Test
-  void hasNoContent() throws Exception {
+  void hasNoContent() {
     MatcherAssert.assertThat(
       "Has no content",
       new HttpTestCase.WithFixtures<>(
@@ -50,13 +49,13 @@ final class GetRemindersRequestTest {
           "user_id",
           "test@test.com"
         )::asString
-      ).response(),
+      ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );
   }
 
   @Test
-  void hasContent() throws UnirestException {
+  void hasContent() {
     // given
     final long nowMinus45m =
       Instant.ofEpochSecond(1764352800)
@@ -97,9 +96,10 @@ final class GetRemindersRequestTest {
     // then
     MatcherAssert.assertThat(
       "Has reminders",
-      get("http://localhost:%d/bookings".formatted(api.port().value()))
-        .queryString("user_id", "test@test.com")
-        .asString(),
+      () ->
+        get("http://localhost:%d/bookings".formatted(api.port().value()))
+          .queryString("user_id", "test@test.com")
+          .asString(),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
         new HasBody(
