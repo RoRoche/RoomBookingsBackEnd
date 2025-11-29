@@ -2,12 +2,11 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
-import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasHttpBookingMatching;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
@@ -48,59 +47,39 @@ final class GetBookingsForRoomInSlotRequestTest {
 
   @Test
   void isOK() {
-    // given
-    final SimpleRoom room = new SimpleRoom("test_name", 12);
-    api.rooms().clearAll();
-    api.bookings().clearAll();
-    api.rooms().create(room);
-    final long id = api
-      .bookings()
-      .create(
-        new SimpleBooking(
-          null,
-          "test_user_id",
-          room,
-          new LogicalSlot(
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardMinutes(15).getMillis())
-                .getMillis() /
-              1000,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardMinutes(45).getMillis())
-                .getMillis() /
-              1000
-          )
-        )
-      );
-
-    // then
     MatcherAssert.assertThat(
       "Have booking for room in slot",
-      () ->
-        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )
-          .asString(),
-      new AllOf<>(
-        new HasStatus(HttpStatus.OK_200),
-        new HasBody(
-          String.format(
-            "[{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}]",
-            id,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardMinutes(15).getMillis())
-                .getMillis() /
-              1000,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardMinutes(45).getMillis())
-                .getMillis() /
-              1000
+      new HttpBookingTestCase(
+        api,
+        1764352800,
+        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
+          1000,
+        (id) ->
+          () ->
+            get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
+              .queryString("timestamp_start", 1764352800)
+              .queryString(
+                "timestamp_end",
+                Instant.ofEpochSecond(1764352800)
+                    .plus(Duration.standardHours(1).getMillis())
+                    .getMillis() /
+                  1000
+              )
+              .asString()
+      ),
+      new HasHttpBookingMatching((id) ->
+        new AllOf<>(
+          new HasStatus(HttpStatus.OK_200),
+          new HasBody(
+            String.format(
+              "[{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}]",
+              id,
+              1764352800,
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardHours(1).getMillis())
+                  .getMillis() /
+                1000
+            )
           )
         )
       )

@@ -2,12 +2,10 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import fr.guddy.roombookings.domain.booking.SimpleBooking;
-import fr.guddy.roombookings.domain.room.SimpleRoom;
-import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
+import fr.guddy.roombookings.infra.matchers.HasReminders;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
@@ -47,7 +45,7 @@ final class GetRemindersRequestTest {
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         get("http://localhost:%d/bookings".formatted(api.port().value())).queryString(
           "user_id",
-          "test@test.com"
+          "test_user_id"
         )::asString
       ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
@@ -56,64 +54,37 @@ final class GetRemindersRequestTest {
 
   @Test
   void hasContent() {
-    // given
-    final long nowMinus45m =
-      Instant.ofEpochSecond(1764352800)
-        .minus(Duration.standardMinutes(45).getMillis())
-        .getMillis() /
-      1000;
-    final long nowMinus15m =
-      Instant.ofEpochSecond(1764352800)
-        .minus(Duration.standardMinutes(15).getMillis())
-        .getMillis() /
-      1000;
-    final long nowPlus15m =
-      Instant.ofEpochSecond(1764352800).plus(Duration.standardMinutes(15).getMillis()).getMillis() /
-      1000;
-    final long nowPlus45m =
-      Instant.ofEpochSecond(1764352800).plus(Duration.standardMinutes(45).getMillis()).getMillis() /
-      1000;
-    final SimpleRoom room = new SimpleRoom("test_name", 12);
-    api.rooms().clearAll();
-    api.bookings().clearAll();
-    api.rooms().create(room);
-    api
-      .bookings()
-      .create(
-        new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowMinus45m, nowMinus15m))
-      );
-    final long idMinus15ToPlus15m = api
-      .bookings()
-      .create(
-        new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowMinus15m, nowPlus15m))
-      );
-    final long id15To45m = api
-      .bookings()
-      .create(
-        new SimpleBooking(null, "test@test.com", room, new LogicalSlot(nowPlus15m, nowPlus45m))
-      );
-
-    // then
     MatcherAssert.assertThat(
       "Has reminders",
-      () ->
-        get("http://localhost:%d/bookings".formatted(api.port().value()))
-          .queryString("user_id", "test@test.com")
-          .asString(),
-      new AllOf<>(
-        new HasStatus(HttpStatus.OK_200),
-        new HasBody(
-          String.format(
-            "[" +
-              "{\"id\":%d,\"user_id\":\"test@test.com\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}," +
-              "{\"id\":%d,\"user_id\":\"test@test.com\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}" +
-              "]",
-            idMinus15ToPlus15m,
-            nowMinus15m,
-            nowPlus15m,
-            id15To45m,
-            nowPlus15m,
-            nowPlus45m
+      new RemindersTestCase(api, 1764352800),
+      new HasReminders((reminders) ->
+        new AllOf<>(
+          new HasStatus(HttpStatus.OK_200),
+          new HasBody(
+            String.format(
+              "[" +
+                "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}," +
+                "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}" +
+                "]",
+              reminders.idMinus15ToPlus15m(),
+              Instant.ofEpochSecond(1764352800)
+                  .minus(Duration.standardMinutes(15).getMillis())
+                  .getMillis() /
+                1000,
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardMinutes(15).getMillis())
+                  .getMillis() /
+                1000,
+              reminders.idPlus15To45m(),
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardMinutes(15).getMillis())
+                  .getMillis() /
+                1000,
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardMinutes(45).getMillis())
+                  .getMillis() /
+                1000
+            )
           )
         )
       )

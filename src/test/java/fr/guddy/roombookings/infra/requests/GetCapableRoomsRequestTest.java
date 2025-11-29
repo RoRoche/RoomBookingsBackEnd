@@ -36,7 +36,7 @@ final class GetCapableRoomsRequestTest {
   }
 
   @Test
-  void isNotProcessableParameter() throws Exception {
+  void isNotProcessableParameter() {
     MatcherAssert.assertThat(
       "Parameter is not processable",
       new HttpTestCase.WithFixtures<>(
