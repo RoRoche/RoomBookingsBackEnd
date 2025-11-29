@@ -3,6 +3,7 @@ package fr.guddy.roombookings.infra;
 import com.mashape.unirest.http.HttpResponse;
 import java.util.List;
 
+@FunctionalInterface
 public interface HttpTestCase<T> {
   HttpResponse<T> response() throws Exception;
 
