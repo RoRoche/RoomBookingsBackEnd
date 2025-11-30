@@ -6,7 +6,7 @@ import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
-import fr.guddy.roombookings.infra.matchers.HasHttpBookingMatching;
+import fr.guddy.roombookings.infra.matchers.HasScalarMatching;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
@@ -65,13 +65,13 @@ final class GetBookingsForRoomInSlotRequestTest {
                 1000
             )::asString
       ),
-      new HasHttpBookingMatching((id) ->
+      new HasScalarMatching<>((booking) ->
         new AllOf<>(
           new HasStatus(HttpStatus.OK_200),
           new HasBody(
             String.format(
               "[{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}]",
-              id,
+              booking.id(),
               1764352800,
               Instant.ofEpochSecond(1764352800)
                   .plus(Duration.standardHours(1).getMillis())

@@ -1,27 +1,28 @@
 package fr.guddy.roombookings.infra.matchers;
 
 import fr.guddy.roombookings.infra.HttpTestCase;
-import fr.guddy.roombookings.infra.requests.HttpBooking;
+import fr.guddy.roombookings.infra.HttpTestCaseEnvelop;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasHttpBookingMatching extends TypeSafeDiagnosingMatcher<Scalar<HttpBooking>> {
+public final class HasScalarMatching<T extends HttpTestCaseEnvelop>
+  extends TypeSafeDiagnosingMatcher<Scalar<T>> {
 
-  private final Func<Long, Matcher<HttpTestCase<String>>> matcherFunc;
+  private final Func<T, Matcher<HttpTestCase<String>>> matcherFunc;
 
-  public HasHttpBookingMatching(final Func<Long, Matcher<HttpTestCase<String>>> matcherFunc) {
+  public HasScalarMatching(final Func<T, Matcher<HttpTestCase<String>>> matcherFunc) {
     this.matcherFunc = matcherFunc;
   }
 
   @Override
-  protected boolean matchesSafely(Scalar<HttpBooking> result, Description mismatch) {
+  protected boolean matchesSafely(final Scalar<T> result, final Description mismatch) {
     try {
-      final HttpBooking booking = result.value();
-      final HttpTestCase<String> testCase = booking.testCase();
-      final Matcher<HttpTestCase<String>> matcher = this.matcherFunc.apply(booking.id());
+      final T envelop = result.value();
+      final HttpTestCase<String> testCase = envelop.value();
+      final Matcher<HttpTestCase<String>> matcher = this.matcherFunc.apply(envelop);
       final boolean matches = matcher.matches(testCase);
       if (!matches) {
         matcher.describeMismatch(testCase, mismatch);
@@ -35,6 +36,6 @@ public final class HasHttpBookingMatching extends TypeSafeDiagnosingMatcher<Scal
 
   @Override
   public void describeTo(final Description description) {
-    description.appendText("HttpBooking must match");
+    description.appendText("test case must match");
   }
 }

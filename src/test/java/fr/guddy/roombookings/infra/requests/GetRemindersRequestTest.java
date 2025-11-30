@@ -5,7 +5,7 @@ import static com.mashape.unirest.http.Unirest.get;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.matchers.HasBody;
-import fr.guddy.roombookings.infra.matchers.HasReminders;
+import fr.guddy.roombookings.infra.matchers.HasScalarMatching;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
@@ -57,7 +57,7 @@ final class GetRemindersRequestTest {
     MatcherAssert.assertThat(
       "Has reminders",
       new RemindersScalar(api, 1764352800),
-      new HasReminders((reminders) ->
+      new HasScalarMatching<>((reminders) ->
         new AllOf<>(
           new HasStatus(HttpStatus.OK_200),
           new HasBody(
