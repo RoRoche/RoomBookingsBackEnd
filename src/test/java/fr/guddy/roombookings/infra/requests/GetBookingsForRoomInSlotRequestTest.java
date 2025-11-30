@@ -55,17 +55,15 @@ final class GetBookingsForRoomInSlotRequestTest {
         Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
           1000,
         (id) ->
-          () ->
-            get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-              .queryString("timestamp_start", 1764352800)
-              .queryString(
-                "timestamp_end",
-                Instant.ofEpochSecond(1764352800)
-                    .plus(Duration.standardHours(1).getMillis())
-                    .getMillis() /
-                  1000
-              )
-              .asString()
+          get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
+            .queryString("timestamp_start", 1764352800)
+            .queryString(
+              "timestamp_end",
+              Instant.ofEpochSecond(1764352800)
+                  .plus(Duration.standardHours(1).getMillis())
+                  .getMillis() /
+                1000
+            )::asString
       ),
       new HasHttpBookingMatching((id) ->
         new AllOf<>(

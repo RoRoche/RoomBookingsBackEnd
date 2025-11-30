@@ -28,7 +28,7 @@ final class DeleteBookingRequestTest {
       "No booking with id 12 were found",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        () -> delete("http://localhost:%d/bookings/12".formatted(api.port().value())).asString()
+        delete("http://localhost:%d/bookings/12".formatted(api.port().value()))::asString
       ),
       new AllOf<>(
         new HasStatus(HttpStatus.NOT_FOUND_404),
@@ -47,8 +47,7 @@ final class DeleteBookingRequestTest {
         Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
           1000,
         (id) ->
-          () ->
-            delete("http://localhost:%d/bookings/%d".formatted(api.port().value(), id)).asString()
+          delete("http://localhost:%d/bookings/%d".formatted(api.port().value(), id))::asString
       ),
       new IsValidBookingDeletion(api, (id) ->
         String.format(

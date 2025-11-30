@@ -51,11 +51,9 @@ final class GetAvailableRoomsRequestTest {
       "A parameter is missing",
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        () ->
-          get("http://localhost:%d/rooms".formatted(api.port().value()))
-            .queryString("capacity", 10)
-            .queryString("timestamp_start", 1764352800)
-            .asString()
+        get("http://localhost:%d/rooms".formatted(api.port().value()))
+          .queryString("capacity", 10)
+          .queryString("timestamp_start", 1764352800)::asString
       ),
       new AllOf<>(
         new HasStatus(HttpStatus.BAD_REQUEST_400),
@@ -72,18 +70,16 @@ final class GetAvailableRoomsRequestTest {
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
           api.rooms().create(new SimpleRoom("test_name", 12))
         ),
-        () ->
-          get("http://localhost:%d/rooms".formatted(api.port().value()))
-            .queryString("capacity", 10)
-            .queryString("timestamp_start", 1764352800)
-            .queryString(
-              "timestamp_end",
-              Instant.ofEpochSecond(1764352800)
-                  .plus(Duration.standardHours(1).getMillis())
-                  .getMillis() /
-                1000
-            )
-            .asString()
+        get("http://localhost:%d/rooms".formatted(api.port().value()))
+          .queryString("capacity", 10)
+          .queryString("timestamp_start", 1764352800)
+          .queryString(
+            "timestamp_end",
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
+          )::asString
       ),
       new AllOf<>(
         new HasStatus(HttpStatus.OK_200),
@@ -122,18 +118,16 @@ final class GetAvailableRoomsRequestTest {
                 )
               )
         ),
-        () ->
-          get("http://localhost:%d/rooms".formatted(api.port().value()))
-            .queryString("capacity", 10)
-            .queryString("timestamp_start", 1764352800)
-            .queryString(
-              "timestamp_end",
-              Instant.ofEpochSecond(1764352800)
-                  .plus(Duration.standardHours(1).getMillis())
-                  .getMillis() /
-                1000
-            )
-            .asString()
+        get("http://localhost:%d/rooms".formatted(api.port().value()))
+          .queryString("capacity", 10)
+          .queryString("timestamp_start", 1764352800)
+          .queryString(
+            "timestamp_end",
+            Instant.ofEpochSecond(1764352800)
+                .plus(Duration.standardHours(1).getMillis())
+                .getMillis() /
+              1000
+          )::asString
       ),
       new HasStatus(HttpStatus.NO_CONTENT_204)
     );

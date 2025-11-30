@@ -61,10 +61,9 @@ public final class RemindersScalar implements Scalar<Reminders> {
       new SimpleBooking(null, "test_user_id", room, new LogicalSlot(tsPlus15, tsPlus45))
     );
     // HTTP call
-    final HttpTestCase<String> resp = () ->
-      get("http://localhost:%d/bookings".formatted(this.api.port().value()))
-        .queryString("user_id", "test_user_id")
-        .asString();
+    final HttpTestCase<String> resp = get(
+      "http://localhost:%d/bookings".formatted(this.api.port().value())
+    ).queryString("user_id", "test_user_id")::asString;
     return new Reminders(resp, idMinus15ToPlus15, idPlus15To45, tsMinus15, tsPlus15, tsPlus45);
   }
 }
