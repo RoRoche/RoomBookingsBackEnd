@@ -49,7 +49,7 @@ final class GetBookingsForRoomInSlotRequestTest {
   void isOK() {
     MatcherAssert.assertThat(
       "Have booking for room in slot",
-      new HttpBookingTestCase(
+      new HttpBookingScalar(
         api,
         1764352800,
         Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /

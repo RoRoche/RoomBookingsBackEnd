@@ -12,12 +12,12 @@ import org.cactoos.Scalar;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
-public final class RemindersTestCase implements Scalar<Reminders> {
+public final class RemindersScalar implements Scalar<Reminders> {
 
   private final ApiExternalExtension api;
   private final long baseTs;
 
-  public RemindersTestCase(final ApiExternalExtension api, final long baseTs) {
+  public RemindersScalar(final ApiExternalExtension api, final long baseTs) {
     this.api = api;
     this.baseTs = baseTs;
   }

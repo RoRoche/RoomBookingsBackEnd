@@ -56,7 +56,7 @@ final class GetRemindersRequestTest {
   void hasContent() {
     MatcherAssert.assertThat(
       "Has reminders",
-      new RemindersTestCase(api, 1764352800),
+      new RemindersScalar(api, 1764352800),
       new HasReminders((reminders) ->
         new AllOf<>(
           new HasStatus(HttpStatus.OK_200),

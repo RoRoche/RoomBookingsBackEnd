@@ -10,14 +10,14 @@ import fr.guddy.roombookings.infra.HttpTestCase;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
 
-public final class HttpBookingTestCase implements Scalar<HttpBooking> {
+public final class HttpBookingScalar implements Scalar<HttpBooking> {
 
   private final ApiExternalExtension api;
   private final long timestampStart;
   private final long timestampEnd;
   private final Func<Long, HttpTestCase<String>> testCaseFunc;
 
-  public HttpBookingTestCase(
+  public HttpBookingScalar(
     final ApiExternalExtension api,
     final long timestampStart,
     final long timestampEnd,

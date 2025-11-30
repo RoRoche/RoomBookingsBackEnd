@@ -41,7 +41,7 @@ final class DeleteBookingRequestTest {
   void isOK() {
     assertThat(
       "Delete booking has body and booking is not in database",
-      new HttpBookingTestCase(
+      new HttpBookingScalar(
         api,
         1764352800,
         Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
