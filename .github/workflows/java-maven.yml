@@ -37,6 +37,9 @@ jobs:
       - name: Build project (compile + package) without tests
         run: mvn clean package -DskipTests
 
+      - name: Check if the POM is well sorted
+        run: mvn sortpom:verify
+
       - name: Check for dependency updates
         continue-on-error: true # allow this step to fail without failing the workflow
         run: |
