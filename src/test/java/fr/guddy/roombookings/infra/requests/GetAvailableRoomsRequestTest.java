@@ -25,11 +25,9 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.get;
 
-import fr.guddy.roombookings.domain.booking.SimpleBooking;
-import fr.guddy.roombookings.domain.room.SimpleRoom;
-import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.fixtures.CreateSimpleBooking;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
@@ -119,26 +117,7 @@ final class GetAvailableRoomsRequestTest {
           api.rooms()::clearAll,
           api.bookings()::clearAll,
           new CreateSimpleRoom(api),
-          () ->
-            api
-              .bookings()
-              .create(
-                new SimpleBooking(
-                  null,
-                  "test_user_id",
-                  new SimpleRoom("test_name", 12),
-                  new LogicalSlot(
-                    Instant.ofEpochSecond(1764352800)
-                        .plus(Duration.standardMinutes(15).getMillis())
-                        .getMillis() /
-                      1000,
-                    Instant.ofEpochSecond(1764352800)
-                        .plus(Duration.standardMinutes(45).getMillis())
-                        .getMillis() /
-                      1000
-                  )
-                )
-              )
+          new CreateSimpleBooking(api)
         ),
         get("http://localhost:%d/rooms".formatted(api.port().value()))
           .queryString("capacity", 10)

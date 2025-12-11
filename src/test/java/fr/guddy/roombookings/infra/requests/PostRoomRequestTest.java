@@ -25,7 +25,6 @@ package fr.guddy.roombookings.infra.requests;
 
 import static com.mashape.unirest.http.Unirest.post;
 
-import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;

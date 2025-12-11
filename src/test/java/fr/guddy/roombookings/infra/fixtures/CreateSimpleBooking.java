@@ -52,12 +52,12 @@ public final class CreateSimpleBooking implements Runnable {
         new SimpleRoom("test_name", 12),
         new LogicalSlot(
           Instant.ofEpochSecond(1764352800)
-            .plus(Duration.standardMinutes(15).getMillis())
-            .getMillis() /
+              .plus(Duration.standardMinutes(15).getMillis())
+              .getMillis() /
             1000,
           Instant.ofEpochSecond(1764352800)
-            .plus(Duration.standardMinutes(45).getMillis())
-            .getMillis() /
+              .plus(Duration.standardMinutes(45).getMillis())
+              .getMillis() /
             1000
         )
       )
