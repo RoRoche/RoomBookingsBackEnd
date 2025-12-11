@@ -4,10 +4,12 @@ default: help
 lint: ## Check code formatting
 	@npx prettier --check .
 	@mvn sortpom:verify
+	@mvn license:check
 
 lint-fix: ## Fix formatting automatically
 	@npx prettier --write .
 	@mvn sortpom:sort
+	@mvn license:format
 
 deps-updates: ## Use Maven plugin to list if there are dependencies updates
 	@mvn clean validate -Pfail-on-update
