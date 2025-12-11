@@ -30,6 +30,7 @@ import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
@@ -90,9 +91,7 @@ final class GetAvailableRoomsRequestTest {
     MatcherAssert.assertThat(
       "A room is available on the given slot",
       new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
-          api.rooms().create(new SimpleRoom("test_name", 12))
-        ),
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
         get("http://localhost:%d/rooms".formatted(api.port().value()))
           .queryString("capacity", 10)
           .queryString("timestamp_start", 1764352800)
@@ -119,7 +118,7 @@ final class GetAvailableRoomsRequestTest {
         new ListOf<>(
           api.rooms()::clearAll,
           api.bookings()::clearAll,
-          () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+          new CreateSimpleRoom(api),
           () ->
             api
               .bookings()

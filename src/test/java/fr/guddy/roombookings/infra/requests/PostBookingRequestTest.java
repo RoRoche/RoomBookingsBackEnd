@@ -30,6 +30,7 @@ import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasBodyContaining;
 import fr.guddy.roombookings.infra.matchers.HasHeaderWithValue;
@@ -56,9 +57,7 @@ final class PostBookingRequestTest {
     MatcherAssert.assertThat(
       "Create booking is successful",
       new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, () ->
-          api.rooms().create(new SimpleRoom("test_name", 12))
-        ),
+        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
           String.format(
             "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
@@ -103,7 +102,7 @@ final class PostBookingRequestTest {
         new ListOf<>(
           api.rooms()::clearAll,
           api.bookings()::clearAll,
-          () -> api.rooms().create(new SimpleRoom("test_name", 12)),
+          new CreateSimpleRoom(api),
           () ->
             api
               .bookings()

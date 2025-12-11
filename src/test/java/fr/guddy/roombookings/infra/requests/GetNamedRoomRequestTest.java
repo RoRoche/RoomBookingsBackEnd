@@ -28,6 +28,7 @@ import static com.mashape.unirest.http.Unirest.get;
 import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
@@ -63,9 +64,7 @@ final class GetNamedRoomRequestTest {
     MatcherAssert.assertThat(
       "Room found for given name",
       new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, () ->
-          api.rooms().create(new SimpleRoom("test_name", 12))
-        ),
+        new ListOf<>(api.rooms()::clearAll, new CreateSimpleRoom(api)),
         get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
       ),
       new AllOf<>(
