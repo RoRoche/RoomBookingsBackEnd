@@ -288,6 +288,25 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>5.0.0</version>
+        <configuration>
+          <properties>
+            <owner>Romain Rochegude</owner>
+            <email>romain.rochegude@gmail.com</email>
+          </properties>
+          <licenseSets>
+            <licenseSet>
+              <header>LICENSE.txt</header>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
