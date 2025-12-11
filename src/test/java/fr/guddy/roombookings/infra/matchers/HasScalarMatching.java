@@ -24,14 +24,14 @@
 package fr.guddy.roombookings.infra.matchers;
 
 import fr.guddy.roombookings.infra.HttpTestCase;
-import fr.guddy.roombookings.infra.HttpTestCaseEnvelop;
+import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasScalarMatching<T extends HttpTestCaseEnvelop>
+public final class HasScalarMatching<T extends HttpTestCaseEnvelope>
   extends TypeSafeDiagnosingMatcher<Scalar<T>> {
 
   private final Func<T, Matcher<HttpTestCase<String>>> matcherFunc;

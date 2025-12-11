@@ -24,7 +24,7 @@
 package fr.guddy.roombookings.infra.requests;
 
 import fr.guddy.roombookings.infra.HttpTestCase;
-import fr.guddy.roombookings.infra.HttpTestCaseEnvelop;
+import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 
 public record Reminders(
   HttpTestCase<String> testCase,
@@ -33,7 +33,7 @@ public record Reminders(
   long tsStart,
   long tsEndMinus,
   long tsEndPlus
-) implements HttpTestCaseEnvelop {
+) implements HttpTestCaseEnvelope {
   @Override
   public HttpTestCase<String> value() throws Exception {
     return this.testCase;

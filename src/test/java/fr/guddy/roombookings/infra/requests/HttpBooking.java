@@ -27,7 +27,7 @@ import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.Slot;
 import fr.guddy.roombookings.infra.HttpTestCase;
-import fr.guddy.roombookings.infra.HttpTestCaseEnvelop;
+import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 import java.util.Map;
 
 public record HttpBooking(
@@ -36,7 +36,7 @@ public record HttpBooking(
   Room room,
   Slot slot,
   HttpTestCase<String> testCase
-) implements Booking, HttpTestCaseEnvelop {
+) implements Booking, HttpTestCaseEnvelope {
   @Override
   public Map<String, Object> map() {
     return Map.of();
