@@ -40,6 +40,9 @@ jobs:
       - name: Check if the POM is well sorted
         run: mvn sortpom:verify
 
+      - name: Check if header is in Java files
+        run: mvn license:check
+
       - name: Check for dependency updates
         continue-on-error: true # allow this step to fail without failing the workflow
         run: |
