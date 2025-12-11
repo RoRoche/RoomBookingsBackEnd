@@ -25,6 +25,7 @@ package fr.guddy.roombookings.infra.matchers;
 
 import com.mashape.unirest.http.HttpResponse;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import org.cactoos.Text;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
@@ -34,6 +35,10 @@ public final class HasBody extends TypeSafeDiagnosingMatcher<HttpTestCase<String
 
   public HasBody(final String expectedBody) {
     this.expectedBody = expectedBody;
+  }
+
+  public HasBody(final Text text) {
+    this(text.toString());
   }
 
   @Override

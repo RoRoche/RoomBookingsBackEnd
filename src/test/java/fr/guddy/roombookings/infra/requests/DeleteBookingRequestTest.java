@@ -28,6 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.bodies.JsonBookingBody;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import fr.guddy.roombookings.infra.matchers.IsValidBookingDeletion;
@@ -72,17 +73,7 @@ final class DeleteBookingRequestTest {
         (id) ->
           delete("http://localhost:%d/bookings/%d".formatted(api.port().value(), id))::asString
       ),
-      new IsValidBookingDeletion(api, (id) ->
-        String.format(
-          "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-          id,
-          1764352800,
-          Instant.ofEpochSecond(1764352800)
-              .plus(Duration.standardHours(1).getMillis())
-              .getMillis() /
-            1000
-        )
-      )
+      new IsValidBookingDeletion(api, JsonBookingBody::new)
     );
   }
 }

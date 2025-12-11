@@ -28,17 +28,18 @@ import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.requests.HttpBooking;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 public final class IsValidBookingDeletion extends TypeSafeDiagnosingMatcher<Scalar<HttpBooking>> {
 
   private final ApiExternalExtension api;
-  private final Func<Long, String> expectedBodyWithId;
+  private final Func<Long, Text> expectedBodyWithId;
 
   public IsValidBookingDeletion(
     final ApiExternalExtension api,
-    final Func<Long, String> expectedBodyWithId
+    final Func<Long, Text> expectedBodyWithId
   ) {
     this.api = api;
     this.expectedBodyWithId = expectedBodyWithId;
@@ -49,7 +50,7 @@ public final class IsValidBookingDeletion extends TypeSafeDiagnosingMatcher<Scal
     try {
       final HttpBooking booking = result.value();
       // 1. Check body
-      final String expectedBody = this.expectedBodyWithId.apply(booking.id());
+      final String expectedBody = this.expectedBodyWithId.apply(booking.id()).toString();
       final HasBody hasBody = new HasBody(expectedBody);
       final HttpTestCase<String> testCase = booking.testCase();
       if (!hasBody.matchesSafely(testCase, mismatch)) {

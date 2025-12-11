@@ -27,6 +27,7 @@ import static com.mashape.unirest.http.Unirest.post;
 
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.bodies.PostJsonBookingBody;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleBooking;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
@@ -57,14 +58,7 @@ final class PostBookingRequestTest {
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          String.format(
-            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            1764352800,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )
+          new PostJsonBookingBody().toString()
         )::asString
       ),
       new AllOf<>(
@@ -104,14 +98,7 @@ final class PostBookingRequestTest {
           new CreateSimpleBooking(api)
         ),
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          String.format(
-            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            1764352800,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )
+          new PostJsonBookingBody().toString()
         )::asString
       ),
       new AllOf<>(
@@ -128,14 +115,7 @@ final class PostBookingRequestTest {
       new HttpTestCase.WithFixtures<>(
         new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
         post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          String.format(
-            "{\"user_id\":\"test_user_id\",\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-            1764352800,
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )
+          new PostJsonBookingBody().toString()
         )::asString
       ),
       new AllOf<>(

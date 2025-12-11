@@ -27,11 +27,13 @@ import static com.mashape.unirest.http.Unirest.get;
 
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
+import fr.guddy.roombookings.infra.bodies.JsonBookingBody;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
 import fr.guddy.roombookings.infra.matchers.HasBody;
 import fr.guddy.roombookings.infra.matchers.HasScalarMatching;
 import fr.guddy.roombookings.infra.matchers.HasStatus;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.FormattedText;
 import org.eclipse.jetty.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
@@ -89,17 +91,7 @@ final class GetBookingsForRoomInSlotRequestTest {
       new HasScalarMatching<>((booking) ->
         new AllOf<>(
           new HasStatus(HttpStatus.OK_200),
-          new HasBody(
-            String.format(
-              "[{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}]",
-              booking.id(),
-              1764352800,
-              Instant.ofEpochSecond(1764352800)
-                  .plus(Duration.standardHours(1).getMillis())
-                  .getMillis() /
-                1000
-            )
-          )
+          new HasBody(new FormattedText("[%s]", new JsonBookingBody(booking)))
         )
       )
     );
