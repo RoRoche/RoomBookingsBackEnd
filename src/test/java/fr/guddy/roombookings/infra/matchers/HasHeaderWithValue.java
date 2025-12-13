@@ -45,20 +45,21 @@ public final class HasHeaderWithValue extends TypeSafeDiagnosingMatcher<HttpTest
     try {
       final HttpResponse<?> response = testCase.response();
       final Headers headers = response.getHeaders();
-      if (!headers.containsKey(headerName)) {
+      if (!headers.containsKey(this.headerName)) {
+        mismatch.appendText("header ").appendText(this.headerName).appendText(" is missing");
         return false;
       }
-      final String value = headers.getFirst(headerName);
-      final boolean matches = valueMatcher.matches(value);
+      final String value = headers.getFirst(this.headerName);
+      final boolean matches = this.valueMatcher.matches(value);
       if (!matches) {
-        if (!headers.containsKey(headerName)) {
+        if (!headers.containsKey(this.headerName)) {
           mismatch.appendText("header keys were ").appendValue(headers.keySet());
         } else {
           mismatch
             .appendText("header ")
-            .appendValue(headerName)
+            .appendValue(this.headerName)
             .appendText(" value was ")
-            .appendValue(headers.getFirst(headerName));
+            .appendValue(headers.getFirst(this.headerName));
         }
       }
       return matches;
