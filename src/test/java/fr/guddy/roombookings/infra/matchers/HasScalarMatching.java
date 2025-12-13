@@ -43,9 +43,9 @@ public final class HasScalarMatching<T extends HttpTestCaseEnvelope>
   @Override
   protected boolean matchesSafely(final Scalar<T> result, final Description mismatch) {
     try {
-      final T envelop = result.value();
-      final HttpTestCase<String> testCase = envelop.value();
-      final Matcher<HttpTestCase<String>> matcher = this.matcherFunc.apply(envelop);
+      final T envelope = result.value();
+      final HttpTestCase<String> testCase = envelope.value();
+      final Matcher<HttpTestCase<String>> matcher = this.matcherFunc.apply(envelope);
       final boolean matches = matcher.matches(testCase);
       if (!matches) {
         matcher.describeMismatch(testCase, mismatch);
