@@ -62,11 +62,7 @@ public final class NitriteRooms implements Rooms {
 
   @Override
   public List<Room> all() {
-    return this.collection.find()
-      .toList()
-      .stream()
-      .map((final Document document) -> (Room) new NitriteRoom(document))
-      .toList();
+    return this.collection.find().toList().stream().<Room>map(NitriteRoom::new).toList();
   }
 
   @Override
@@ -74,7 +70,7 @@ public final class NitriteRooms implements Rooms {
     return this.collection.find(where("room_capacity").gte(capacity))
       .toList()
       .stream()
-      .map((final Document document) -> (Room) new NitriteRoom(document))
+      .<Room>map(NitriteRoom::new)
       .toList();
   }
 
