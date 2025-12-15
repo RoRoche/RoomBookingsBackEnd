@@ -43,6 +43,9 @@ jobs:
       - name: Check if header is in Java files
         run: mvn license:check
 
+      - name: You should not pass
+        run: mvn youshallnotpass:youshallnotpass
+
       - name: Check for dependency updates
         continue-on-error: true # allow this step to fail without failing the workflow
         run: |
