@@ -34,7 +34,7 @@ public final class InterfaceMethods extends SetEnvelope<JavaMethod> {
     super(
       new RecursiveInterfaces(clazz)
         .stream()
-        .flatMap((iface) -> iface.getMethods().stream())
+        .flatMap((final JavaClass iface) -> iface.getMethods().stream())
         .collect(Collectors.toSet())
     );
   }

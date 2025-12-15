@@ -33,7 +33,7 @@ public final class NitriteRoom extends RoomEnvelope {
   private static final String DOCUMENT_KEY_NAME = "room_name";
   private static final String DOCUMENT_KEY_CAPACITY = "room_capacity";
 
-  public NitriteRoom(Room delegate) {
+  public NitriteRoom(final Room delegate) {
     super(delegate);
   }
 

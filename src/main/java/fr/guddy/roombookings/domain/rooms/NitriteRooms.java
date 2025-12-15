@@ -65,7 +65,7 @@ public final class NitriteRooms implements Rooms {
     return this.collection.find()
       .toList()
       .stream()
-      .map((document) -> (Room) new NitriteRoom(document))
+      .map((final Document document) -> (Room) new NitriteRoom(document))
       .toList();
   }
 
@@ -74,7 +74,7 @@ public final class NitriteRooms implements Rooms {
     return this.collection.find(where("room_capacity").gte(capacity))
       .toList()
       .stream()
-      .map((document) -> (Room) new NitriteRoom(document))
+      .map((final Document document) -> (Room) new NitriteRoom(document))
       .toList();
   }
 

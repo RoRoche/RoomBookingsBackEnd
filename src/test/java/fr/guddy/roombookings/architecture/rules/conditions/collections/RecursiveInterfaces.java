@@ -24,6 +24,7 @@
 package fr.guddy.roombookings.architecture.rules.conditions.collections;
 
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaType;
 import java.util.HashSet;
 import java.util.Set;
 import org.cactoos.scalar.Unchecked;
@@ -38,7 +39,7 @@ public final class RecursiveInterfaces extends SetEnvelope<JavaClass> {
         // Recursively collect interfaces implemented by this class
         clazz
           .getInterfaces()
-          .forEach((ifaceType) -> {
+          .forEach((final JavaType ifaceType) -> {
             final JavaClass iface = ifaceType.toErasure();
             if (result.add(iface)) {
               result.addAll(new RecursiveInterfaces(iface));
@@ -47,7 +48,7 @@ public final class RecursiveInterfaces extends SetEnvelope<JavaClass> {
         // Also collect interfaces from superclasses
         clazz
           .getSuperclass()
-          .ifPresent((superclassType) ->
+          .ifPresent((final JavaType superclassType) ->
             result.addAll(new RecursiveInterfaces(superclassType.toErasure()))
           );
         return result;

@@ -79,7 +79,7 @@ final class GetRemindersRequestTest {
     MatcherAssert.assertThat(
       "Has reminders",
       new RemindersScalar(api, 1764352800),
-      new HasScalarMatching<>((reminders) ->
+      new HasScalarMatching<>((final Reminders reminders) ->
         new AllOf<>(new HasStatus(HttpStatus.OK_200), new HasBody(new JsonRemindersBody(reminders)))
       )
     );

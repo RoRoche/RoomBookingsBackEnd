@@ -30,6 +30,7 @@ import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.infra.requests.DeleteBookingRequest;
 import fr.guddy.roombookings.infra.requests.GetRemindersRequest;
 import io.javalin.apibuilder.EndpointGroup;
+import io.javalin.http.Context;
 
 public final class BookingsRoute implements EndpointGroup {
 
@@ -41,7 +42,7 @@ public final class BookingsRoute implements EndpointGroup {
 
   @Override
   public void addEndpoints() {
-    get((ctx) -> new GetRemindersRequest(bookings, ctx).perform(ctx));
-    delete("/{id}", (ctx) -> new DeleteBookingRequest(bookings, ctx).perform(ctx));
+    get((final Context ctx) -> new GetRemindersRequest(bookings, ctx).perform(ctx));
+    delete("/{id}", (final Context ctx) -> new DeleteBookingRequest(bookings, ctx).perform(ctx));
   }
 }

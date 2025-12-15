@@ -24,6 +24,7 @@
 package fr.guddy.roombookings.architecture.rules.conditions;
 
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
@@ -46,10 +47,15 @@ public final class HaveOnlyPublicMethodsDeclaredInInterfaces extends ArchConditi
     clazz
       .getMethods()
       .stream()
-      .filter((method) -> method.getModifiers().contains(JavaModifier.PUBLIC))
-      .filter((method) -> !new IsObjectMethod(method).value() && !new IsMainMethod(method).value())
-      .filter((method) -> !new IsDeclaredInInterfaces(method, new InterfaceMethods(clazz)).value())
-      .forEach((method) ->
+      .filter((final JavaMethod method) -> method.getModifiers().contains(JavaModifier.PUBLIC))
+      .filter(
+        (final JavaMethod method) ->
+          !new IsObjectMethod(method).value() && !new IsMainMethod(method).value()
+      )
+      .filter((final JavaMethod method) ->
+        !new IsDeclaredInInterfaces(method, new InterfaceMethods(clazz)).value()
+      )
+      .forEach((final JavaMethod method) ->
         events.add(
           SimpleConditionEvent.violated(
             method,

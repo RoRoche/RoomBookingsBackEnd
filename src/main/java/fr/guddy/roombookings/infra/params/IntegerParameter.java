@@ -42,7 +42,7 @@ public final class IntegerParameter implements Parameter<Integer> {
   @Override
   public Integer value() {
     final String value = delegate.value();
-    return Try.of(() -> Integer.valueOf(value)).getOrElseThrow((throwable) ->
+    return Try.of(() -> Integer.valueOf(value)).getOrElseThrow((final Throwable throwable) ->
       new NotProcessableParameterException(name(), Integer.class)
     );
   }

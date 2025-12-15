@@ -51,14 +51,16 @@ public final class HasBody extends TypeSafeDiagnosingMatcher<HttpTestCase<String
         mismatch.appendText("was HttpResponse with body ").appendValue(actualBody);
       }
       return matches;
-    } catch (Exception e) {
-      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
+    } catch (final Exception exception) {
+      mismatch
+        .appendText("exception while executing testcase: ")
+        .appendText(exception.getMessage());
       return false;
     }
   }
 
   @Override
-  public void describeTo(Description description) {
+  public void describeTo(final Description description) {
     description.appendText("an HttpResponse with body ").appendValue(expectedBody);
   }
 }

@@ -70,7 +70,7 @@ final class DeleteBookingRequestTest {
         1764352800,
         Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
           1000,
-        (id) ->
+        (final Long id) ->
           delete("http://localhost:%d/bookings/%d".formatted(api.port().value(), id))::asString
       ),
       new IsValidBookingDeletion(api, JsonBookingBody::new)

@@ -93,7 +93,7 @@ public final class NitriteBookings implements Bookings {
     ).toList();
     return documents
       .stream()
-      .map((document) ->
+      .map((final Document document) ->
         new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
       )
       .toList();
@@ -112,10 +112,10 @@ public final class NitriteBookings implements Bookings {
     ).toList();
     return documents
       .stream()
-      .map((document) ->
+      .map((final Document document) ->
         new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
       )
-      .sorted(Comparator.comparingLong((booking) -> booking.slot().timestampStart()))
+      .sorted(Comparator.comparingLong((final Booking booking) -> booking.slot().timestampStart()))
       .toList();
   }
 
@@ -131,8 +131,8 @@ public final class NitriteBookings implements Bookings {
 
   @Override
   public Optional<Booking> byId(final long id) {
-    return Optional.ofNullable(this.collection.getById(NitriteId.createId(id))).map((document) ->
-      new NitriteBooking(document, this.rooms)
+    return Optional.ofNullable(this.collection.getById(NitriteId.createId(id))).map(
+      (final Document document) -> new NitriteBooking(document, this.rooms)
     );
   }
 

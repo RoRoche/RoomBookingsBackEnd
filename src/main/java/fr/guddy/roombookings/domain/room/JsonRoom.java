@@ -58,13 +58,13 @@ public final class JsonRoom extends RoomEnvelope {
 
     private final String body;
 
-    private Parsed(String body) {
+    private Parsed(final String body) {
       this.body = body;
     }
 
     @Override
     public JsonObject value() {
-      try (var reader = javax.json.Json.createReader(new java.io.StringReader(this.body))) {
+      try (final var reader = javax.json.Json.createReader(new java.io.StringReader(this.body))) {
         return reader.readObject();
       }
     }

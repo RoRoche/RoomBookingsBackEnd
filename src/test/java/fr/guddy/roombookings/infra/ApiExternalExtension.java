@@ -32,6 +32,7 @@ import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.ports.SimplePort;
+import java.util.stream.IntStream;
 import org.dizitart.no2.Nitrite;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -93,23 +94,25 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
     this.api.stop();
   }
 
-  public void waitForServer() throws InterruptedException {
-    int retries = 10;
-    int delay = 200; // ms
-    boolean isReady = false;
-
-    while (retries-- > 0 && !isReady) {
+  public void waitForServer() {
+    final int maxRetries = 10;
+    final int delay = 200; // ms
+    final boolean isReady = IntStream.range(0, maxRetries).anyMatch((final int attempt) -> {
       try {
         final HttpResponse<String> response = Unirest.get(
           String.format("http://localhost:%d/ready", this.api.port().value())
         ).asString();
-        if (response.getStatus() == 200 && "READY".equals(response.getBody())) {
-          isReady = true;
-        }
+
+        return response.getStatus() == 200 && "READY".equals(response.getBody());
       } catch (final UnirestException e) {
-        Thread.sleep(delay);
+        try {
+          Thread.sleep(delay);
+        } catch (final InterruptedException ie) {
+          Thread.currentThread().interrupt();
+        }
+        return false;
       }
-    }
+    });
 
     if (!isReady) {
       throw new RuntimeException("Server didn't start in time");

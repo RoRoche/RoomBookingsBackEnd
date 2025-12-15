@@ -44,7 +44,7 @@ public final class IsDeclaredInInterfaces implements Scalar<Boolean> {
   public Boolean value() {
     // Check if the implementation method matches any method from the interfaces
     return this.interfaceMethods.stream().anyMatch(
-      (ifaceMethod) ->
+      (final JavaMethod ifaceMethod) ->
         ifaceMethod.getName().equals(this.implMethod.getName()) &&
         new HaveSameParameterCount(ifaceMethod, this.implMethod).value() &&
         new ParametersAssignableIgnoringGenerics(ifaceMethod, this.implMethod).value()

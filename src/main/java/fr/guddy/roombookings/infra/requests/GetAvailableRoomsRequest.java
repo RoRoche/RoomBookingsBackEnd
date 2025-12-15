@@ -87,7 +87,7 @@ public final class GetAvailableRoomsRequest implements Request {
     final List<Room> availableRooms = rooms
       .withCapacity(capacity)
       .stream()
-      .filter((room) -> bookings.forRoomInSlot(room, slot).isEmpty())
+      .filter((final Room room) -> bookings.forRoomInSlot(room, slot).isEmpty())
       .toList();
     if (availableRooms.isEmpty()) {
       context.status(HttpStatus.NO_CONTENT_204);

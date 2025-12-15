@@ -24,6 +24,7 @@
 package fr.guddy.roombookings.architecture.rules.conditions;
 
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
@@ -44,12 +45,12 @@ public final class HaveNoStaticMethods extends ArchCondition<JavaClass> {
       .getMethods()
       .stream()
       .filter(
-        (method) ->
+        (final JavaMethod method) ->
           method.getModifiers().contains(JavaModifier.STATIC) &&
           !new IsMainMethod(method).value() &&
           !new IsAllowedStaticMethod(method).value()
       )
-      .forEach((method) ->
+      .forEach((final JavaMethod method) ->
         events.add(
           SimpleConditionEvent.violated(
             method,

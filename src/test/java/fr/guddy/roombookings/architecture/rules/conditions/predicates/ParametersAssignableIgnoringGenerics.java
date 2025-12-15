@@ -49,7 +49,7 @@ public final class ParametersAssignableIgnoringGenerics implements Scalar<Boolea
     final var ifaceParams = this.ifaceMethod.getRawParameterTypes();
     final var implParams = this.implMethod.getRawParameterTypes();
 
-    return IntStream.range(0, ifaceParams.size()).allMatch((i) -> {
+    return IntStream.range(0, ifaceParams.size()).allMatch((final int i) -> {
       final var ifaceParam = ifaceParams.get(i).toErasure();
       final var implParam = implParams.get(i).toErasure();
       return new IsSameOrSubtype(implParam, ifaceParam).value();

@@ -27,7 +27,7 @@ public final class SimplePort implements Port {
 
   private final int port;
 
-  public SimplePort(int port) {
+  public SimplePort(final int port) {
     this.port = port;
   }
 

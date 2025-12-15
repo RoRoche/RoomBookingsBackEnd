@@ -33,7 +33,7 @@ public final class IndexedByRoomNameNitriteCollection implements Scalar<NitriteC
 
   private final Nitrite database;
 
-  public IndexedByRoomNameNitriteCollection(Nitrite database) {
+  public IndexedByRoomNameNitriteCollection(final Nitrite database) {
     this.database = database;
   }
 

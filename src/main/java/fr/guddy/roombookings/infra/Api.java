@@ -41,6 +41,7 @@ import fr.guddy.roombookings.infra.routes.BookingsRoute;
 import fr.guddy.roombookings.infra.routes.ReadinessRoute;
 import fr.guddy.roombookings.infra.routes.RoomsRoute;
 import io.javalin.Javalin;
+import io.javalin.config.JavalinConfig;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import org.dizitart.no2.Nitrite;
 
@@ -58,13 +59,13 @@ public final class Api implements Application, Exposed {
 
   public Api(final Nitrite database, final Rooms rooms, final Bookings bookings, final Port port) {
     this(
-      Javalin.create((config) -> {
+      Javalin.create((final JavalinConfig config) -> {
         config.router.apiBuilder(() -> {
           path("rooms", new RoomsRoute(rooms, bookings));
           path("bookings", new BookingsRoute(bookings));
           path("ready", new ReadinessRoute());
         });
-        config.bundledPlugins.enableCors((cors) ->
+        config.bundledPlugins.enableCors((final CorsPluginConfig cors) ->
           cors.addRule(CorsPluginConfig.CorsRule::anyHost)
         );
       })

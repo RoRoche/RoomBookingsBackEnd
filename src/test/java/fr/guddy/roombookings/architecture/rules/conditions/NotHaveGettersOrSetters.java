@@ -24,6 +24,7 @@
 package fr.guddy.roombookings.architecture.rules.conditions;
 
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
@@ -42,8 +43,10 @@ public final class NotHaveGettersOrSetters extends ArchCondition<JavaClass> {
     javaClass
       .getMethods()
       .stream()
-      .filter((method) -> new IsGetter(method).value() || new IsSetter(method).value())
-      .forEach((method) ->
+      .filter(
+        (final JavaMethod method) -> new IsGetter(method).value() || new IsSetter(method).value()
+      )
+      .forEach((final JavaMethod method) ->
         events.add(
           SimpleConditionEvent.violated(
             method,
