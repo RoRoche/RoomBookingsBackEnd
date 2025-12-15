@@ -5,6 +5,7 @@ lint: ## Check code formatting
 	@npx prettier --check .
 	@mvn sortpom:verify
 	@mvn license:check
+	@mvn youshallnotpass:youshallnotpass
 
 lint-fix: ## Fix formatting automatically
 	@npx prettier --write .
