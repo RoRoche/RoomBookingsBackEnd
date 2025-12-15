@@ -216,6 +216,41 @@
       </plugin>
 
       <plugin>
+        <groupId>dev.youshallnotpass</groupId>
+        <artifactId>youshallnotpass-maven-plugin</artifactId>
+        <version>0.6.0</version>
+        <configuration>
+          <exclude>glob:**/test/**/DeepMatches.java</exclude>
+          <offline>true</offline>
+          <!-- default false -->
+          <nullfree>
+            <disabled>true</disabled>
+          </nullfree>
+          <staticfree>
+            <disabled>true</disabled>
+          </staticfree>
+          <allfinal>
+            <disabled>false</disabled>
+            <skipInterfaceMethodParams>false</skipInterfaceMethodParams>
+            <skipLambdaParams>false</skipLambdaParams>
+            <skipCatchParams>false</skipCatchParams>
+          </allfinal>
+          <allpublic>
+            <disabled>true</disabled>
+          </allpublic>
+          <setterfree>
+            <disabled>false</disabled>
+          </setterfree>
+          <nomultiplereturn>
+            <disabled>true</disabled>
+          </nomultiplereturn>
+          <inheritancefree>
+            <disabled>true</disabled>
+          </inheritancefree>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>com.qulice</groupId>
         <artifactId>qulice-maven-plugin</artifactId>
         <version>0.24.3</version>
