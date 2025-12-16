@@ -23,16 +23,13 @@
  */
 package fr.guddy.roombookings.infra;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.bookings.NitriteBookings;
 import fr.guddy.roombookings.domain.rooms.NitriteRooms;
 import fr.guddy.roombookings.domain.rooms.Rooms;
+import fr.guddy.roombookings.infra.fixtures.WaitForServer;
 import fr.guddy.roombookings.infra.ports.Port;
 import fr.guddy.roombookings.infra.ports.SimplePort;
-import java.util.stream.IntStream;
 import org.dizitart.no2.Nitrite;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -43,11 +40,22 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
   private final Api api;
   private final Rooms rooms;
   private final Bookings bookings;
+  private final Runnable waitForServer;
 
-  private ApiExternalExtension(final Api api, final Rooms rooms, final Bookings bookings) {
+  public ApiExternalExtension(
+    final Api api,
+    final Rooms rooms,
+    final Bookings bookings,
+    final Runnable waitForServer
+  ) {
     this.api = api;
     this.rooms = rooms;
     this.bookings = bookings;
+    this.waitForServer = waitForServer;
+  }
+
+  public ApiExternalExtension(final Api api, final Rooms rooms, final Bookings bookings) {
+    this(api, rooms, bookings, new WaitForServer(api));
   }
 
   public ApiExternalExtension(
@@ -84,38 +92,13 @@ public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCa
   }
 
   @Override
-  public void beforeAll(final ExtensionContext context) throws InterruptedException {
+  public void beforeAll(final ExtensionContext context) {
     this.api.start();
-    waitForServer();
+    this.waitForServer.run();
   }
 
   @Override
   public void afterAll(final ExtensionContext context) {
     this.api.stop();
-  }
-
-  public void waitForServer() {
-    final int maxRetries = 10;
-    final int delay = 200; // ms
-    final boolean isReady = IntStream.range(0, maxRetries).anyMatch((final int attempt) -> {
-      try {
-        final HttpResponse<String> response = Unirest.get(
-          String.format("http://localhost:%d/ready", this.api.port().value())
-        ).asString();
-
-        return response.getStatus() == 200 && "READY".equals(response.getBody());
-      } catch (final UnirestException e) {
-        try {
-          Thread.sleep(delay);
-        } catch (final InterruptedException ie) {
-          Thread.currentThread().interrupt();
-        }
-        return false;
-      }
-    });
-
-    if (!isReady) {
-      throw new RuntimeException("Server didn't start in time");
-    }
   }
 }
