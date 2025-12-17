@@ -23,43 +23,32 @@
  */
 package fr.guddy.roombookings.infra.fixtures;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.Api;
-import java.util.stream.IntStream;
+import java.time.Duration;
+import org.awaitility.Awaitility;
+import org.cactoos.Scalar;
 
 public final class WaitForServer implements Runnable {
 
-  private final Api api;
+  private final Scalar<Boolean> isServerReady;
+
+  public WaitForServer(final Scalar<Boolean> isServerReady) {
+    this.isServerReady = isServerReady;
+  }
 
   public WaitForServer(final Api api) {
-    this.api = api;
+    this(new IsServerReady(api));
   }
 
   @Override
   public void run() {
-    final int maxRetries = 10;
-    final int delay = 200; // ms
-    final boolean isReady = IntStream.range(0, maxRetries).anyMatch((final int attempt) -> {
-      try {
-        final HttpResponse<String> response = Unirest.get(
-          String.format("http://localhost:%d/ready", this.api.port().value())
-        ).asString();
-
-        return response.getStatus() == 200 && "READY".equals(response.getBody());
-      } catch (final UnirestException e) {
-        try {
-          Thread.sleep(delay);
-        } catch (final InterruptedException ie) {
-          Thread.currentThread().interrupt();
+    Awaitility.await()
+      .atMost(Duration.ofSeconds(2))
+      .pollInterval(Duration.ofMillis(200))
+      .untilAsserted(() -> {
+        if (!this.isServerReady.value()) {
+          throw new AssertionError("Server didn't start in time");
         }
-        return false;
-      }
-    });
-
-    if (!isReady) {
-      throw new RuntimeException("Server didn't start in time");
-    }
+      });
   }
 }
