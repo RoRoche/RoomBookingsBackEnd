@@ -31,8 +31,9 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasScalarMatching<T extends HttpTestCaseEnvelope>
-  extends TypeSafeDiagnosingMatcher<Scalar<T>> {
+public final class HasScalarMatching<
+  T extends HttpTestCaseEnvelope
+> extends TypeSafeDiagnosingMatcher<Scalar<T>> {
 
   private final Func<T, Matcher<HttpTestCase<String>>> matcherFunc;
 

@@ -29,7 +29,8 @@ import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class NotProcessableParameterResponse
-  implements ExceptionHandler<NotProcessableParameterException> {
+  implements ExceptionHandler<NotProcessableParameterException>
+{
 
   @Override
   public void handle(final NotProcessableParameterException exception, final Context ctx) {

@@ -29,7 +29,8 @@ import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
 public final class CreateRoomConflictResponse
-  implements ExceptionHandler<CreateRoomConflictException> {
+  implements ExceptionHandler<CreateRoomConflictException>
+{
 
   @Override
   public void handle(final CreateRoomConflictException exception, final Context ctx) {
