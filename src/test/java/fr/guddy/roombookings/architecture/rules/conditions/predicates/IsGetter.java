@@ -23,10 +23,10 @@
  */
 package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaMethod;
-import java.util.List;
+import java.util.stream.Stream;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Check if a method is a getter.
@@ -50,42 +50,15 @@ public final class IsGetter implements Scalar<Boolean> {
         if (this.method.reflect().isSynthetic()) {
             result = false;
         } else {
-            final String name = this.method.getName();
-            final List<JavaClass> params = this.method.getRawParameterTypes();
-            final JavaClass returned = this.method.getRawReturnType();
-            result =
-                isGet(name, params, returned)
-                    ||
-                    isIs(name, params, returned);
+            result = Stream.of(
+                new IsGet(this.method),
+                new IsIs(this.method)
+            ).map(
+                Unchecked::new
+            ).anyMatch(
+                Unchecked::value
+            );
         }
         return result;
-    }
-
-    private static boolean isGet(
-        final String name,
-        final List<JavaClass> params,
-        final JavaClass returned
-    ) {
-        return name.startsWith("get")
-            &&
-            !name.equals("getClass")
-            &&
-            params.isEmpty()
-            &&
-            !returned.isEquivalentTo(void.class);
-    }
-
-    private static boolean isIs(
-        final String name,
-        final List<JavaClass> params,
-        final JavaClass returned
-    ) {
-        return name.startsWith("is")
-            &&
-            params.isEmpty()
-            &&
-            (returned.isEquivalentTo(boolean.class)
-                ||
-                returned.isEquivalentTo(Boolean.class));
     }
 }
