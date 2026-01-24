@@ -23,8 +23,14 @@
  */
 package fr.guddy.roombookings.infra.params;
 
+/**
+ * Parameter from an HTTP request.
+ *
+ * @param <T> The type of the value.
+ * @since 1.0.0
+ */
 public interface Parameter<T> {
-  String name();
+    String name();
 
-  T value();
+    T value();
 }

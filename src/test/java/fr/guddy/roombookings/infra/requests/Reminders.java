@@ -26,16 +26,26 @@ package fr.guddy.roombookings.infra.requests;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 
+/**
+ * The reminders.
+ *
+ * @param testCase The {@link HttpTestCase}.
+ * @param idMin15ToPlus15 The ID of the booking minus 15m to plus 15m.
+ * @param idPlus15To45 The ID of the booking plus 15 to 45m.
+ * @param tsStart The starting timestamp.
+ * @param tsEndMin The ending timestamp with min.
+ * @param tsEndPlus The ending timestamp with plus.
+ */
 public record Reminders(
-  HttpTestCase<String> testCase,
-  long idMinus15ToPlus15m,
-  long idPlus15To45m,
-  long tsStart,
-  long tsEndMinus,
-  long tsEndPlus
+    HttpTestCase<String> testCase,
+    long idMin15ToPlus15,
+    long idPlus15To45,
+    long tsStart,
+    long tsEndMin,
+    long tsEndPlus
 ) implements HttpTestCaseEnvelope {
-  @Override
-  public HttpTestCase<String> value() throws Exception {
-    return this.testCase;
-  }
+    @Override
+    public HttpTestCase<String> value() throws Exception {
+        return this.testCase;
+    }
 }

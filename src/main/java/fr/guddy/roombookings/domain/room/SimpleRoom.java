@@ -23,16 +23,15 @@
  */
 package fr.guddy.roombookings.domain.room;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 
 public record SimpleRoom(String name, int capacity) implements Room {
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<String, Object>(
-      new MapEntry<>("name", this.name),
-      new MapEntry<>("capacity", this.capacity)
-    );
-  }
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", this.name);
+        map.put("capacity", this.capacity);
+        return map;
+    }
 }

@@ -23,10 +23,15 @@
  */
 package fr.guddy.roombookings.infra.ports;
 
+/**
+ * Default {@link Port} to expose {@link io.javalin.Javalin} application.
+ *
+ * @since 1.0.0
+ */
 public final class DefaultPort implements Port {
 
-  @Override
-  public int value() {
-    return 7070;
-  }
+    @Override
+    public int value() {
+        return 7070;
+    }
 }

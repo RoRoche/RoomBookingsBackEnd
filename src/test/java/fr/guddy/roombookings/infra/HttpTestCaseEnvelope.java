@@ -25,5 +25,11 @@ package fr.guddy.roombookings.infra;
 
 import org.cactoos.Scalar;
 
+/**
+ * Wrap an {@link HttpTestCase}.
+ *
+ * @since 1.0.0
+ */
 @FunctionalInterface
-public interface HttpTestCaseEnvelope extends Scalar<HttpTestCase<String>> {}
+public interface HttpTestCaseEnvelope extends Scalar<HttpTestCase<String>> {
+}

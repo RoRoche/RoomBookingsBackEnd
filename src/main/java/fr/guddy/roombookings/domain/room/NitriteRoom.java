@@ -23,34 +23,62 @@
  */
 package fr.guddy.roombookings.domain.room;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 import org.dizitart.no2.collection.Document;
 
-public final class NitriteRoom extends RoomEnvelope {
+/**
+ * {@link Room} stored in {@link org.dizitart.no2.Nitrite}.
+ *
+ * @since 1.0.0
+ */
+public final class NitriteRoom implements Room {
 
-  private static final String DOCUMENT_KEY_NAME = "room_name";
-  private static final String DOCUMENT_KEY_CAPACITY = "room_capacity";
+    /**
+     * The document key for name.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String NAME = "room_name";
 
-  public NitriteRoom(final Room delegate) {
-    super(delegate);
-  }
+    /**
+     * The document key for capacity.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String CAPACITY = "room_capacity";
 
-  public NitriteRoom(final Document document) {
-    this(
-      new SimpleRoom(
-        document.get(DOCUMENT_KEY_NAME, String.class),
-        document.get(DOCUMENT_KEY_CAPACITY, Integer.class)
-      )
-    );
-  }
+    /**
+     * The wrapped {@link Room}.
+     */
+    private final Room delegate;
 
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<String, Object>(
-      new MapEntry<>(NitriteRoom.DOCUMENT_KEY_NAME, name()),
-      new MapEntry<>(NitriteRoom.DOCUMENT_KEY_CAPACITY, capacity())
-    );
-  }
+    public NitriteRoom(final Room delegate) {
+        this.delegate = delegate;
+    }
+
+    public NitriteRoom(final Document document) {
+        this(
+            new SimpleRoom(
+                document.get(NitriteRoom.NAME, String.class),
+                document.get(NitriteRoom.CAPACITY, Integer.class)
+            )
+        );
+    }
+
+    @Override
+    public String name() {
+        return this.delegate.name();
+    }
+
+    @Override
+    public int capacity() {
+        return this.delegate.capacity();
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(NitriteRoom.NAME, this.name());
+        map.put(NitriteRoom.CAPACITY, this.capacity());
+        return map;
+    }
 }

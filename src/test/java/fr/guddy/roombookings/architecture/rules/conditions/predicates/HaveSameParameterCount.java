@@ -26,18 +26,34 @@ package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
 
+/**
+ * Compare the number of parameters.
+ *
+ * @since 1.0.0
+ */
 public final class HaveSameParameterCount implements Scalar<Boolean> {
 
-  private final JavaMethod a;
-  private final JavaMethod b;
+    /**
+     * The first method.
+     */
+    private final JavaMethod first;
 
-  public HaveSameParameterCount(final JavaMethod a, final JavaMethod b) {
-    this.a = a;
-    this.b = b;
-  }
+    /**
+     * The second method.
+     */
+    private final JavaMethod second;
 
-  @Override
-  public Boolean value() {
-    return this.a.getRawParameterTypes().size() == this.b.getRawParameterTypes().size();
-  }
+    public HaveSameParameterCount(final JavaMethod first, final JavaMethod second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    @Override
+    public Boolean value() {
+        return Integer.valueOf(
+            this.first.getRawParameterTypes().size()
+        ).equals(
+            Integer.valueOf(this.second.getRawParameterTypes().size())
+        );
+    }
 }

@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.post;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.bodies.PostJsonBookingBody;
@@ -45,83 +44,103 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link PostBookingRequest}.
+ *
+ * @since 1.0.0
+ */
 final class PostBookingRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Create booking is successful",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
-        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          new PostJsonBookingBody().toString()
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.CREATED_201),
-        new HasBodyContaining(
-          Map.of(
-            "user_id",
-            "test_user_id",
-            "room",
-            Map.of("name", "test_name", "capacity", 12),
-            "slot",
-            Map.of(
-              "timestamp_start",
-              1764352800,
-              "timestamp_end",
-              Instant.ofEpochSecond(1764352800)
-                  .plus(Duration.standardHours(1).getMillis())
-                  .getMillis() /
-                1000
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Create booking is successful",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    PostBookingRequestTest.API.rooms()::clearAll,
+                    PostBookingRequestTest.API.bookings()::clearAll,
+                    new CreateSimpleRoom(PostBookingRequestTest.API)
+                ),
+                Unirest.post(
+                    "http://localhost:%d/rooms/test_name/bookings".formatted(
+                        PostBookingRequestTest.API.port().value()
+                    )
+                ).body(new PostJsonBookingBody().toString())::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.CREATED_201),
+                new HasBodyContaining(
+                    Map.of(
+                        "user_id",
+                        "test_user_id",
+                        "room",
+                        Map.of("name", "test_name", "capacity", 12),
+                        "slot",
+                        Map.of(
+                            "timestamp_start",
+                            1_764_352_800,
+                            "timestamp_end",
+                            Instant.ofEpochSecond(1_764_352_800)
+                                .plus(Duration.standardHours(1).getMillis())
+                                .getMillis() / 1000
+                        )
+                    )
+                ),
+                new HasHeaderWithValue("Location", Matchers.startsWith("/bookings/"))
             )
-          )
-        ),
-        new HasHeaderWithValue("Location", Matchers.startsWith("/bookings/"))
-      )
-    );
-  }
+        );
+    }
 
-  @Test
-  void isConflict() {
-    MatcherAssert.assertThat(
-      "Has conflict on room and slot",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(
-          api.rooms()::clearAll,
-          api.bookings()::clearAll,
-          new CreateSimpleRoom(api),
-          new CreateSimpleBooking(api)
-        ),
-        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          new PostJsonBookingBody().toString()
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.CONFLICT_409),
-        new HasBody("Room named 'test_name' already booked on this slot")
-      )
-    );
-  }
+    @Test
+    void isConflict() {
+        MatcherAssert.assertThat(
+            "Has conflict on room and slot",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    PostBookingRequestTest.API.rooms()::clearAll,
+                    PostBookingRequestTest.API.bookings()::clearAll,
+                    new CreateSimpleRoom(PostBookingRequestTest.API),
+                    new CreateSimpleBooking(PostBookingRequestTest.API)
+                ),
+                Unirest.post(
+                    "http://localhost:%d/rooms/test_name/bookings".formatted(
+                        PostBookingRequestTest.API.port().value()
+                    )
+                ).body(new PostJsonBookingBody().toString())::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.CONFLICT_409),
+                new HasBody("Room named 'test_name' already booked on this slot")
+            )
+        );
+    }
 
-  @Test
-  void isRoomNotFound() {
-    MatcherAssert.assertThat(
-      "Room is not found for name",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        post("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value())).body(
-          new PostJsonBookingBody().toString()
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.NOT_FOUND_404),
-        new HasBody("No room found for name 'test_name'")
-      )
-    );
-  }
+    @Test
+    void isRoomNotFound() {
+        MatcherAssert.assertThat(
+            "Room is not found for name",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    PostBookingRequestTest.API.rooms()::clearAll,
+                    PostBookingRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.post(
+                    "http://localhost:%d/rooms/test_name/bookings".formatted(
+                        PostBookingRequestTest.API.port().value()
+                    )
+                ).body(new PostJsonBookingBody().toString())::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.NOT_FOUND_404),
+                new HasBody("No room found for name 'test_name'")
+            )
+        );
+    }
 }

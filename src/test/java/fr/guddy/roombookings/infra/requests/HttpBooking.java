@@ -30,20 +30,29 @@ import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 import java.util.Map;
 
+/**
+ * Represent a {@link Booking} from HTTP request.
+ *
+ * @param identifier The booking ID.
+ * @param userId The user ID.
+ * @param room The {@link Room} booked.
+ * @param slot The {@link Slot} booked.
+ * @param testCase The {@link HttpTestCase}.
+ */
 public record HttpBooking(
-  Long id,
-  String userId,
-  Room room,
-  Slot slot,
-  HttpTestCase<String> testCase
+    Long identifier,
+    String userId,
+    Room room,
+    Slot slot,
+    HttpTestCase<String> testCase
 ) implements Booking, HttpTestCaseEnvelope {
-  @Override
-  public Map<String, Object> map() {
-    return Map.of();
-  }
+    @Override
+    public Map<String, Object> map() {
+        return Map.of();
+    }
 
-  @Override
-  public HttpTestCase<String> value() throws Exception {
-    return this.testCase;
-  }
+    @Override
+    public HttpTestCase<String> value() throws Exception {
+        return this.testCase;
+    }
 }

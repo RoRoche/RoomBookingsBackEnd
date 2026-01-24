@@ -23,15 +23,19 @@
  */
 package fr.guddy.roombookings.infra.routes;
 
-import static io.javalin.apibuilder.ApiBuilder.get;
-
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 
+/**
+ * Health-check.
+ *
+ * @since 1.0.0
+ */
 public final class ReadinessRoute implements EndpointGroup {
 
-  @Override
-  public void addEndpoints() {
-    get((final Context ctx) -> ctx.status(200).result("READY"));
-  }
+    @Override
+    public void addEndpoints() {
+        ApiBuilder.get((final Context ctx) -> ctx.status(200).result("READY"));
+    }
 }

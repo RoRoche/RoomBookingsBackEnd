@@ -28,15 +28,24 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
+/**
+ * Error message for {@link com.tngtech.archunit.lang.ArchRule} when classes
+ * have getters or setters.
+ *
+ * @since 1.0.0
+ */
 public final class NotHaveGettersOrSettersMessage extends TextEnvelope {
 
-  public NotHaveGettersOrSettersMessage(final JavaClass javaClass, final JavaMethod method) {
-    super(
-      new FormattedText(
-        "Class %s contains getter/setter method %s",
-        javaClass.getName(),
-        method.getFullName()
-      )
-    );
-  }
+    public NotHaveGettersOrSettersMessage(
+        final JavaClass clazz,
+        final JavaMethod method
+    ) {
+        super(
+            new FormattedText(
+                "Class %s contains getter/setter method %s",
+                clazz.getName(),
+                method.getFullName()
+            )
+        );
+    }
 }

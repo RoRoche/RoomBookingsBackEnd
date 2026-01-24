@@ -25,10 +25,30 @@ package fr.guddy.roombookings.domain.slot;
 
 import java.util.Map;
 
+/**
+ * Represent a {@link Slot} to book a {@link fr.guddy.roombookings.domain.room.Room}.
+ *
+ * @since 1.0.0
+ */
 public interface Slot {
-  long timestampStart();
+    /**
+     * The starting timestamp.
+     *
+     * @return The starting timestamp.
+     */
+    long timestampStart();
 
-  long timestampEnd();
+    /**
+     * The ending timestamp.
+     *
+     * @return The ending timestamp.
+     */
+    long timestampEnd();
 
-  Map<String, Object> map();
+    /**
+     * A {@link Map} populated with inner slot details.
+     *
+     * @return A {@link Map} populated with inner slot details.
+     */
+    Map<String, Object> map();
 }

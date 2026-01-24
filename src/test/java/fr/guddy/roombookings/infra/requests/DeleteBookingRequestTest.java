@@ -23,9 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.delete;
-import static org.hamcrest.MatcherAssert.assertThat;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.bodies.JsonBookingBody;
@@ -34,46 +32,68 @@ import fr.guddy.roombookings.infra.matchers.HasStatus;
 import fr.guddy.roombookings.infra.matchers.IsValidBookingDeletion;
 import org.cactoos.list.ListOf;
 import org.eclipse.jetty.http.HttpStatus;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link DeleteBookingRequest}.
+ *
+ * @since 1.0.0
+ */
 final class DeleteBookingRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void isNotFound() {
-    assertThat(
-      "No booking with id 12 were found",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        delete("http://localhost:%d/bookings/12".formatted(api.port().value()))::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.NOT_FOUND_404),
-        new HasBody("No booking with id 12 were found")
-      )
-    );
-  }
+    @Test
+    void isNotFound() {
+        MatcherAssert.assertThat(
+            "No booking with id 12 were found",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    DeleteBookingRequestTest.API.rooms()::clearAll,
+                    DeleteBookingRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.delete(
+                    "http://localhost:%d/bookings/12".formatted(
+                        DeleteBookingRequestTest.API.port().value()
+                    )
+                )::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.NOT_FOUND_404),
+                new HasBody("No booking with id 12 were found")
+            )
+        );
+    }
 
-  @Test
-  void isOK() {
-    assertThat(
-      "Delete booking has body and booking is not in database",
-      new HttpBookingScalar(
-        api,
-        1764352800,
-        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
-          1000,
-        (final Long id) ->
-          delete("http://localhost:%d/bookings/%d".formatted(api.port().value(), id))::asString
-      ),
-      new IsValidBookingDeletion(api, JsonBookingBody::new)
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Delete booking has body and booking is not in database",
+            new HttpBookingScalar(
+                DeleteBookingRequestTest.API,
+                1_764_352_800,
+                Instant.ofEpochSecond(1_764_352_800)
+                    .plus(Duration.standardHours(1).getMillis())
+                    .getMillis() / 1000,
+                (final Long id) ->
+                    Unirest.delete(
+                        "http://localhost:%d/bookings/%d".formatted(
+                            DeleteBookingRequestTest.API.port().value(),
+                            id
+                        )
+                    )::asString
+            ),
+            new IsValidBookingDeletion(DeleteBookingRequestTest.API, JsonBookingBody::new)
+        );
+    }
 }

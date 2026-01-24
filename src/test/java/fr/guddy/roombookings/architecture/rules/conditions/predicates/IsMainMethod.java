@@ -27,23 +27,41 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import org.cactoos.Scalar;
 
+/**
+ * Check if the {@link JavaMethod} is the main method.
+ *
+ * @since 1.0.0
+ */
 public final class IsMainMethod implements Scalar<Boolean> {
 
-  private final JavaMethod method;
+    /**
+     * The {@link JavaMethod} to test.
+     */
+    private final JavaMethod method;
 
-  public IsMainMethod(final JavaMethod method) {
-    this.method = method;
-  }
+    public IsMainMethod(final JavaMethod method) {
+        this.method = method;
+    }
 
-  @Override
-  public Boolean value() {
-    // Check if this is the public static void main(String[] args) method
-    return (
-      this.method.getName().equals("main") &&
-      this.method.getModifiers().contains(JavaModifier.PUBLIC) &&
-      this.method.getModifiers().contains(JavaModifier.STATIC) &&
-      this.method.getRawParameterTypes().size() == 1 &&
-      this.method.getRawParameterTypes().getFirst().getName().equals("[Ljava.lang.String;")
-    );
-  }
+    @Override
+    public Boolean value() {
+        return this.isNamedMain()
+            && this.hasCorrectModifiers()
+            && this.hasCorrectSignature();
+    }
+
+    private boolean isNamedMain() {
+        return this.method.getName().equals("main");
+    }
+
+    private boolean hasCorrectModifiers() {
+        return this.method.getModifiers().contains(JavaModifier.PUBLIC)
+            && this.method.getModifiers().contains(JavaModifier.STATIC);
+    }
+
+    private boolean hasCorrectSignature() {
+        return this.method.getRawParameterTypes().size() == 1
+            && this.method.getRawParameterTypes().getFirst().getName()
+            .equals("[Ljava.lang.String;");
+    }
 }

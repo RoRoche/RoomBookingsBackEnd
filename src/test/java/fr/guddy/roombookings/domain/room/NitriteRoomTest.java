@@ -31,18 +31,23 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests on {@link NitriteRoom}.
+ *
+ * @since 1.0.0
+ */
 final class NitriteRoomTest {
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Nitrite room has name, capacity and map",
-      new NitriteRoom(new SimpleRoom("test", 12)),
-      new AllOf<>(
-        new HasName("test"),
-        new HasCapacity(12),
-        new HasMap(new MapEntry<>("room_name", "test"), new MapEntry<>("room_capacity", 12))
-      )
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Nitrite room has name, capacity and map",
+            new NitriteRoom(new SimpleRoom("test", 12)),
+            new AllOf<>(
+                new HasName("test"),
+                new HasCapacity(12),
+                new HasMap(new MapEntry<>("room_name", "test"), new MapEntry<>("room_capacity", 12))
+            )
+        );
+    }
 }

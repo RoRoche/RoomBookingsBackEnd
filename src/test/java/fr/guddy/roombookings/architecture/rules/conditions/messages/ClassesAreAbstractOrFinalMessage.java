@@ -27,20 +27,26 @@ import com.tngtech.archunit.core.domain.JavaClass;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
+/**
+ * Error message for {@link com.tngtech.archunit.lang.ArchRule} when classes
+ * are not abstract or final.
+ *
+ * @since 1.0.0
+ */
 public final class ClassesAreAbstractOrFinalMessage extends TextEnvelope {
 
-  public ClassesAreAbstractOrFinalMessage(
-    final JavaClass javaClass,
-    final boolean isAbstract,
-    final boolean isFinal
-  ) {
-    super(
-      new FormattedText(
-        "Class %s should be either final or abstract (currently: abstract=%s, final=%s)",
-        javaClass.getFullName(),
-        isAbstract,
-        isFinal
-      )
-    );
-  }
+    public ClassesAreAbstractOrFinalMessage(
+        final JavaClass clazz,
+        final boolean abstraction,
+        final boolean finalization
+    ) {
+        super(
+            new FormattedText(
+                "Class %s should be either final or abstract (currently: abstract=%s, final=%s)",
+                clazz.getFullName(),
+                abstraction,
+                finalization
+            )
+        );
+    }
 }

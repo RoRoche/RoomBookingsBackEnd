@@ -28,60 +28,124 @@ import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 import org.dizitart.no2.collection.Document;
 
-public final class NitriteBooking extends Booking.Envelope {
+/**
+ * {@link Booking} implementation using {@link org.dizitart.no2.Nitrite}.
+ *
+ * @since 1.0.0
+ */
+public final class NitriteBooking implements Booking {
 
-  private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
-  private static final String DOCUMENT_KEY_USER_ID = "user_id";
-  private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
-  private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_END = "slot_timestamp_end";
+    /**
+     * The {@link Room} name.
+     */
+    private static final String ROOM_NAME = "room_name";
 
-  public NitriteBooking(final Booking delegate) {
-    super(delegate);
-  }
+    /**
+     * The user's ID that booked the {@link Room}.
+     */
+    private static final String USER_ID = "user_id";
 
-  public NitriteBooking(final Long id, final String userId, final Room room, final Slot slot) {
-    this(new SimpleBooking(id, userId, room, slot));
-  }
+    /**
+     * The starting timestamp of the {@link Booking}.
+     */
+    private static final String TIMESTAMP_START = "slot_timestamp_start";
 
-  public NitriteBooking(final Document document, final Rooms rooms) throws RoomNotFoundException {
-    this(
-      document.getId().getIdValue(),
-      document.get(DOCUMENT_KEY_USER_ID, String.class),
-      document.get(DOCUMENT_KEY_ROOM_NAME, String.class),
-      document.get(DOCUMENT_KEY_SLOT_TIMESTAMP_START, Long.class),
-      document.get(DOCUMENT_KEY_SLOT_TIMESTAMP_END, Long.class),
-      rooms
-    );
-  }
+    /**
+     * The ending timestamp of the {@link Booking}.
+     */
+    private static final String TIMESTAMP_END = "slot_timestamp_end";
 
-  public NitriteBooking(
-    final Long id,
-    final String userId,
-    final String roomName,
-    final long timestampStart,
-    final long timestampEnd,
-    final Rooms rooms
-  ) {
-    this(
-      id,
-      userId,
-      rooms.withName(roomName).orElseThrow(() -> new RoomNotFoundException(roomName)),
-      new LogicalSlot(timestampStart, timestampEnd)
-    );
-  }
+    /**
+     * The wrapped {@link Booking}.
+     */
+    private final Booking delegate;
 
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<>(
-      new MapEntry<>(DOCUMENT_KEY_USER_ID, userId()),
-      new MapEntry<>(DOCUMENT_KEY_ROOM_NAME, room().name()),
-      new MapEntry<>(DOCUMENT_KEY_SLOT_TIMESTAMP_START, slot().timestampStart()),
-      new MapEntry<>(DOCUMENT_KEY_SLOT_TIMESTAMP_END, slot().timestampEnd())
-    );
-  }
+    public NitriteBooking(final Booking delegate) {
+        this.delegate = delegate;
+    }
+
+    /**
+     * Secondary constructor.
+     *
+     * @param id   The booking ID.
+     * @param user The user ID.
+     * @param room The room name.
+     * @param slot The slot.
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    public NitriteBooking(final Long id, final String user, final Room room, final Slot slot) {
+        this(new SimpleBooking(id, user, room, slot));
+    }
+
+    public NitriteBooking(final Document document, final Rooms rooms) throws RoomNotFoundException {
+        this(
+            document.getId().getIdValue(),
+            document.get(NitriteBooking.USER_ID, String.class),
+            document.get(NitriteBooking.ROOM_NAME, String.class),
+            document.get(NitriteBooking.TIMESTAMP_START, Long.class),
+            document.get(NitriteBooking.TIMESTAMP_END, Long.class),
+            rooms
+        );
+    }
+
+    /**
+     * Secondary constructor.
+     *
+     * @param id    The booking ID.
+     * @param user  The user ID.
+     * @param room  The room name.
+     * @param start The starting timestamp.
+     * @param end   The ending timestamp.
+     * @param rooms The collection of rooms.
+     * @checkstyle ParameterNumberCheck (20 lines)
+     */
+    public NitriteBooking(
+        final Long id,
+        final String user,
+        final String room,
+        final long start,
+        final long end,
+        final Rooms rooms
+    ) {
+        this(
+            id,
+            user,
+            rooms.withName(room).orElseThrow(() -> new RoomNotFoundException(room)),
+            new LogicalSlot(start, end)
+        );
+    }
+
+    @Override
+    public Long identifier() {
+        return this.delegate.identifier();
+    }
+
+    @Override
+    public String userId() {
+        return this.delegate.userId();
+    }
+
+    @Override
+    public Room room() {
+        return this.delegate.room();
+    }
+
+    @Override
+    public Slot slot() {
+        return this.delegate.slot();
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(NitriteBooking.USER_ID, this.userId());
+        map.put(NitriteBooking.ROOM_NAME, this.room().name());
+        map.put(NitriteBooking.TIMESTAMP_START, this.slot().timestampStart());
+        map.put(NitriteBooking.TIMESTAMP_END, this.slot().timestampEnd());
+        return map;
+    }
 }

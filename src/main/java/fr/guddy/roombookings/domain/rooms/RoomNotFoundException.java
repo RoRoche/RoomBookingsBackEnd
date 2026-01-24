@@ -23,9 +23,14 @@
  */
 package fr.guddy.roombookings.domain.rooms;
 
+/**
+ * {@link Exception} thrown when no {@link fr.guddy.roombookings.domain.room.Room} for name.
+ *
+ * @since 1.0.0
+ */
 public final class RoomNotFoundException extends RuntimeException {
 
-  public RoomNotFoundException(final String roomName) {
-    super(String.format("No room found for name '%s'", roomName));
-  }
+    public RoomNotFoundException(final String name) {
+        super(String.format("No room found for name '%s'", name));
+    }
 }

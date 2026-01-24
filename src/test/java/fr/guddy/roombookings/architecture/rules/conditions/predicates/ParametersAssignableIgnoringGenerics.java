@@ -30,29 +30,37 @@ import org.cactoos.Scalar;
 /**
  * Compare parameters ignoring generics, and check that
  * each implementation type is the same or a subtype of the interface type.
+ *
+ * @since 1.0.0
  */
 public final class ParametersAssignableIgnoringGenerics implements Scalar<Boolean> {
 
-  private final JavaMethod ifaceMethod;
-  private final JavaMethod implMethod;
+    /**
+     * The interface method.
+     */
+    private final JavaMethod declared;
 
-  public ParametersAssignableIgnoringGenerics(
-    final JavaMethod ifaceMethod,
-    final JavaMethod implMethod
-  ) {
-    this.ifaceMethod = ifaceMethod;
-    this.implMethod = implMethod;
-  }
+    /**
+     * The implemented method.
+     */
+    private final JavaMethod implemented;
 
-  @Override
-  public Boolean value() {
-    final var ifaceParams = this.ifaceMethod.getRawParameterTypes();
-    final var implParams = this.implMethod.getRawParameterTypes();
+    public ParametersAssignableIgnoringGenerics(
+        final JavaMethod declared,
+        final JavaMethod implemented
+    ) {
+        this.declared = declared;
+        this.implemented = implemented;
+    }
 
-    return IntStream.range(0, ifaceParams.size()).allMatch((final int i) -> {
-      final var ifaceParam = ifaceParams.get(i).toErasure();
-      final var implParam = implParams.get(i).toErasure();
-      return new IsSameOrSubtype(implParam, ifaceParam).value();
-    });
-  }
+    @Override
+    public Boolean value() {
+        return IntStream.range(0, this.declared.getRawParameterTypes().size()).allMatch(
+            (final int i) ->
+                new IsSameOrSubtype(
+                    this.implemented.getRawParameterTypes().get(i).toErasure(),
+                    this.declared.getRawParameterTypes().get(i).toErasure()
+                ).value()
+        );
+    }
 }

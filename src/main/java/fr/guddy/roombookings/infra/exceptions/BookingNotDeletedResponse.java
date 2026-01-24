@@ -28,12 +28,17 @@ import io.javalin.http.Context;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link ExceptionHandler} to handle when a {@link fr.guddy.roombookings.domain.booking.Booking}
+ * can not be deleted.
+ *
+ * @since 1.0.0
+ */
 public final class BookingNotDeletedResponse
-  implements ExceptionHandler<BookingNotDeletedException>
-{
+    implements ExceptionHandler<BookingNotDeletedException> {
 
-  @Override
-  public void handle(final BookingNotDeletedException exception, final Context ctx) {
-    ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500).result(exception.getMessage());
-  }
+    @Override
+    public void handle(final BookingNotDeletedException exception, final Context ctx) {
+        ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500).result(exception.getMessage());
+    }
 }

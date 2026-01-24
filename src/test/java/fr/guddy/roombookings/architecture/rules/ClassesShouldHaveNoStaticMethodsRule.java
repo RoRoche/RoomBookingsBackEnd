@@ -26,13 +26,18 @@ package fr.guddy.roombookings.architecture.rules;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import fr.guddy.roombookings.architecture.rules.conditions.HaveNoStaticMethods;
 
+/**
+ * {@link com.tngtech.archunit.lang.ArchRule} to assert that classes have no static methods.
+ *
+ * @since 1.0.0
+ */
 public final class ClassesShouldHaveNoStaticMethodsRule extends ArchRuleEnvelope {
 
-  public ClassesShouldHaveNoStaticMethodsRule() {
-    super(
-      ArchRuleDefinition.classes()
-        .should(new HaveNoStaticMethods())
-        .because("https://www.yegor256.com/2017/02/07/private-method-is-new-class.html")
-    );
-  }
+    public ClassesShouldHaveNoStaticMethodsRule() {
+        super(
+            ArchRuleDefinition.classes()
+                .should(new HaveNoStaticMethods())
+                .because("https://www.yegor256.com/2017/02/07/private-method-is-new-class.html")
+        );
+    }
 }

@@ -29,31 +29,39 @@ import org.cactoos.map.MapOf;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasMap extends TypeSafeMatcher<Room> {
+/**
+ * {@link org.hamcrest.Matcher} to assert a {@link Room} contains a {@link Map}.
+ *
+ * @since 1.0.0
+ */
+public class HasMap extends TypeSafeMatcher<Room> {
 
-  private final Map<String, Object> expected;
+    /**
+     * The expected {@link Map}.
+     */
+    private final Map<String, Object> expected;
 
-  public HasMap(final Map<String, Object> expected) {
-    this.expected = expected;
-  }
+    public HasMap(final Map<String, Object> expected) {
+        this.expected = expected;
+    }
 
-  @SafeVarargs
-  public HasMap(final Map.Entry<String, Object>... expected) {
-    this(new MapOf<>(expected));
-  }
+    @SafeVarargs
+    public HasMap(final Map.Entry<String, Object>... expected) {
+        this(new MapOf<>(expected));
+    }
 
-  @Override
-  protected boolean matchesSafely(final Room actual) {
-    return this.expected.equals(actual.map());
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("a Room with map entries: ").appendValue(this.expected);
+    }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("a Room with map entries: ").appendValue(this.expected);
-  }
+    @Override
+    protected final boolean matchesSafely(final Room actual) {
+        return this.expected.equals(actual.map());
+    }
 
-  @Override
-  protected void describeMismatchSafely(final Room room, final Description mismatchDescription) {
-    mismatchDescription.appendText("was a Room with map entries: ").appendValue(room.map());
-  }
+    @Override
+    protected final void describeMismatchSafely(final Room room, final Description description) {
+        description.appendText("was a Room with map entries: ").appendValue(room.map());
+    }
 }

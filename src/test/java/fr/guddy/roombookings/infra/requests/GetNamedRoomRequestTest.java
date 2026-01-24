@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.get;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
@@ -37,39 +36,58 @@ import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link GetNamedRoomRequest}.
+ *
+ * @since 1.0.0
+ */
 final class GetNamedRoomRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void hasNotFound() {
-    MatcherAssert.assertThat(
-      "No room found for given name",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll),
-        get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.NOT_FOUND_404),
-        new HasBody("No room found for name 'test_name'")
-      )
-    );
-  }
+    @Test
+    void hasNotFound() {
+        MatcherAssert.assertThat(
+            "No room found for given name",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(GetNamedRoomRequestTest.API.rooms()::clearAll),
+                Unirest.get(
+                    "http://localhost:%d/rooms/test_name".formatted(
+                        GetNamedRoomRequestTest.API.port().value()
+                    )
+                )::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.NOT_FOUND_404),
+                new HasBody("No room found for name 'test_name'")
+            )
+        );
+    }
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Room found for given name",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, new CreateSimpleRoom(api)),
-        get("http://localhost:%d/rooms/test_name".formatted(api.port().value()))::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.OK_200),
-        new HasBody("{\"name\":\"test_name\",\"capacity\":12}")
-      )
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Room found for given name",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetNamedRoomRequestTest.API.rooms()::clearAll,
+                    new CreateSimpleRoom(GetNamedRoomRequestTest.API)
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms/test_name".formatted(
+                        GetNamedRoomRequestTest.API.port().value()
+                    )
+                )::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.OK_200),
+                new HasBody("{\"name\":\"test_name\",\"capacity\":12}")
+            )
+        );
+    }
 }

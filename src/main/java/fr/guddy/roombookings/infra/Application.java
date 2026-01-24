@@ -23,8 +23,13 @@
  */
 package fr.guddy.roombookings.infra;
 
+/**
+ * Contract to define an application.
+ *
+ * @since 1.0.0
+ */
 public interface Application {
-  void start();
+    void start();
 
-  void stop();
+    void stop();
 }

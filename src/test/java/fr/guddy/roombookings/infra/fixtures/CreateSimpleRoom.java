@@ -27,20 +27,28 @@ import fr.guddy.roombookings.domain.room.SimpleRoom;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 
+/**
+ * Fixture to create a {@link SimpleRoom}.
+ *
+ * @since 1.0.0
+ */
 public final class CreateSimpleRoom implements Runnable {
 
-  private final Rooms rooms;
+    /**
+     * The collection of {@link fr.guddy.roombookings.domain.room.Room}.
+     */
+    private final Rooms rooms;
 
-  public CreateSimpleRoom(final Rooms rooms) {
-    this.rooms = rooms;
-  }
+    public CreateSimpleRoom(final Rooms rooms) {
+        this.rooms = rooms;
+    }
 
-  public CreateSimpleRoom(final ApiExternalExtension api) {
-    this(api.rooms());
-  }
+    public CreateSimpleRoom(final ApiExternalExtension api) {
+        this(api.rooms());
+    }
 
-  @Override
-  public void run() {
-    this.rooms.create(new SimpleRoom("test_name", 12));
-  }
+    @Override
+    public void run() {
+        this.rooms.create(new SimpleRoom("test_name", 12));
+    }
 }

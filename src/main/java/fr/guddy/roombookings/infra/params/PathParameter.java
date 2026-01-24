@@ -25,27 +25,40 @@ package fr.guddy.roombookings.infra.params;
 
 import io.javalin.http.Context;
 
+/**
+ * {@link Parameter} passed as a path in the URI of an HTTP request.
+ *
+ * @since 1.0.0
+ */
 public final class PathParameter implements Parameter<String> {
 
-  private final String name;
-  private final Parameter<String> delegate;
+    /**
+     * The name of the {@link Parameter}.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private final String name;
 
-  public PathParameter(final String name, final Parameter<String> delegate) {
-    this.name = name;
-    this.delegate = delegate;
-  }
+    /**
+     * The wrapped {@link Parameter} with a {@link String} value.
+     */
+    private final Parameter<String> delegate;
 
-  public PathParameter(final String name, final Context context) {
-    this(name, new StringParameter(name, context.pathParam(name)));
-  }
+    public PathParameter(final String name, final Parameter<String> delegate) {
+        this.name = name;
+        this.delegate = delegate;
+    }
 
-  @Override
-  public String name() {
-    return name;
-  }
+    public PathParameter(final String name, final Context context) {
+        this(name, new StringParameter(name, context.pathParam(name)));
+    }
 
-  @Override
-  public String value() {
-    return delegate.value();
-  }
+    @Override
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public String value() {
+        return this.delegate.value();
+    }
 }

@@ -27,41 +27,50 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.EvaluationResult;
 
+/**
+ * Wrapper for {@link ArchRule}.
+ *
+ * @since 1.0.0
+ */
 public abstract class ArchRuleEnvelope implements ArchRule {
 
-  private final ArchRule delegate;
+    /**
+     * The wrapped {@link ArchRule} to be decorated.
+     */
+    private final ArchRule delegate;
 
-  protected ArchRuleEnvelope(final ArchRule delegate) {
-    this.delegate = delegate;
-  }
+    protected ArchRuleEnvelope(final ArchRule delegate) {
+        this.delegate = delegate;
+    }
 
-  @Override
-  public void check(final JavaClasses classes) {
-    this.delegate.check(classes);
-  }
+    @Override
+    public final void check(final JavaClasses classes) {
+        this.delegate.check(classes);
+    }
 
-  @Override
-  public ArchRule because(final String reason) {
-    return this.delegate.because(reason);
-  }
+    @Override
+    public final ArchRule because(final String reason) {
+        return this.delegate.because(reason);
+    }
 
-  @Override
-  public ArchRule allowEmptyShould(final boolean allowEmptyShould) {
-    return this.delegate.allowEmptyShould(allowEmptyShould);
-  }
+    @Override
+    public final ArchRule allowEmptyShould(final boolean allow) {
+        return this.delegate.allowEmptyShould(allow);
+    }
 
-  @Override
-  public ArchRule as(final String newDescription) {
-    return this.delegate.as(newDescription);
-  }
+    @SuppressWarnings("PMD.ShortMethodName")
+    @Override
+    public final ArchRule as(final String description) {
+        return this.delegate.as(description);
+    }
 
-  @Override
-  public EvaluationResult evaluate(final JavaClasses classes) {
-    return this.delegate.evaluate(classes);
-  }
+    @Override
+    public final EvaluationResult evaluate(final JavaClasses classes) {
+        return this.delegate.evaluate(classes);
+    }
 
-  @Override
-  public String getDescription() {
-    return this.delegate.getDescription();
-  }
+    @Override
+    public final String getDescription() {
+        return this.delegate.getDescription();
+    }
 }

@@ -25,6 +25,12 @@ package fr.guddy.roombookings.infra.requests;
 
 import io.javalin.http.Context;
 
+/**
+ * Contract to define an HTTP request.
+ *
+ * @since 1.0.0
+ */
+@FunctionalInterface
 public interface Request {
-  void perform(final Context context);
+    void perform(Context context);
 }

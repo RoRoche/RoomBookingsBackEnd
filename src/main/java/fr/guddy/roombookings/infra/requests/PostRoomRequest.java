@@ -31,29 +31,41 @@ import io.javalin.http.Context;
 import org.dizitart.no2.exceptions.UniqueConstraintException;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Request} to create a {@link Room}.
+ *
+ * @since 1.0.0
+ */
 public final class PostRoomRequest implements Request {
 
-  private final Rooms rooms;
-  private final Room room;
+    /**
+     * The collection of {@link Room}.
+     */
+    private final Rooms rooms;
 
-  public PostRoomRequest(final Rooms rooms, final Room room) {
-    this.rooms = rooms;
-    this.room = room;
-  }
+    /**
+     * The {@link Room} to create.
+     */
+    private final Room room;
 
-  public PostRoomRequest(final Rooms rooms, final Context context) {
-    this(rooms, new JsonRoom(context.body()));
-  }
-
-  @Override
-  public void perform(final Context context) {
-    try {
-      rooms.create(room);
-    } catch (final UniqueConstraintException exception) {
-      throw new CreateRoomConflictException(exception, room.name());
+    public PostRoomRequest(final Rooms rooms, final Room room) {
+        this.rooms = rooms;
+        this.room = room;
     }
-    context
-      .header("location", String.format("/rooms/%s", room.name()))
-      .status(HttpStatus.CREATED_201);
-  }
+
+    public PostRoomRequest(final Rooms rooms, final Context context) {
+        this(rooms, new JsonRoom(context.body()));
+    }
+
+    @Override
+    public void perform(final Context context) {
+        try {
+            this.rooms.create(this.room);
+        } catch (final UniqueConstraintException exception) {
+            throw new CreateRoomConflictException(exception, this.room.name());
+        }
+        context
+            .header("location", String.format("/rooms/%s", this.room.name()))
+            .status(HttpStatus.CREATED_201);
+    }
 }

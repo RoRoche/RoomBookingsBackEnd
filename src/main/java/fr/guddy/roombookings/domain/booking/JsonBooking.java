@@ -24,7 +24,9 @@
 package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
+import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.JsonSlot;
+import fr.guddy.roombookings.domain.slot.Slot;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,45 +34,95 @@ import javax.json.JsonObject;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 
-public final class JsonBooking extends Booking.Envelope {
+/**
+ * {@link Booking} implementation to deal with JSON content.
+ *
+ * @since 1.0.0
+ */
+public final class JsonBooking implements Booking {
 
-  private static final String JSON_KEY_ID = "id";
-  private static final String JSON_KEY_USER_ID = "user_id";
-  private static final String JSON_KEY_ROOM = "room";
-  private static final String JSON_KEY_SLOT = "slot";
+    /**
+     * The JSON key for id.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String IDENTIFIER = "id";
 
-  public JsonBooking(final Booking delegate) {
-    super(delegate);
-  }
+    /**
+     * The JSON key for user's id.
+     */
+    private static final String USER_ID = "user_id";
 
-  public JsonBooking(final String body) {
-    this(new JsonFromBody(body));
-  }
+    /**
+     * The JSON key for room.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String ROOM = "room";
 
-  public JsonBooking(final JsonObject jsonObject) {
-    this(
-      new SimpleBooking(
-        (long) jsonObject.getInt(JSON_KEY_ID, -1),
-        jsonObject.getString(JSON_KEY_USER_ID),
-        Optional.ofNullable(jsonObject.getJsonObject(JSON_KEY_ROOM))
-          .map(JsonRoom::new)
-          .orElse(null),
-        Optional.ofNullable(jsonObject.getJsonObject(JSON_KEY_SLOT)).map(JsonSlot::new).orElse(null)
-      )
-    );
-  }
+    /**
+     * The JSON key for slot.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String SLOT = "slot";
 
-  public JsonBooking(final Scalar<JsonObject> json) {
-    this(new Unchecked<>(json).value());
-  }
+    /**
+     * The wrapped {@link Booking}.
+     */
+    private final Booking delegate;
 
-  @Override
-  public Map<String, Object> map() {
-    final Map<String, Object> map = new LinkedHashMap<>();
-    map.put(JSON_KEY_ID, id());
-    map.put(JSON_KEY_USER_ID, userId());
-    map.put(JSON_KEY_ROOM, new JsonRoom(room()).map());
-    map.put(JSON_KEY_SLOT, new JsonSlot(slot()).map());
-    return map;
-  }
+    public JsonBooking(final Booking delegate) {
+        this.delegate = delegate;
+    }
+
+    public JsonBooking(final String body) {
+        this(new JsonFromBody(body));
+    }
+
+    public JsonBooking(final JsonObject json) {
+        this(
+            new SimpleBooking(
+                (long) json.getInt(JsonBooking.IDENTIFIER, -1),
+                json.getString(JsonBooking.USER_ID),
+                Optional.ofNullable(json.getJsonObject(JsonBooking.ROOM))
+                    .map(JsonRoom::new)
+                    .orElse(null),
+                Optional.ofNullable(json.getJsonObject(JsonBooking.SLOT))
+                    .map(JsonSlot::new)
+                    .orElse(null)
+            )
+        );
+    }
+
+    public JsonBooking(final Scalar<JsonObject> json) {
+        this(new Unchecked<>(json).value());
+    }
+
+    @Override
+    public Long identifier() {
+        return this.delegate.identifier();
+    }
+
+    @Override
+    public String userId() {
+        return this.delegate.userId();
+    }
+
+    @Override
+    public Room room() {
+        return this.delegate.room();
+    }
+
+    @Override
+    public Slot slot() {
+        return this.delegate.slot();
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(JsonBooking.IDENTIFIER, this.identifier());
+        map.put(JsonBooking.USER_ID, this.userId());
+        map.put(JsonBooking.ROOM, new JsonRoom(this.room()).map());
+        map.put(JsonBooking.SLOT, new JsonSlot(this.slot()).map());
+        return map;
+    }
 }

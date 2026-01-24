@@ -25,35 +25,44 @@ package fr.guddy.roombookings.architecture.rules.conditions.collections;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaType;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetEnvelope;
 
+/**
+ * Iterate to retrieve all the interfaces.
+ *
+ * @since 1.0.O
+ */
 public final class RecursiveInterfaces extends SetEnvelope<JavaClass> {
 
-  public RecursiveInterfaces(final JavaClass clazz) {
-    super(
-      new Unchecked<>(() -> {
-        final Set<JavaClass> result = new HashSet<>();
-        // Recursively collect interfaces implemented by this class
-        clazz
-          .getInterfaces()
-          .forEach((final JavaType ifaceType) -> {
-            final JavaClass iface = ifaceType.toErasure();
-            if (result.add(iface)) {
-              result.addAll(new RecursiveInterfaces(iface));
-            }
-          });
-        // Also collect interfaces from superclasses
-        clazz
-          .getSuperclass()
-          .ifPresent((final JavaType superclassType) ->
-            result.addAll(new RecursiveInterfaces(superclassType.toErasure()))
-          );
-        return result;
-      })
-        .value()
-    );
-  }
+    public RecursiveInterfaces(final JavaClass clazz) {
+        super(
+            new Unchecked<>(
+                () ->
+                    Stream.concat(
+                        clazz
+                            .getInterfaces()
+                            .stream()
+                            .map(JavaType::toErasure)
+                            .flatMap(
+                                (final JavaClass iface) -> Stream.concat(
+                                    Stream.of(iface),
+                                    new RecursiveInterfaces(iface).stream()
+                                )
+                            ),
+                        clazz
+                            .getSuperclass()
+                            .map(JavaType::toErasure)
+                            .map(
+                                (final JavaClass superclass) ->
+                                    new RecursiveInterfaces(superclass).stream()
+                            )
+                            .orElseGet(Stream::empty)
+                    ).collect(Collectors.toSet())
+            )
+                .value()
+        );
+    }
 }

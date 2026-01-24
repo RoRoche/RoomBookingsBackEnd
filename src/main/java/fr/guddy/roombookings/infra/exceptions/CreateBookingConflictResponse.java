@@ -28,12 +28,17 @@ import io.javalin.http.Context;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link ExceptionHandler} to handle when there is a conflict while creating
+ * a {@link fr.guddy.roombookings.domain.booking.Booking}.
+ *
+ * @since 1.0.0
+ */
 public final class CreateBookingConflictResponse
-  implements ExceptionHandler<CreateBookingConflictException>
-{
+    implements ExceptionHandler<CreateBookingConflictException> {
 
-  @Override
-  public void handle(final CreateBookingConflictException exception, final Context ctx) {
-    ctx.status(HttpStatus.CONFLICT_409).result(exception.getMessage());
-  }
+    @Override
+    public void handle(final CreateBookingConflictException exception, final Context ctx) {
+        ctx.status(HttpStatus.CONFLICT_409).result(exception.getMessage());
+    }
 }

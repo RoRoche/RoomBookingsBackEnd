@@ -23,10 +23,6 @@
  */
 package fr.guddy.roombookings.domain.bookings;
 
-import static org.dizitart.no2.filters.Filter.and;
-import static org.dizitart.no2.filters.Filter.or;
-import static org.dizitart.no2.filters.FluentFilter.where;
-
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.NitriteBooking;
 import fr.guddy.roombookings.domain.room.Room;
@@ -42,107 +38,151 @@ import org.dizitart.no2.collection.Document;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.filters.Filter;
+import org.dizitart.no2.filters.FluentFilter;
 
+/**
+ * Concrete implementation of {@link Bookings} based on {@link NitriteCollection}.
+ *
+ * @since 1.0.0
+ */
 public final class NitriteBookings implements Bookings {
 
-  private static final String DOCUMENT_KEY_ROOM_NAME = "room_name";
-  private static final String DOCUMENT_KEY_USER_ID = "user_id";
-  private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_START = "slot_timestamp_start";
-  private static final String DOCUMENT_KEY_SLOT_TIMESTAMP_END = "slot_timestamp_end";
+    /**
+     * The document ke for room name.
+     */
+    private static final String ROOM_NAME = "room_name";
 
-  private final NitriteCollection collection;
-  private final Rooms rooms;
+    /**
+     * The document ke for user ID.
+     */
+    private static final String USER_ID = "user_id";
 
-  public NitriteBookings(final NitriteCollection collection, final Rooms rooms) {
-    this.collection = collection;
-    this.rooms = rooms;
-  }
+    /**
+     * The document ke for slot timestamp start.
+     */
+    private static final String TIMESTAMP_START = "slot_timestamp_start";
 
-  public NitriteBookings(final Nitrite database, final Rooms rooms) {
-    this(database.getCollection("bookings"), rooms);
-  }
+    /**
+     * The document ke for slot timestamp end.
+     */
+    private static final String TIMESTAMP_END = "slot_timestamp_end";
 
-  @Override
-  public Long create(final Booking booking) {
-    return this.collection.insert(Document.createDocument(new NitriteBooking(booking).map()))
-      .iterator()
-      .next()
-      .getIdValue();
-  }
+    /**
+     * The {@link NitriteCollection} containing rooms.
+     */
+    private final NitriteCollection collection;
 
-  @Override
-  public List<Booking> forRoomInSlot(final Room room, final Slot slot) {
-    final List<Document> documents = this.collection.find(
-      and(
-        where(DOCUMENT_KEY_ROOM_NAME).eq(room.name()),
-        or(
-          and(
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_START).lte(slot.timestampEnd()),
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_END).gte(slot.timestampEnd())
-          ),
-          and(
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_START).lte(slot.timestampStart()),
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_END).gte(slot.timestampStart())
-          ),
-          and(
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_START).gte(slot.timestampStart()),
-            where(DOCUMENT_KEY_SLOT_TIMESTAMP_END).lte(slot.timestampEnd())
-          )
-        )
-      )
-    ).toList();
-    return documents
-      .stream()
-      .map((final Document document) ->
-        new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
-      )
-      .toList();
-  }
+    /**
+     * The collection of {@link Rooms}.
+     */
+    private final Rooms rooms;
 
-  @Override
-  public List<Booking> forUserFromStartDate(final String userId, final long timestampStart) {
-    final List<Document> documents = this.collection.find(
-      and(
-        where(DOCUMENT_KEY_USER_ID).eq(userId),
-        or(
-          where(DOCUMENT_KEY_SLOT_TIMESTAMP_START).gte(timestampStart),
-          where(DOCUMENT_KEY_SLOT_TIMESTAMP_END).gte(timestampStart)
-        )
-      )
-    ).toList();
-    return documents
-      .stream()
-      .map((final Document document) ->
-        new Unchecked<>((Scalar<Booking>) () -> new NitriteBooking(document, rooms)).value()
-      )
-      .sorted(Comparator.comparingLong((final Booking booking) -> booking.slot().timestampStart()))
-      .toList();
-  }
+    public NitriteBookings(final NitriteCollection collection, final Rooms rooms) {
+        this.collection = collection;
+        this.rooms = rooms;
+    }
 
-  @Override
-  public boolean isConflicting(final Booking booking) {
-    return !forRoomInSlot(booking.room(), booking.slot()).isEmpty();
-  }
+    public NitriteBookings(final Nitrite database, final Rooms rooms) {
+        this(database.getCollection("bookings"), rooms);
+    }
 
-  @Override
-  public int clearAll() {
-    return this.collection.remove(Filter.ALL).getAffectedCount();
-  }
+    @Override
+    public Long create(final Booking booking) {
+        return this.collection.insert(Document.createDocument(new NitriteBooking(booking).map()))
+            .iterator()
+            .next()
+            .getIdValue();
+    }
 
-  @Override
-  public Optional<Booking> byId(final long id) {
-    return Optional.ofNullable(this.collection.getById(NitriteId.createId(id))).map(
-      (final Document document) -> new NitriteBooking(document, this.rooms)
-    );
-  }
+    @Override
+    public List<Booking> forRoomInSlot(final Room room, final Slot slot) {
+        return this.collection.find(
+            Filter.and(
+                FluentFilter.where(NitriteBookings.ROOM_NAME).eq(room.name()),
+                Filter.or(
+                    Filter.and(
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_START
+                        ).lte(slot.timestampEnd()),
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_END
+                        ).gte(slot.timestampEnd())
+                    ),
+                    Filter.and(
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_START
+                        ).lte(slot.timestampStart()),
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_END
+                        ).gte(slot.timestampStart())
+                    ),
+                    Filter.and(
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_START
+                        ).gte(slot.timestampStart()),
+                        FluentFilter.where(
+                            NitriteBookings.TIMESTAMP_END
+                        ).lte(slot.timestampEnd())
+                    )
+                )
+            )
+            )
+            .toList()
+            .stream()
+            .map(
+                (final Document document) ->
+                    new Unchecked<>(
+                        (Scalar<Booking>) () -> new NitriteBooking(document, this.rooms)
+                    ).value()
+            )
+            .toList();
+    }
 
-  @Override
-  public boolean delete(final Booking booking) {
-    return (
-      this.collection.remove(
-        this.collection.getById(NitriteId.createId(booking.id()))
-      ).getAffectedCount() ==
-      1
-    );
-  }
+    @Override
+    public List<Booking> forUserFromStartDate(final String user, final long start) {
+        return this.collection.find(
+            Filter.and(
+                FluentFilter.where(NitriteBookings.USER_ID).eq(user),
+                Filter.or(
+                    FluentFilter.where(NitriteBookings.TIMESTAMP_START).gte(start),
+                    FluentFilter.where(NitriteBookings.TIMESTAMP_END).gte(start)
+                )
+            )
+            )
+            .toList()
+            .stream()
+            .map(
+                (final Document document) ->
+                    new Unchecked<>(
+                        (Scalar<Booking>) () -> new NitriteBooking(document, this.rooms)
+                    ).value()
+            )
+            .sorted(
+                Comparator.comparingLong((final Booking booking) -> booking.slot().timestampStart())
+            ).toList();
+    }
+
+    @Override
+    public boolean isConflicting(final Booking booking) {
+        return !this.forRoomInSlot(booking.room(), booking.slot()).isEmpty();
+    }
+
+    @Override
+    public int clearAll() {
+        return this.collection.remove(Filter.ALL).getAffectedCount();
+    }
+
+    @Override
+    public Optional<Booking> byId(final long id) {
+        return Optional.ofNullable(this.collection.getById(NitriteId.createId(id))).map(
+            (final Document document) -> new NitriteBooking(document, this.rooms)
+        );
+    }
+
+    @Override
+    public boolean delete(final Booking booking) {
+        return this.collection.remove(
+            this.collection.getById(NitriteId.createId(booking.identifier()))
+        ).getAffectedCount() == 1;
+    }
 }

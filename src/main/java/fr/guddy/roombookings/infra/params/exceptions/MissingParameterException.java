@@ -23,9 +23,15 @@
  */
 package fr.guddy.roombookings.infra.params.exceptions;
 
+/**
+ * {@link Exception} thrown when a mandatory {@link fr.guddy.roombookings.infra.params.Parameter}
+ * is missing.
+ *
+ * @since 1.0.0
+ */
 public final class MissingParameterException extends RuntimeException {
 
-  public MissingParameterException(final String name) {
-    super(String.format("Parameter named '%s' is missing", name));
-  }
+    public MissingParameterException(final String name) {
+        super(String.format("Parameter named '%s' is missing", name));
+    }
 }

@@ -35,70 +35,110 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * JUnit extension to prepare the {@link Api}.
+ *
+ * @since 1.0.0
+ */
 public final class ApiExternalExtension implements BeforeAllCallback, AfterAllCallback {
 
-  private final Api api;
-  private final Rooms rooms;
-  private final Bookings bookings;
-  private final Runnable waitForServer;
+    /**
+     * The {@link Api}.
+     */
+    private final Api api;
 
-  public ApiExternalExtension(
-    final Api api,
-    final Rooms rooms,
-    final Bookings bookings,
-    final Runnable waitForServer
-  ) {
-    this.api = api;
-    this.rooms = rooms;
-    this.bookings = bookings;
-    this.waitForServer = waitForServer;
-  }
+    /**
+     * The collection of {@link fr.guddy.roombookings.domain.room.Room}.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private final Rooms rooms;
 
-  public ApiExternalExtension(final Api api, final Rooms rooms, final Bookings bookings) {
-    this(api, rooms, bookings, new WaitForServer(api));
-  }
+    /**
+     * The collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private final Bookings bookings;
 
-  public ApiExternalExtension(
-    final Nitrite database,
-    final Rooms rooms,
-    final Bookings bookings,
-    final Port port
-  ) {
-    this(new Api(database, rooms, bookings, port), rooms, bookings);
-  }
+    /**
+     * Wait for server.
+     */
+    private final Runnable await;
 
-  public ApiExternalExtension(final Nitrite database, final Port port) {
-    this(database, new NitriteRooms(database), port);
-  }
+    /**
+     * Primary constructor.
+     *
+     * @param api      The {@link Api}.
+     * @param rooms    The collection of {@link fr.guddy.roombookings.domain.room.Room}.
+     * @param bookings The collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     * @param await    Wait for server.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public ApiExternalExtension(
+        final Api api,
+        final Rooms rooms,
+        final Bookings bookings,
+        final Runnable await
+    ) {
+        this.api = api;
+        this.rooms = rooms;
+        this.bookings = bookings;
+        this.await = await;
+    }
 
-  public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Port port) {
-    this(database, new NitriteRooms(database), new NitriteBookings(database, rooms), port);
-  }
+    public ApiExternalExtension(final Api api, final Rooms rooms, final Bookings bookings) {
+        this(api, rooms, bookings, new WaitForServer(api));
+    }
 
-  public ApiExternalExtension() {
-    this(Nitrite.builder().openOrCreate(), new SimplePort(0));
-  }
+    /**
+     * Secondary constructor.
+     *
+     * @param database The {@link Nitrite} database.
+     * @param rooms    The collection of {@link fr.guddy.roombookings.domain.room.Room}.
+     * @param bookings The collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     * @param port     The {@link Port} on which the {@link Api} is exposed.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public ApiExternalExtension(
+        final Nitrite database,
+        final Rooms rooms,
+        final Bookings bookings,
+        final Port port
+    ) {
+        this(new Api(database, rooms, bookings, port), rooms, bookings);
+    }
 
-  public Rooms rooms() {
-    return this.rooms;
-  }
+    public ApiExternalExtension(final Nitrite database, final Port port) {
+        this(database, new NitriteRooms(database), port);
+    }
 
-  public Bookings bookings() {
-    return this.bookings;
-  }
+    public ApiExternalExtension(final Nitrite database, final Rooms rooms, final Port port) {
+        this(database, new NitriteRooms(database), new NitriteBookings(database, rooms), port);
+    }
 
-  public Port port() {
-    return this.api.port();
-  }
+    public ApiExternalExtension() {
+        this(Nitrite.builder().openOrCreate(), new SimplePort(0));
+    }
 
-  @Override
-  public void beforeAll(final ExtensionContext context) {
-    this.api.start();
-    this.waitForServer.run();
-  }
+    public Rooms rooms() {
+        return this.rooms;
+    }
 
-  @Override
-  public void afterAll(final ExtensionContext context) {
-    this.api.stop();
-  }
+    public Bookings bookings() {
+        return this.bookings;
+    }
+
+    public Port port() {
+        return this.api.port();
+    }
+
+    @Override
+    public void beforeAll(final ExtensionContext context) {
+        this.api.start();
+        this.await.run();
+    }
+
+    @Override
+    public void afterAll(final ExtensionContext context) {
+        this.api.stop();
+    }
 }

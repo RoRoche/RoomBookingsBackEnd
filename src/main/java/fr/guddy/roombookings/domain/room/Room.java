@@ -25,10 +25,15 @@ package fr.guddy.roombookings.domain.room;
 
 import java.util.Map;
 
+/**
+ * Represent a room that can be booked.
+ *
+ * @since 1.0.0
+ */
 public interface Room {
-  String name();
+    String name();
 
-  int capacity();
+    int capacity();
 
-  Map<String, Object> map();
+    Map<String, Object> map();
 }

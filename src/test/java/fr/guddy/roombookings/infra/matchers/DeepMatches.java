@@ -29,27 +29,35 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+/**
+ * Compare two objects in depth.
+ *
+ * @since 1.0.0
+ */
 public final class DeepMatches implements BiFunction<Object, Object, Boolean> {
 
-  @Override
-  public Boolean apply(final Object actual, final Object expected) {
-    return switch (expected) {
-      case null -> actual == null;
-      case Number e when actual instanceof Number a -> a.longValue() == e.longValue();
-      case Map<?, ?> expectedMap when actual instanceof Map<?, ?> actualMap -> expectedMap
-        .entrySet()
-        .stream()
-        .allMatch(
-          (entry) ->
-            actualMap.containsKey(entry.getKey()) &&
-            new DeepMatches().apply(actualMap.get(entry.getKey()), entry.getValue())
-        );
-      case List<?> expectedList when actual instanceof List<?> actualList -> (expectedList.size() ==
-          actualList.size() &&
-        IntStream.range(0, expectedList.size()).allMatch((i) ->
-          new DeepMatches().apply(actualList.get(i), actualList.get(i))
-        ));
-      default -> Objects.equals(actual, expected);
-    };
-  }
+    @Override
+    public Boolean apply(final Object actual, final Object expected) {
+        return switch (expected) {
+            case null -> actual == null;
+            case Number e when actual instanceof Number a -> a.longValue() == e.longValue();
+            case Map<?, ?> expectedMap when actual instanceof Map<?, ?> actualMap -> expectedMap
+                .entrySet()
+                .stream()
+                .allMatch(
+                    (final Map.Entry<?, ?> entry) ->
+                        actualMap.containsKey(entry.getKey())
+                            &&
+                            new DeepMatches().apply(actualMap.get(entry.getKey()), entry.getValue())
+                );
+            case List<?> expectedList when actual instanceof List<?> actualList ->
+                expectedList.size() == actualList.size()
+                    &&
+                    IntStream.range(0, expectedList.size()).allMatch(
+                        (final int i) ->
+                            new DeepMatches().apply(actualList.get(i), actualList.get(i))
+                    );
+            default -> Objects.equals(actual, expected);
+        };
+    }
 }

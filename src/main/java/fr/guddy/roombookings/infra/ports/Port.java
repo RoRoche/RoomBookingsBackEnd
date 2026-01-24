@@ -23,6 +23,12 @@
  */
 package fr.guddy.roombookings.infra.ports;
 
+/**
+ * The port to expose the {@link io.javalin.Javalin} application.
+ *
+ * @since 1.0.0
+ */
+@FunctionalInterface
 public interface Port {
-  int value();
+    int value();
 }

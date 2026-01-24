@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.get;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.bodies.JsonRemindersBody;
@@ -38,50 +37,79 @@ import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link GetRemindersRequest}.
+ *
+ * @since 1.0.0
+ */
 final class GetRemindersRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void isMissingParameter() {
-    MatcherAssert.assertThat(
-      "Is missing parameter",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:%d/bookings".formatted(api.port().value())).getHttpRequest()::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.BAD_REQUEST_400),
-        new HasBody("Parameter named 'user_id' is missing")
-      )
-    );
-  }
+    @Test
+    void isMissingParameter() {
+        MatcherAssert.assertThat(
+            "Is missing parameter",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetRemindersRequestTest.API.rooms()::clearAll,
+                    GetRemindersRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.get(
+                    "http://localhost:%d/bookings".formatted(
+                        GetRemindersRequestTest.API.port().value()
+                    )
+                ).getHttpRequest()::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.BAD_REQUEST_400),
+                new HasBody("Parameter named 'user_id' is missing")
+            )
+        );
+    }
 
-  @Test
-  void hasNoContent() {
-    MatcherAssert.assertThat(
-      "Has no content",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:%d/bookings".formatted(api.port().value())).queryString(
-          "user_id",
-          "test_user_id"
-        )::asString
-      ),
-      new HasStatus(HttpStatus.NO_CONTENT_204)
-    );
-  }
+    @Test
+    void hasNoContent() {
+        MatcherAssert.assertThat(
+            "Has no content",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetRemindersRequestTest.API.rooms()::clearAll,
+                    GetRemindersRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.get(
+                    "http://localhost:%d/bookings".formatted(
+                        GetRemindersRequestTest.API.port().value()
+                    )
+                ).queryString(
+                    "user_id",
+                    "test_user_id"
+                ).queryString(
+                    "timestamp_start",
+                    1_764_352_800
+                )::asString
+            ),
+            new HasStatus(HttpStatus.NO_CONTENT_204)
+        );
+    }
 
-  @Test
-  void hasContent() {
-    MatcherAssert.assertThat(
-      "Has reminders",
-      new RemindersScalar(api, 1764352800),
-      new HasScalarMatching<>((final Reminders reminders) ->
-        new AllOf<>(new HasStatus(HttpStatus.OK_200), new HasBody(new JsonRemindersBody(reminders)))
-      )
-    );
-  }
+    @Test
+    void hasContent() {
+        MatcherAssert.assertThat(
+            "Has reminders",
+            new RemindersScalar(GetRemindersRequestTest.API, 1_764_352_800),
+            new HasScalarMatching<>(
+                (final Reminders reminders) ->
+                    new AllOf<>(
+                        new HasStatus(HttpStatus.OK_200),
+                        new HasBody(new JsonRemindersBody(reminders))
+                    )
+            )
+        );
+    }
 }

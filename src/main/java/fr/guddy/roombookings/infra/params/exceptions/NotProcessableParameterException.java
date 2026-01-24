@@ -23,15 +23,25 @@
  */
 package fr.guddy.roombookings.infra.params.exceptions;
 
+/**
+ * {@link Exception} thrown when a {@link fr.guddy.roombookings.infra.params.Parameter}
+ * can not be processing because not in the expected type.
+ *
+ * @since 1.0.0
+ */
 public final class NotProcessableParameterException extends RuntimeException {
 
-  public NotProcessableParameterException(final String name, final Class<?> clazz) {
-    super(
-      String.format(
-        "Parameter '%s' could not be processed, it should be of type %s",
-        name,
-        clazz.getSimpleName()
-      )
-    );
-  }
+    public NotProcessableParameterException(
+        final String name,
+        final Class<?> clazz,
+        final Throwable cause) {
+        super(
+            String.format(
+                "Parameter '%s' could not be processed, it should be of type %s",
+                name,
+                clazz.getSimpleName()
+            ),
+            cause
+        );
+    }
 }

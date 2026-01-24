@@ -23,50 +23,95 @@
  */
 package fr.guddy.roombookings.domain.room;
 
+import java.io.StringReader;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import org.cactoos.Scalar;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 
-public final class JsonRoom extends RoomEnvelope {
+/**
+ * JSON {@link Room}.
+ *
+ * @since 1.0.0
+ */
+public final class JsonRoom implements Room {
 
-  private static final String JSON_KEY_NAME = "name";
-  private static final String JSON_KEY_CAPACITY = "capacity";
+    /**
+     * The JSON key for name.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String NAME = "name";
 
-  public JsonRoom(final Room delegate) {
-    super(delegate);
-  }
+    /**
+     * The JSON key for capacity.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    private static final String CAPACITY = "capacity";
 
-  public JsonRoom(final JsonObject jsonObject) {
-    this(new SimpleRoom(jsonObject.getString(JSON_KEY_NAME), jsonObject.getInt(JSON_KEY_CAPACITY)));
-  }
+    /**
+     * The wrapped {@link Room}.
+     */
+    private final Room delegate;
 
-  public JsonRoom(final String body) {
-    this(new Parsed(body).value());
-  }
+    public JsonRoom(final Room delegate) {
+        this.delegate = delegate;
+    }
 
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<String, Object>(
-      new MapEntry<>(JsonRoom.JSON_KEY_NAME, name()),
-      new MapEntry<>(JsonRoom.JSON_KEY_CAPACITY, capacity())
-    );
-  }
+    public JsonRoom(final JsonObject json) {
+        this(
+            new SimpleRoom(
+                json.getString(JsonRoom.NAME),
+                json.getInt(JsonRoom.CAPACITY)
+            )
+        );
+    }
 
-  private static final class Parsed implements Scalar<JsonObject> {
-
-    private final String body;
-
-    private Parsed(final String body) {
-      this.body = body;
+    public JsonRoom(final String body) {
+        this(new Parsed(body).value());
     }
 
     @Override
-    public JsonObject value() {
-      try (final var reader = javax.json.Json.createReader(new java.io.StringReader(this.body))) {
-        return reader.readObject();
-      }
+    public String name() {
+        return this.delegate.name();
     }
-  }
+
+    @Override
+    public int capacity() {
+        return this.delegate.capacity();
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(JsonRoom.NAME, this.name());
+        map.put(JsonRoom.CAPACITY, this.capacity());
+        return map;
+    }
+
+    /**
+     * {@link Scalar} to parse a {@link JsonObject} from JSON body as {@link String}.
+     *
+     * @since 1.0.0
+     */
+    private static final class Parsed implements Scalar<JsonObject> {
+
+        /**
+         * The JSON body as {@link String}.
+         */
+        private final String body;
+
+        private Parsed(final String body) {
+            this.body = body;
+        }
+
+        @SuppressWarnings("PMD.UnnecessaryLocalRule")
+        @Override
+        public JsonObject value() {
+            try (JsonReader reader = Json.createReader(new StringReader(this.body))) {
+                return reader.readObject();
+            }
+        }
+    }
 }

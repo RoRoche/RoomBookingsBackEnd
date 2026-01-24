@@ -28,14 +28,19 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import java.util.stream.Collectors;
 import org.cactoos.set.SetEnvelope;
 
+/**
+ * Builds a {@link java.util.Set} of all interface methods.
+ *
+ * @since 1.0.0
+ */
 public final class InterfaceMethods extends SetEnvelope<JavaMethod> {
 
-  public InterfaceMethods(final JavaClass clazz) {
-    super(
-      new RecursiveInterfaces(clazz)
-        .stream()
-        .flatMap((final JavaClass iface) -> iface.getMethods().stream())
-        .collect(Collectors.toSet())
-    );
-  }
+    public InterfaceMethods(final JavaClass clazz) {
+        super(
+            new RecursiveInterfaces(clazz)
+                .stream()
+                .flatMap((final JavaClass iface) -> iface.getMethods().stream())
+                .collect(Collectors.toSet())
+        );
+    }
 }

@@ -25,21 +25,30 @@ package fr.guddy.roombookings.infra.params;
 
 import java.util.Optional;
 
+/**
+ * A {@link Parameter} that can be absent in the HTTP request.
+ *
+ * @param <T> The type of the value.
+ * @since 1.0.0
+ */
 public final class OptionalParameter<T> implements Parameter<Optional<T>> {
 
-  private final Parameter<T> delegate;
+    /**
+     * The wrapped {@link Parameter}.
+     */
+    private final Parameter<T> delegate;
 
-  public OptionalParameter(final Parameter<T> delegate) {
-    this.delegate = delegate;
-  }
+    public OptionalParameter(final Parameter<T> delegate) {
+        this.delegate = delegate;
+    }
 
-  @Override
-  public String name() {
-    return delegate.name();
-  }
+    @Override
+    public String name() {
+        return this.delegate.name();
+    }
 
-  @Override
-  public Optional<T> value() {
-    return Optional.ofNullable(delegate.value());
-  }
+    @Override
+    public Optional<T> value() {
+        return Optional.ofNullable(this.delegate.value());
+    }
 }

@@ -7,8 +7,6 @@
     "doc": "docs"
   },
   "scripts": {
-    "format": "prettier --write .",
-    "check-format": "prettier --check .",
     "prepare": "husky"
   },
   "repository": {
@@ -28,8 +26,6 @@
     "check-outdated": "^2.14.0",
     "commitlint-config-gitmoji": "^2.3.1",
     "commitlint-plugin-gitmoji": "^2.2.6",
-    "husky": "^9.1.7",
-    "prettier": "^3.8.1",
-    "prettier-plugin-java": "^2.8.1"
+    "husky": "^9.1.7"
   }
 }

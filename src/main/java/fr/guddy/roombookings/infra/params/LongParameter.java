@@ -24,26 +24,38 @@
 package fr.guddy.roombookings.infra.params;
 
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
-import io.vavr.control.Try;
 
+/**
+ * {@link Parameter} with value of type {@link Long}.
+ *
+ * @since 1.0.0
+ */
 public final class LongParameter implements Parameter<Long> {
 
-  private final Parameter<String> delegate;
+    /**
+     * The wrapped {@link Parameter} with {@link String} value.
+     */
+    private final Parameter<String> delegate;
 
-  public LongParameter(final Parameter<String> delegate) {
-    this.delegate = delegate;
-  }
+    public LongParameter(final Parameter<String> delegate) {
+        this.delegate = delegate;
+    }
 
-  @Override
-  public String name() {
-    return delegate.name();
-  }
+    @Override
+    public String name() {
+        return this.delegate.name();
+    }
 
-  @Override
-  public Long value() {
-    final String value = delegate.value();
-    return Try.of(() -> Long.valueOf(value)).getOrElseThrow((final Throwable throwable) ->
-      new NotProcessableParameterException(name(), Long.class)
-    );
-  }
+    @Override
+    public Long value() {
+        try {
+            return Long.valueOf(this.delegate.value());
+        } catch (final NumberFormatException exception) {
+            throw new NotProcessableParameterException(
+                this.name(),
+                Long.class,
+                exception
+            );
+        }
+    }
 }

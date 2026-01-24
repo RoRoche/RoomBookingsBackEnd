@@ -25,20 +25,31 @@ package fr.guddy.roombookings.infra.ports;
 
 import java.util.Optional;
 
+/**
+ * Specific Heroku implementation of {@link Port}.
+ *
+ * @since 1.0.0
+ */
 public final class HerokuAssignedPort implements Port {
 
-  private static final String PORT = "PORT";
+    /**
+     * Environment variable key.
+     */
+    private static final String PORT = "PORT";
 
-  private final Port defaultPort;
+    /**
+     * Default port.
+     */
+    private final Port fallback;
 
-  public HerokuAssignedPort(final Port defaultPort) {
-    this.defaultPort = defaultPort;
-  }
+    public HerokuAssignedPort(final Port fallback) {
+        this.fallback = fallback;
+    }
 
-  @Override
-  public int value() {
-    final ProcessBuilder processBuilder = new ProcessBuilder();
-    final String envVar = processBuilder.environment().get(PORT);
-    return Optional.ofNullable(envVar).map(Integer::parseInt).orElseGet(defaultPort::value);
-  }
+    @Override
+    public int value() {
+        return Optional.ofNullable(new ProcessBuilder().environment().get(HerokuAssignedPort.PORT))
+            .map(Integer::parseInt)
+            .orElseGet(this.fallback::value);
+    }
 }

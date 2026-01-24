@@ -23,21 +23,26 @@
  */
 package fr.guddy.roombookings.architecture.rules;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import fr.guddy.roombookings.architecture.rules.conditions.HaveOnlyPublicMethodsDeclaredInInterfaces;
 
+/**
+ * {@link com.tngtech.archunit.lang.ArchRule} to assert that classes declare methods
+ * that are defined in interface.
+ *
+ * @since 1.0.0
+ */
 public final class PublicMethodsDeclaredInInterfacesRule extends ArchRuleEnvelope {
 
-  public PublicMethodsDeclaredInInterfacesRule() {
-    super(
-      classes()
-        .that()
-        .areNotInterfaces()
-        .should(new HaveOnlyPublicMethodsDeclaredInInterfaces())
-        .because(
-          "https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#2-he-works-by-contracts"
-        )
-    );
-  }
+    public PublicMethodsDeclaredInInterfacesRule() {
+        super(
+            ArchRuleDefinition.classes()
+                .that()
+                .areNotInterfaces()
+                .should(new HaveOnlyPublicMethodsDeclaredInInterfaces())
+                .because(
+                    "https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#2-he-works-by-contracts"
+                )
+        );
+    }
 }

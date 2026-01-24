@@ -29,30 +29,41 @@ import org.cactoos.Scalar;
 /**
  * Simulate isAssignableFrom for ArchUnit 1.4.x:
  * returns true if implClass == ifaceClass or implClass inherits/implements ifaceClass.
+ *
+ * @since 1.0.0
  */
 public final class IsSameOrSubtype implements Scalar<Boolean> {
 
-  private final JavaClass implClass;
-  private final JavaClass ifaceClass;
+    /**
+     * The implemented class.
+     */
+    private final JavaClass clazz;
 
-  public IsSameOrSubtype(final JavaClass implClass, final JavaClass ifaceClass) {
-    this.implClass = implClass;
-    this.ifaceClass = ifaceClass;
-  }
+    /**
+     * The interface.
+     */
+    private final JavaClass iface;
 
-  @Override
-  public Boolean value() {
-    if (this.implClass.equals(this.ifaceClass)) {
-      return true;
+    public IsSameOrSubtype(final JavaClass clazz, final JavaClass iface) {
+        this.clazz = clazz;
+        this.iface = iface;
     }
-    if (this.implClass.getAllRawSuperclasses().contains(this.ifaceClass)) {
-      return true;
+
+    @Override
+    public Boolean value() {
+        boolean result = false;
+        if (this.clazz.equals(this.iface)) {
+            result = true;
+        } else if (this.clazz.getAllRawSuperclasses().contains(this.iface)) {
+            result = true;
+        } else {
+            for (final JavaClass implemented : this.clazz.getAllRawInterfaces()) {
+                if (implemented.equals(this.iface)) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
-    for (final JavaClass implementedInterface : this.implClass.getAllRawInterfaces()) {
-      if (implementedInterface.equals(this.ifaceClass)) {
-        return true;
-      }
-    }
-    return false;
-  }
 }

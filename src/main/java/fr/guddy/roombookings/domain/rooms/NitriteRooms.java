@@ -23,8 +23,6 @@
  */
 package fr.guddy.roombookings.domain.rooms;
 
-import static org.dizitart.no2.filters.FluentFilter.where;
-
 import fr.guddy.roombookings.domain.room.NitriteRoom;
 import fr.guddy.roombookings.domain.room.Room;
 import java.util.List;
@@ -35,56 +33,65 @@ import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.Document;
 import org.dizitart.no2.collection.NitriteCollection;
 import org.dizitart.no2.filters.Filter;
+import org.dizitart.no2.filters.FluentFilter;
 
+/**
+ * An implementation of {@link Rooms} based on {@link NitriteCollection}.
+ *
+ * @since 1.0.0
+ */
 public final class NitriteRooms implements Rooms {
 
-  private final NitriteCollection collection;
+    /**
+     * The {@link NitriteCollection} to store {@link Rooms}.
+     */
+    private final NitriteCollection collection;
 
-  public NitriteRooms(final NitriteCollection collection) {
-    this.collection = collection;
-  }
+    public NitriteRooms(final NitriteCollection collection) {
+        this.collection = collection;
+    }
 
-  public NitriteRooms(final Scalar<NitriteCollection> collection) {
-    this(new Unchecked<>(collection).value());
-  }
+    public NitriteRooms(final Scalar<NitriteCollection> collection) {
+        this(new Unchecked<>(collection).value());
+    }
 
-  public NitriteRooms(final Nitrite database) {
-    this(new IndexedByRoomNameNitriteCollection(database));
-  }
+    public NitriteRooms(final Nitrite database) {
+        this(new IndexedByRoomNameNitriteCollection(database));
+    }
 
-  @Override
-  public Long create(final Room room) {
-    return this.collection.insert(Document.createDocument(new NitriteRoom(room).map()))
-      .iterator()
-      .next()
-      .getIdValue();
-  }
+    @Override
+    public Long create(final Room room) {
+        return this.collection.insert(Document.createDocument(new NitriteRoom(room).map()))
+            .iterator()
+            .next()
+            .getIdValue();
+    }
 
-  @Override
-  public List<Room> all() {
-    return this.collection.find().toList().stream().<Room>map(NitriteRoom::new).toList();
-  }
+    @Override
+    public List<Room> all() {
+        return this.collection.find().toList().stream().<Room>map(NitriteRoom::new).toList();
+    }
 
-  @Override
-  public List<Room> withCapacity(final int capacity) {
-    return this.collection.find(where("room_capacity").gte(capacity))
-      .toList()
-      .stream()
-      .<Room>map(NitriteRoom::new)
-      .toList();
-  }
+    @Override
+    public List<Room> withCapacity(final int capacity) {
+        return this.collection.find(FluentFilter.where("room_capacity").gte(capacity))
+            .toList()
+            .stream()
+            .<Room>map(NitriteRoom::new)
+            .toList();
+    }
 
-  @Override
-  public Optional<Room> withName(final String name) {
-    return this.collection.find(where("room_name").eq(name))
-      .toList()
-      .stream()
-      .findFirst()
-      .map(NitriteRoom::new);
-  }
+    @Override
+    public Optional<Room> withName(final String name) {
+        return this.collection.find(FluentFilter.where("room_name").eq(name))
+            .toList()
+            .stream()
+            .findFirst()
+            .map(NitriteRoom::new);
+    }
 
-  @Override
-  public int clearAll() {
-    return this.collection.remove(Filter.ALL).getAffectedCount();
-  }
+    @Override
+    public int clearAll() {
+        return this.collection.remove(Filter.ALL).getAffectedCount();
+    }
 }

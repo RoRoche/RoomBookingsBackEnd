@@ -28,15 +28,20 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
+/**
+ * Error message for {@link com.tngtech.archunit.lang.ArchRule} when classes have private methods.
+ *
+ * @since 1.0.0
+ */
 public final class NotHavePrivateMethodsMessage extends TextEnvelope {
 
-  public NotHavePrivateMethodsMessage(final JavaClass javaClass, final JavaMethod method) {
-    super(
-      new FormattedText(
-        "Class %s contains private method %s",
-        javaClass.getName(),
-        method.getFullName()
-      )
-    );
-  }
+    public NotHavePrivateMethodsMessage(final JavaClass clazz, final JavaMethod method) {
+        super(
+            new FormattedText(
+                "Class %s contains private method %s",
+                clazz.getName(),
+                method.getFullName()
+            )
+        );
+    }
 }

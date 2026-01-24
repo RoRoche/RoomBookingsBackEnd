@@ -23,9 +23,15 @@
  */
 package fr.guddy.roombookings.domain.bookings;
 
+/**
+ * {@link Exception} thrown when a {@link fr.guddy.roombookings.domain.room.Room}
+ * with the same name already exist.
+ *
+ * @since 1.0.0
+ */
 public final class CreateBookingConflictException extends RuntimeException {
 
-  public CreateBookingConflictException(final String roomName) {
-    super(String.format("Room named '%s' already booked on this slot", roomName));
-  }
+    public CreateBookingConflictException(final String room) {
+        super(String.format("Room named '%s' already booked on this slot", room));
+    }
 }

@@ -29,6 +29,7 @@ import fr.guddy.roombookings.domain.booking.SimpleBooking;
 import fr.guddy.roombookings.domain.bookings.BookingNotFoundException;
 import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.bookings.CreateBookingConflictException;
+import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.infra.params.Parameter;
@@ -37,55 +38,79 @@ import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Request} to create a {@link Booking}.
+ *
+ * @since 1.0.0
+ */
 public final class PostBookingRequest implements Request {
 
-  private final Bookings bookings;
-  private final Booking booking;
+    /**
+     * The collection of {@link Booking}.
+     */
+    private final Bookings bookings;
 
-  public PostBookingRequest(final Bookings bookings, final Booking booking) {
-    this.bookings = bookings;
-    this.booking = booking;
-  }
+    /**
+     * The {@link Booking} to create.
+     */
+    private final Booking booking;
 
-  public PostBookingRequest(final Rooms rooms, final Bookings bookings, final Context context) {
-    this(
-      rooms,
-      bookings,
-      new RequiredParameter<>(new PathParameter("name", context)),
-      new JsonBooking(context.body())
-    );
-  }
-
-  public PostBookingRequest(
-    final Rooms rooms,
-    final Bookings bookings,
-    final Parameter<String> roomName,
-    final Booking booking
-  ) {
-    this(
-      bookings,
-      new SimpleBooking(
-        null,
-        booking.userId(),
-        rooms
-          .withName(roomName.value())
-          .orElseThrow(() -> new RoomNotFoundException(roomName.value())),
-        booking.slot()
-      )
-    );
-  }
-
-  @Override
-  public void perform(final Context context) {
-    if (bookings.isConflicting(booking)) {
-      throw new CreateBookingConflictException(booking.room().name());
-    } else {
-      final Long id = bookings.create(booking);
-      final Booking actual = bookings.byId(id).orElseThrow(() -> new BookingNotFoundException(id));
-      context
-        .header("location", String.format("/bookings/%d", id))
-        .json(new JsonBooking(actual).map())
-        .status(HttpStatus.CREATED_201);
+    public PostBookingRequest(final Bookings bookings, final Booking booking) {
+        this.bookings = bookings;
+        this.booking = booking;
     }
-  }
+
+    public PostBookingRequest(final Rooms rooms, final Bookings bookings, final Context context) {
+        this(
+            rooms,
+            bookings,
+            new RequiredParameter<>(new PathParameter("name", context)),
+            new JsonBooking(context.body())
+        );
+    }
+
+    /**
+     * Secondary constructor.
+     *
+     * @param rooms    The collection of {@link Room}.
+     * @param bookings The collection of {@link Booking}.
+     * @param room     The {@link Room} name.
+     * @param booking  The {@link Booking} to create.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public PostBookingRequest(
+        final Rooms rooms,
+        final Bookings bookings,
+        final Parameter<String> room,
+        final Booking booking
+    ) {
+        this(
+            bookings,
+            new SimpleBooking(
+                null,
+                booking.userId(),
+                rooms
+                    .withName(room.value())
+                    .orElseThrow(() -> new RoomNotFoundException(room.value())),
+                booking.slot()
+            )
+        );
+    }
+
+    @Override
+    public void perform(final Context context) {
+        if (this.bookings.isConflicting(this.booking)) {
+            throw new CreateBookingConflictException(this.booking.room().name());
+        } else {
+            final Long id = this.bookings.create(this.booking);
+            context
+                .header("location", String.format("/bookings/%d", id))
+                .json(
+                    new JsonBooking(
+                        this.bookings.byId(id).orElseThrow(() -> new BookingNotFoundException(id))
+                    ).map()
+                )
+                .status(HttpStatus.CREATED_201);
+        }
+    }
 }

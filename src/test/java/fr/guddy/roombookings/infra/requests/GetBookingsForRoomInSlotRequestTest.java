@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.get;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.bodies.JsonBookingBody;
@@ -42,81 +41,107 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link GetBookingsForRoomInSlotRequest}.
+ *
+ * @since 1.0.0
+ */
 final class GetBookingsForRoomInSlotRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void hasNoContent() {
-    MatcherAssert.assertThat(
-      "No booking for room in slot",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
-        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )::asString
-      ),
-      new HasStatus(HttpStatus.NO_CONTENT_204)
-    );
-  }
+    @Test
+    void hasNoContent() {
+        MatcherAssert.assertThat(
+            "No booking for room in slot",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetBookingsForRoomInSlotRequestTest.API.rooms()::clearAll,
+                    GetBookingsForRoomInSlotRequestTest.API.bookings()::clearAll,
+                    new CreateSimpleRoom(GetBookingsForRoomInSlotRequestTest.API)
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms/test_name/bookings".formatted(
+                        GetBookingsForRoomInSlotRequestTest.API.port().value()
+                    )
+                    )
+                    .queryString("timestamp_start", 1_764_352_800)
+                    .queryString(
+                        "timestamp_end",
+                        Instant.ofEpochSecond(1_764_352_800)
+                            .plus(Duration.standardHours(1).getMillis())
+                            .getMillis() / 1000
+                    )::asString
+            ),
+            new HasStatus(HttpStatus.NO_CONTENT_204)
+        );
+    }
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Have booking for room in slot",
-      new HttpBookingScalar(
-        api,
-        1764352800,
-        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
-          1000,
-        (final Long id) ->
-          get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-            .queryString("timestamp_start", 1764352800)
-            .queryString(
-              "timestamp_end",
-              Instant.ofEpochSecond(1764352800)
-                  .plus(Duration.standardHours(1).getMillis())
-                  .getMillis() /
-                1000
-            )::asString
-      ),
-      new HasScalarMatching<>((final HttpBooking booking) ->
-        new AllOf<>(
-          new HasStatus(HttpStatus.OK_200),
-          new HasBody(new FormattedText("[%s]", new JsonBookingBody(booking)))
-        )
-      )
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Have booking for room in slot",
+            new HttpBookingScalar(
+                GetBookingsForRoomInSlotRequestTest.API,
+                1_764_352_800,
+                Instant.ofEpochSecond(1_764_352_800)
+                    .plus(Duration.standardHours(1).getMillis())
+                    .getMillis() / 1000,
+                (final Long id) ->
+                    Unirest.get(
+                        "http://localhost:%d/rooms/test_name/bookings".formatted(
+                            GetBookingsForRoomInSlotRequestTest.API.port().value()
+                        )
+                        )
+                        .queryString("timestamp_start", 1_764_352_800)
+                        .queryString(
+                            "timestamp_end",
+                            Instant.ofEpochSecond(1_764_352_800)
+                                .plus(Duration.standardHours(1).getMillis())
+                                .getMillis() / 1000
+                        )::asString
+            ),
+            new HasScalarMatching<>(
+                (final HttpBooking booking) ->
+                    new AllOf<>(
+                        new HasStatus(HttpStatus.OK_200),
+                        new HasBody(new FormattedText("[%s]", new JsonBookingBody(booking)))
+                    )
+            )
+        );
+    }
 
-  @Test
-  void isRoomNotFound() {
-    MatcherAssert.assertThat(
-      "No room for given name",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:%d/rooms/test_name/bookings".formatted(api.port().value()))
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.NOT_FOUND_404),
-        new HasBody("No room found for name 'test_name'")
-      )
-    );
-  }
+    @Test
+    void isRoomNotFound() {
+        MatcherAssert.assertThat(
+            "No room for given name",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetBookingsForRoomInSlotRequestTest.API.rooms()::clearAll,
+                    GetBookingsForRoomInSlotRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms/test_name/bookings".formatted(
+                        GetBookingsForRoomInSlotRequestTest.API.port().value()
+                    )
+                    )
+                    .queryString("timestamp_start", 1_764_352_800)
+                    .queryString(
+                        "timestamp_end",
+                        Instant.ofEpochSecond(1_764_352_800)
+                            .plus(Duration.standardHours(1).getMillis())
+                            .getMillis() / 1000
+                    )::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.NOT_FOUND_404),
+                new HasBody("No room found for name 'test_name'")
+            )
+        );
+    }
 }

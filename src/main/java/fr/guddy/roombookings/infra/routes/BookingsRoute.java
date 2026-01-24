@@ -23,26 +23,37 @@
  */
 package fr.guddy.roombookings.infra.routes;
 
-import static io.javalin.apibuilder.ApiBuilder.delete;
-import static io.javalin.apibuilder.ApiBuilder.get;
-
 import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.infra.requests.DeleteBookingRequest;
 import fr.guddy.roombookings.infra.requests.GetRemindersRequest;
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 
+/**
+ * Routes to expose {@link Bookings}.
+ *
+ * @since 1.0.0
+ */
 public final class BookingsRoute implements EndpointGroup {
 
-  private final Bookings bookings;
+    /**
+     * Collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     */
+    private final Bookings bookings;
 
-  public BookingsRoute(final Bookings bookings) {
-    this.bookings = bookings;
-  }
+    public BookingsRoute(final Bookings bookings) {
+        this.bookings = bookings;
+    }
 
-  @Override
-  public void addEndpoints() {
-    get((final Context ctx) -> new GetRemindersRequest(bookings, ctx).perform(ctx));
-    delete("/{id}", (final Context ctx) -> new DeleteBookingRequest(bookings, ctx).perform(ctx));
-  }
+    @Override
+    public void addEndpoints() {
+        ApiBuilder.get(
+            (final Context ctx) -> new GetRemindersRequest(this.bookings, ctx).perform(ctx)
+        );
+        ApiBuilder.delete(
+            "/{id}",
+            (final Context ctx) -> new DeleteBookingRequest(this.bookings, ctx).perform(ctx)
+        );
+    }
 }

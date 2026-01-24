@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.get;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
@@ -37,60 +36,76 @@ import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link GetCapableRoomsRequest}.
+ *
+ * @since 1.0.0
+ */
 final class GetCapableRoomsRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void hasNoContent() {
-    MatcherAssert.assertThat(
-      "Rooms has no content",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll),
-        get("http://localhost:%d/rooms".formatted(api.port().value())).queryString(
-          "capacity",
-          10
-        )::asString
-      ),
-      new HasStatus(HttpStatus.NO_CONTENT_204)
-    );
-  }
+    @Test
+    void hasNoContent() {
+        MatcherAssert.assertThat(
+            "Rooms has no content",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(GetCapableRoomsRequestTest.API.rooms()::clearAll),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetCapableRoomsRequestTest.API.port().value()
+                    )
+                ).queryString("capacity", 10)::asString
+            ),
+            new HasStatus(HttpStatus.NO_CONTENT_204)
+        );
+    }
 
-  @Test
-  void isNotProcessableParameter() {
-    MatcherAssert.assertThat(
-      "Parameter is not processable",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll),
-        get("http://localhost:%d/rooms".formatted(api.port().value())).queryString(
-          "capacity",
-          "test"
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.BAD_REQUEST_400),
-        new HasBody("Parameter 'capacity' could not be processed, it should be of type Integer")
-      )
-    );
-  }
+    @Test
+    void isNotProcessableParameter() {
+        MatcherAssert.assertThat(
+            "Parameter is not processable",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(GetCapableRoomsRequestTest.API.rooms()::clearAll),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetCapableRoomsRequestTest.API.port().value()
+                    )
+                ).queryString("capacity", "test")::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.BAD_REQUEST_400),
+                new HasBody(
+                    "Parameter 'capacity' could not be processed, it should be of type Integer"
+                )
+            )
+        );
+    }
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Has capable rooms",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, new CreateSimpleRoom(api)),
-        get("http://localhost:%d/rooms".formatted(api.port().value())).queryString(
-          "capacity",
-          10
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.OK_200),
-        new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
-      )
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Has capable rooms",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetCapableRoomsRequestTest.API.rooms()::clearAll,
+                    new CreateSimpleRoom(GetCapableRoomsRequestTest.API)
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetCapableRoomsRequestTest.API.port().value()
+                    )
+                ).queryString("capacity", 10)::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.OK_200),
+                new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
+            )
+        );
+    }
 }

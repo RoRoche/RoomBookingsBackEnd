@@ -28,16 +28,25 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextEnvelope;
 
+/**
+ * Error message for {@link com.tngtech.archunit.lang.ArchRule} when classes
+ * have public methods that are not declared in a interface.
+ *
+ * @since 1.0.0
+ */
 public final class PublicMethodsDeclaredInInterfacesMessage extends TextEnvelope {
 
-  public PublicMethodsDeclaredInInterfacesMessage(final JavaClass clazz, final JavaMethod method) {
-    super(
-      new FormattedText(
-        "The public method %s(%s) in %s is not declared in an interface",
-        method.getName(),
-        method.getRawParameterTypes(),
-        clazz.getFullName()
-      )
-    );
-  }
+    public PublicMethodsDeclaredInInterfacesMessage(
+        final JavaClass clazz,
+        final JavaMethod method
+    ) {
+        super(
+            new FormattedText(
+                "The public method %s(%s) in %s is not declared in an interface",
+                method.getName(),
+                method.getRawParameterTypes(),
+                clazz.getFullName()
+            )
+        );
+    }
 }

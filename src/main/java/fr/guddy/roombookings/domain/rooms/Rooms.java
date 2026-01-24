@@ -27,14 +27,19 @@ import fr.guddy.roombookings.domain.room.Room;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Collections of {@link Room} operations.
+ *
+ * @since 1.0.0
+ */
 public interface Rooms {
-  Long create(final Room room);
+    Long create(Room room);
 
-  List<Room> all();
+    List<Room> all();
 
-  List<Room> withCapacity(final int capacity);
+    List<Room> withCapacity(int capacity);
 
-  Optional<Room> withName(final String name);
+    Optional<Room> withName(String name);
 
-  int clearAll();
+    int clearAll();
 }

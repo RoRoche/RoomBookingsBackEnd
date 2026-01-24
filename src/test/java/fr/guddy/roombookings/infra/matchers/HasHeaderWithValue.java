@@ -25,56 +25,70 @@ package fr.guddy.roombookings.infra.matchers;
 
 import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasHeaderWithValue extends TypeSafeDiagnosingMatcher<HttpTestCase<?>> {
+/**
+ * Check if there is a header with the expected value.
+ *
+ * @since 1.0.0
+ */
+public class HasHeaderWithValue extends TypeSafeDiagnosingMatcher<HttpTestCase<?>> {
 
-  private final String headerName;
-  private final Matcher<? super String> valueMatcher;
+    /**
+     * The header name.
+     */
+    private final String name;
 
-  public HasHeaderWithValue(final String headerName, final Matcher<? super String> valueMatcher) {
-    this.headerName = headerName;
-    this.valueMatcher = valueMatcher;
-  }
+    /**
+     * The expected value.
+     */
+    private final Matcher<? super String> value;
 
-  @Override
-  protected boolean matchesSafely(final HttpTestCase<?> testCase, final Description mismatch) {
-    try {
-      final HttpResponse<?> response = testCase.response();
-      final Headers headers = response.getHeaders();
-      if (!headers.containsKey(this.headerName)) {
-        mismatch.appendText("header ").appendText(this.headerName).appendText(" is missing");
-        return false;
-      }
-      final String value = headers.getFirst(this.headerName);
-      final boolean matches = this.valueMatcher.matches(value);
-      if (!matches) {
-        if (!headers.containsKey(this.headerName)) {
-          mismatch.appendText("header keys were ").appendValue(headers.keySet());
-        } else {
-          mismatch
-            .appendText("header ")
-            .appendValue(this.headerName)
-            .appendText(" value was ")
-            .appendValue(headers.getFirst(this.headerName));
-        }
-      }
-      return matches;
-    } catch (final Exception e) {
-      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
-      return false;
+    public HasHeaderWithValue(final String name, final Matcher<? super String> value) {
+        this.name = name;
+        this.value = value;
     }
-  }
 
-  @Override
-  public void describeTo(final Description description) {
-    description
-      .appendText("HttpResponse with header ")
-      .appendValue(headerName)
-      .appendText(" having value ")
-      .appendDescriptionOf(valueMatcher);
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description
+            .appendText("HttpResponse with header ")
+            .appendValue(this.name)
+            .appendText(" having value ")
+            .appendDescriptionOf(this.value);
+    }
+
+    @Override
+    protected final boolean matchesSafely(
+        final HttpTestCase<?> testcase,
+        final Description mismatch
+    ) {
+        final HttpResponse<?> response;
+        try {
+            response = testcase.response();
+        } catch (final UnirestException exception) {
+            throw new MatcherRuntimeException(exception);
+        }
+        final Headers headers = response.getHeaders();
+        boolean matches = true;
+        if (headers.containsKey(this.name)) {
+            final String actual = headers.getFirst(this.name);
+            if (!this.value.matches(actual)) {
+                mismatch
+                    .appendText("header ")
+                    .appendValue(this.name)
+                    .appendText(" value was ")
+                    .appendValue(actual);
+                matches = false;
+            }
+        } else {
+            mismatch.appendText("header ").appendText(this.name).appendText(" is missing");
+            matches = false;
+        }
+        return matches;
+    }
 }

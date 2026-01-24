@@ -29,18 +29,23 @@ import fr.guddy.roombookings.domain.slot.Slot;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Collection to deal with {@link Booking}.
+ *
+ * @since 1.0.0
+ */
 public interface Bookings {
-  Long create(final Booking booking);
+    Long create(Booking booking);
 
-  List<Booking> forRoomInSlot(final Room room, final Slot slot);
+    List<Booking> forRoomInSlot(Room room, Slot slot);
 
-  List<Booking> forUserFromStartDate(final String userId, final long timestampStart);
+    List<Booking> forUserFromStartDate(String user, long start);
 
-  boolean isConflicting(final Booking booking);
+    boolean isConflicting(Booking booking);
 
-  int clearAll();
+    int clearAll();
 
-  Optional<Booking> byId(final long id);
+    Optional<Booking> byId(long id);
 
-  boolean delete(final Booking booking);
+    boolean delete(Booking booking);
 }

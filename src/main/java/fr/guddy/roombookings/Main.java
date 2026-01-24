@@ -26,11 +26,19 @@ package fr.guddy.roombookings;
 import fr.guddy.roombookings.infra.Api;
 import fr.guddy.roombookings.infra.Application;
 
+/**
+ * Entry point of the application.
+ *
+ * @since 1.0.0
+ */
 public final class Main {
 
-  public static void main(final String[] args) {
-    final Application api = new Api();
-    Runtime.getRuntime().addShutdownHook(new Thread(api::stop));
-    api.start();
-  }
+    private Main() {
+    }
+
+    public static void main(final String[] args) {
+        final Application api = new Api();
+        Runtime.getRuntime().addShutdownHook(new Thread(api::stop));
+        api.start();
+    }
 }

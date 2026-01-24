@@ -31,28 +31,35 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.NotHavePrivateMethodsMessage;
 
+/**
+ * {@link ArchCondition} to assert a {@link JavaClass} has no private methods.
+ *
+ * @since 1.0.0
+ */
 public final class NotHavePrivateMethods extends ArchCondition<JavaClass> {
 
-  public NotHavePrivateMethods() {
-    super("not have private methods");
-  }
+    public NotHavePrivateMethods() {
+        super("not have private methods");
+    }
 
-  @Override
-  public void check(final JavaClass javaClass, final ConditionEvents events) {
-    javaClass
-      .getMethods()
-      .stream()
-      .filter(
-        (final JavaMethod method) ->
-          method.getModifiers().contains(JavaModifier.PRIVATE) && !method.reflect().isSynthetic()
-      )
-      .forEach((final JavaMethod method) ->
-        events.add(
-          SimpleConditionEvent.violated(
-            method,
-            new NotHavePrivateMethodsMessage(javaClass, method).toString()
-          )
-        )
-      );
-  }
+    @Override
+    public void check(final JavaClass clazz, final ConditionEvents events) {
+        clazz.getMethods()
+            .stream()
+            .filter(
+                (final JavaMethod method) ->
+                    method.getModifiers().contains(JavaModifier.PRIVATE)
+                        &&
+                        !method.reflect().isSynthetic()
+            )
+            .forEach(
+                (final JavaMethod method) ->
+                    events.add(
+                        SimpleConditionEvent.violated(
+                            method,
+                            new NotHavePrivateMethodsMessage(clazz, method).toString()
+                        )
+                    )
+            );
+    }
 }

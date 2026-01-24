@@ -31,29 +31,41 @@ import io.javalin.http.Context;
 import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Request} to get {@link Rooms} matching to at least the capacity provied.
+ *
+ * @since 1.0.0
+ */
 public final class GetCapableRoomsRequest implements Request {
 
-  private final Rooms rooms;
-  private final int capacity;
+    /**
+     * The collection of {@link Room}.
+     */
+    private final Rooms rooms;
 
-  public GetCapableRoomsRequest(final Rooms rooms, final int capacity) {
-    this.rooms = rooms;
-    this.capacity = capacity;
-  }
+    /**
+     * The targeted capacity.
+     */
+    private final int capacity;
 
-  public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
-    this(rooms, capacity.value());
-  }
-
-  @Override
-  public void perform(final Context context) {
-    final List<Room> capableRooms = rooms.withCapacity(capacity);
-    if (capableRooms.isEmpty()) {
-      context.status(HttpStatus.NO_CONTENT_204);
-    } else {
-      context
-        .json(capableRooms.stream().map(JsonRoom::new).map(JsonRoom::map).toList())
-        .status(HttpStatus.OK_200);
+    public GetCapableRoomsRequest(final Rooms rooms, final int capacity) {
+        this.rooms = rooms;
+        this.capacity = capacity;
     }
-  }
+
+    public GetCapableRoomsRequest(final Rooms rooms, final Parameter<Integer> capacity) {
+        this(rooms, capacity.value());
+    }
+
+    @Override
+    public void perform(final Context context) {
+        final List<Room> capable = this.rooms.withCapacity(this.capacity);
+        if (capable.isEmpty()) {
+            context.status(HttpStatus.NO_CONTENT_204);
+        } else {
+            context
+                .json(capable.stream().map(JsonRoom::new).map(JsonRoom::map).toList())
+                .status(HttpStatus.OK_200);
+        }
+    }
 }

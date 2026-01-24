@@ -24,35 +24,47 @@
 package fr.guddy.roombookings.infra.matchers;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasStatus extends TypeSafeDiagnosingMatcher<HttpTestCase<?>> {
+/**
+ * Check if an HTTP request has a status.
+ *
+ * @since 1.0.0
+ */
+public class HasStatus extends TypeSafeDiagnosingMatcher<HttpTestCase<?>> {
 
-  private final int expectedStatus;
+    /**
+     * The expected status.
+     */
+    private final int expected;
 
-  public HasStatus(final int expectedStatus) {
-    this.expectedStatus = expectedStatus;
-  }
-
-  @Override
-  protected boolean matchesSafely(final HttpTestCase<?> testCase, final Description mismatch) {
-    try {
-      final HttpResponse<?> response = testCase.response();
-      final boolean matches = response.getStatus() == expectedStatus;
-      if (!matches) {
-        mismatch.appendText("was HttpResponse with status ").appendValue(response.getStatus());
-      }
-      return matches;
-    } catch (final Exception e) {
-      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
-      return false;
+    public HasStatus(final int expected) {
+        this.expected = expected;
     }
-  }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("an HttpResponse with status ").appendValue(expectedStatus);
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("an HttpResponse with status ").appendValue(this.expected);
+    }
+
+    @Override
+    protected final boolean matchesSafely(
+        final HttpTestCase<?> testcase,
+        final Description mismatch
+    ) {
+        final HttpResponse<?> response;
+        try {
+            response = testcase.response();
+        } catch (final UnirestException exception) {
+            throw new MatcherRuntimeException(exception);
+        }
+        final boolean matches = response.getStatus() == this.expected;
+        if (!matches) {
+            mismatch.appendText("was HttpResponse with status ").appendValue(response.getStatus());
+        }
+        return matches;
+    }
 }

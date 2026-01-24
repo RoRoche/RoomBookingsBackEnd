@@ -23,9 +23,15 @@
  */
 package fr.guddy.roombookings.domain.bookings;
 
+/**
+ * {@link Exception} thrown when a {@link fr.guddy.roombookings.domain.booking.Booking}
+ * can not be deleted.
+ *
+ * @since 1.0.0
+ */
 public final class BookingNotDeletedException extends RuntimeException {
 
-  public BookingNotDeletedException(final long id) {
-    super(String.format("Booking with id %d could not be deleted", id));
-  }
+    public BookingNotDeletedException(final long id) {
+        super(String.format("Booking with id %d could not be deleted", id));
+    }
 }

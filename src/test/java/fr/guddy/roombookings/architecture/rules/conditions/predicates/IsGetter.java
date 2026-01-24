@@ -28,34 +28,64 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import java.util.List;
 import org.cactoos.Scalar;
 
+/**
+ * Check if a method is a getter.
+ *
+ * @since 1.0.0
+ */
 public final class IsGetter implements Scalar<Boolean> {
 
-  private final JavaMethod method;
+    /**
+     * The {@link JavaMethod} to test.
+     */
+    private final JavaMethod method;
 
-  public IsGetter(final JavaMethod method) {
-    this.method = method;
-  }
+    public IsGetter(final JavaMethod method) {
+        this.method = method;
+    }
 
-  @Override
-  public Boolean value() {
-    if (this.method.reflect().isSynthetic()) return false;
+    @Override
+    public Boolean value() {
+        final boolean result;
+        if (this.method.reflect().isSynthetic()) {
+            result = false;
+        } else {
+            final String name = this.method.getName();
+            final List<JavaClass> params = this.method.getRawParameterTypes();
+            final JavaClass returned = this.method.getRawReturnType();
+            result =
+                isGet(name, params, returned)
+                    ||
+                    isIs(name, params, returned);
+        }
+        return result;
+    }
 
-    final String name = this.method.getName();
-    final List<JavaClass> params = this.method.getRawParameterTypes();
-    final JavaClass returnType = this.method.getRawReturnType();
+    private static boolean isGet(
+        final String name,
+        final List<JavaClass> params,
+        final JavaClass returned
+    ) {
+        return name.startsWith("get")
+            &&
+            !name.equals("getClass")
+            &&
+            params.isEmpty()
+            &&
+            !returned.isEquivalentTo(void.class);
+    }
 
-    // getters start with get/is, take 0 params, and return a value (non-void)
-    final boolean isGet =
-      name.startsWith("get") &&
-      !name.equals("getClass") && // ignore Object.getClass()
-      params.isEmpty() &&
-      !returnType.isEquivalentTo(void.class);
-
-    final boolean isIs =
-      name.startsWith("is") &&
-      params.isEmpty() &&
-      (returnType.isEquivalentTo(boolean.class) || returnType.isEquivalentTo(Boolean.class));
-
-    return isGet || isIs;
-  }
+    private static boolean isIs(
+        final String name,
+        final List<JavaClass> params,
+        final JavaClass returned
+    ) {
+        return name.startsWith("is")
+            &&
+            params.isEmpty()
+            &&
+            (returned.isEquivalentTo(boolean.class)
+                ||
+                returned.isEquivalentTo(Boolean.class));
+    }
 }

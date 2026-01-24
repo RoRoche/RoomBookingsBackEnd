@@ -29,23 +29,33 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.Api;
 import org.cactoos.Scalar;
 
+/**
+ * Check if the server is ready.
+ *
+ * @since 1.0.0
+ */
 public final class IsServerReady implements Scalar<Boolean> {
 
-  private final Api api;
+    /**
+     * The API.
+     */
+    private final Api api;
 
-  public IsServerReady(final Api api) {
-    this.api = api;
-  }
-
-  @Override
-  public Boolean value() throws Exception {
-    try {
-      final HttpResponse<String> response = Unirest.get(
-        String.format("http://localhost:%d/ready", this.api.port().value())
-      ).asString();
-      return response.getStatus() == 200 && "READY".equals(response.getBody());
-    } catch (final UnirestException exception) {
-      return false;
+    public IsServerReady(final Api api) {
+        this.api = api;
     }
-  }
+
+    @Override
+    public Boolean value() throws Exception {
+        boolean ready;
+        try {
+            final HttpResponse<String> response = Unirest.get(
+                String.format("http://localhost:%d/ready", this.api.port().value())
+            ).asString();
+            ready = response.getStatus() == 200 && "READY".equals(response.getBody());
+        } catch (final UnirestException exception) {
+            ready = false;
+        }
+        return ready;
+    }
 }

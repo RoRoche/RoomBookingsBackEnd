@@ -27,26 +27,34 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasName extends TypeSafeMatcher<Room> {
+/**
+ * {@link org.hamcrest.Matcher} to assert a {@link Room} has a name.
+ *
+ * @since 1.0.0
+ */
+public class HasName extends TypeSafeMatcher<Room> {
 
-  private final String expectedName;
+    /**
+     * The expected name.
+     */
+    private final String expected;
 
-  public HasName(final String expectedName) {
-    this.expectedName = expectedName;
-  }
+    public HasName(final String expected) {
+        this.expected = expected;
+    }
 
-  @Override
-  protected boolean matchesSafely(final Room room) {
-    return room.name().equalsIgnoreCase(expectedName);
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("a Room with name (ignoring case) ").appendValue(this.expected);
+    }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("a Room with name (ignoring case) ").appendValue(expectedName);
-  }
+    @Override
+    protected final boolean matchesSafely(final Room room) {
+        return room.name().equalsIgnoreCase(this.expected);
+    }
 
-  @Override
-  protected void describeMismatchSafely(final Room room, final Description mismatchDescription) {
-    mismatchDescription.appendText("was a Room with name ").appendValue(room.name());
-  }
+    @Override
+    protected final void describeMismatchSafely(final Room room, final Description description) {
+        description.appendText("was a Room with name ").appendValue(room.name());
+    }
 }

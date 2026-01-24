@@ -28,12 +28,17 @@ import io.javalin.http.Context;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Exception} thrown when a {@link fr.guddy.roombookings.infra.params.Parameter}
+ * can not be processed.
+ *
+ * @since 1.0.0
+ */
 public final class NotProcessableParameterResponse
-  implements ExceptionHandler<NotProcessableParameterException>
-{
+    implements ExceptionHandler<NotProcessableParameterException> {
 
-  @Override
-  public void handle(final NotProcessableParameterException exception, final Context ctx) {
-    ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
-  }
+    @Override
+    public void handle(final NotProcessableParameterException exception, final Context ctx) {
+        ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
+    }
 }

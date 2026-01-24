@@ -24,43 +24,53 @@
 package fr.guddy.roombookings.infra.matchers;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import org.cactoos.Text;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasBody extends TypeSafeDiagnosingMatcher<HttpTestCase<String>> {
+/**
+ * Check if an HTTP request has a body.
+ *
+ * @since 1.0.0
+ */
+public class HasBody extends TypeSafeDiagnosingMatcher<HttpTestCase<String>> {
 
-  private final String expectedBody;
+    /**
+     * The expected body.
+     */
+    private final String expected;
 
-  public HasBody(final String expectedBody) {
-    this.expectedBody = expectedBody;
-  }
-
-  public HasBody(final Text text) {
-    this(text.toString());
-  }
-
-  @Override
-  protected boolean matchesSafely(final HttpTestCase<String> testCase, final Description mismatch) {
-    try {
-      final HttpResponse<String> response = testCase.response();
-      final String actualBody = response.getBody();
-      final boolean matches = expectedBody.equalsIgnoreCase(actualBody);
-      if (!matches) {
-        mismatch.appendText("was HttpResponse with body ").appendValue(actualBody);
-      }
-      return matches;
-    } catch (final Exception exception) {
-      mismatch
-        .appendText("exception while executing testcase: ")
-        .appendText(exception.getMessage());
-      return false;
+    public HasBody(final String expected) {
+        this.expected = expected;
     }
-  }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("an HttpResponse with body ").appendValue(expectedBody);
-  }
+    public HasBody(final Text text) {
+        this(text.toString());
+    }
+
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("an HttpResponse with body ").appendValue(this.expected);
+    }
+
+    @Override
+    protected final boolean matchesSafely(
+        final HttpTestCase<String> testcase,
+        final Description mismatch
+    ) {
+        final HttpResponse<String> response;
+        try {
+            response = testcase.response();
+        } catch (final UnirestException exception) {
+            throw new MatcherRuntimeException(exception);
+        }
+        final String actual = response.getBody();
+        final boolean matches = this.expected.equalsIgnoreCase(actual);
+        if (!matches) {
+            mismatch.appendText("was HttpResponse with body ").appendValue(actual);
+        }
+        return matches;
+    }
 }

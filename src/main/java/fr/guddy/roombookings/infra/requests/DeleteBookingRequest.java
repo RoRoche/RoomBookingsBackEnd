@@ -34,31 +34,44 @@ import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.http.Context;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * Request to delete a {@link Booking} by ID.
+ *
+ * @since 1.0.0
+ */
 public final class DeleteBookingRequest implements Request {
 
-  private final Bookings bookings;
-  private final long id;
+    /**
+     * The collection of {@link Booking}.
+     */
+    private final Bookings bookings;
 
-  public DeleteBookingRequest(final Bookings bookings, final long id) {
-    this.bookings = bookings;
-    this.id = id;
-  }
+    /**
+     * The ID of the {@link Booking} to delete.
+     */
+    private final long id;
 
-  public DeleteBookingRequest(final Bookings bookings, final Context context) {
-    this(
-      bookings,
-      new LongParameter(new RequiredParameter<>(new PathParameter("id", context))).value()
-    );
-  }
-
-  @Override
-  public void perform(final Context context) {
-    final Booking booking = bookings.byId(id).orElseThrow(() -> new BookingNotFoundException(id));
-    final boolean result = bookings.delete(booking);
-    if (result) {
-      context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);
-    } else {
-      throw new BookingNotDeletedException(id);
+    public DeleteBookingRequest(final Bookings bookings, final long id) {
+        this.bookings = bookings;
+        this.id = id;
     }
-  }
+
+    public DeleteBookingRequest(final Bookings bookings, final Context context) {
+        this(
+            bookings,
+            new LongParameter(new RequiredParameter<>(new PathParameter("id", context))).value()
+        );
+    }
+
+    @Override
+    public void perform(final Context context) {
+        final Booking booking = this.bookings
+            .byId(this.id)
+            .orElseThrow(() -> new BookingNotFoundException(this.id));
+        if (this.bookings.delete(booking)) {
+            context.json(new JsonBooking(booking).map()).status(HttpStatus.OK_200);
+        } else {
+            throw new BookingNotDeletedException(this.id);
+        }
+    }
 }

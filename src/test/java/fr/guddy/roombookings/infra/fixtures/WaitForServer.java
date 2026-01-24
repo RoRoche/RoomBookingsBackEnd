@@ -28,27 +28,37 @@ import java.time.Duration;
 import org.awaitility.Awaitility;
 import org.cactoos.Scalar;
 
+/**
+ * Wait for server to be ready.
+ *
+ * @since 1.0.0
+ */
 public final class WaitForServer implements Runnable {
 
-  private final Scalar<Boolean> isServerReady;
+    /**
+     * Is server ready.
+     */
+    private final Scalar<Boolean> ready;
 
-  public WaitForServer(final Scalar<Boolean> isServerReady) {
-    this.isServerReady = isServerReady;
-  }
+    public WaitForServer(final Scalar<Boolean> ready) {
+        this.ready = ready;
+    }
 
-  public WaitForServer(final Api api) {
-    this(new IsServerReady(api));
-  }
+    public WaitForServer(final Api api) {
+        this(new IsServerReady(api));
+    }
 
-  @Override
-  public void run() {
-    Awaitility.await()
-      .atMost(Duration.ofSeconds(2))
-      .pollInterval(Duration.ofMillis(200))
-      .untilAsserted(() -> {
-        if (!this.isServerReady.value()) {
-          throw new AssertionError("Server didn't start in time");
-        }
-      });
-  }
+    @Override
+    public void run() {
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(2))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(
+                () -> {
+                    if (!this.ready.value()) {
+                        throw new AssertionError("Server didn't start in time");
+                    }
+                }
+            );
+    }
 }

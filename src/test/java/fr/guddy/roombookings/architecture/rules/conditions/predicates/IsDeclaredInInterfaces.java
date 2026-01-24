@@ -27,27 +27,40 @@ import com.tngtech.archunit.core.domain.JavaMethod;
 import java.util.Set;
 import org.cactoos.Scalar;
 
+/**
+ * Check if a method is declared in an interface.
+ *
+ * @since 1.0.0
+ */
 public final class IsDeclaredInInterfaces implements Scalar<Boolean> {
 
-  private final JavaMethod implMethod;
-  private final Set<JavaMethod> interfaceMethods;
+    /**
+     * The implemented method.
+     */
+    private final JavaMethod method;
 
-  public IsDeclaredInInterfaces(
-    final JavaMethod implMethod,
-    final Set<JavaMethod> interfaceMethods
-  ) {
-    this.implMethod = implMethod;
-    this.interfaceMethods = interfaceMethods;
-  }
+    /**
+     * The methods declared in interfaces.
+     */
+    private final Set<JavaMethod> methods;
 
-  @Override
-  public Boolean value() {
-    // Check if the implementation method matches any method from the interfaces
-    return this.interfaceMethods.stream().anyMatch(
-      (final JavaMethod ifaceMethod) ->
-        ifaceMethod.getName().equals(this.implMethod.getName()) &&
-        new HaveSameParameterCount(ifaceMethod, this.implMethod).value() &&
-        new ParametersAssignableIgnoringGenerics(ifaceMethod, this.implMethod).value()
-    );
-  }
+    public IsDeclaredInInterfaces(
+        final JavaMethod method,
+        final Set<JavaMethod> methods
+    ) {
+        this.method = method;
+        this.methods = methods;
+    }
+
+    @Override
+    public Boolean value() {
+        return this.methods.stream().anyMatch(
+            (final JavaMethod ifaceMethod) ->
+                ifaceMethod.getName().equals(this.method.getName())
+                    &&
+                    new HaveSameParameterCount(ifaceMethod, this.method).value()
+                    &&
+                    new ParametersAssignableIgnoringGenerics(ifaceMethod, this.method).value()
+        );
+    }
 }

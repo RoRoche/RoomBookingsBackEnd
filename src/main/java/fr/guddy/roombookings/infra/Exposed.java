@@ -25,6 +25,12 @@ package fr.guddy.roombookings.infra;
 
 import fr.guddy.roombookings.infra.ports.Port;
 
+/**
+ * An {@link Application} is exposed on a {@link Port}.
+ *
+ * @since 1.0.0
+ */
+@FunctionalInterface
 public interface Exposed {
-  Port port();
+    Port port();
 }

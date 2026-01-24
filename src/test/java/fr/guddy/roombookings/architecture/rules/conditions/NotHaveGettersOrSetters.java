@@ -32,27 +32,34 @@ import fr.guddy.roombookings.architecture.rules.conditions.messages.NotHaveGette
 import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsGetter;
 import fr.guddy.roombookings.architecture.rules.conditions.predicates.IsSetter;
 
+/**
+ * {@link ArchCondition} to assert a {@link JavaClass} has no getters or setters.
+ *
+ * @since 1.0.0
+ */
 public final class NotHaveGettersOrSetters extends ArchCondition<JavaClass> {
 
-  public NotHaveGettersOrSetters() {
-    super("not have getter or setter methods");
-  }
+    public NotHaveGettersOrSetters() {
+        super("not have getter or setter methods");
+    }
 
-  @Override
-  public void check(final JavaClass javaClass, final ConditionEvents events) {
-    javaClass
-      .getMethods()
-      .stream()
-      .filter(
-        (final JavaMethod method) -> new IsGetter(method).value() || new IsSetter(method).value()
-      )
-      .forEach((final JavaMethod method) ->
-        events.add(
-          SimpleConditionEvent.violated(
-            method,
-            new NotHaveGettersOrSettersMessage(javaClass, method).toString()
-          )
-        )
-      );
-  }
+    @Override
+    public void check(final JavaClass clazz, final ConditionEvents events) {
+        clazz
+            .getMethods()
+            .stream()
+            .filter(
+                (final JavaMethod method) ->
+                    new IsGetter(method).value() || new IsSetter(method).value()
+            )
+            .forEach(
+                (final JavaMethod method) ->
+                    events.add(
+                        SimpleConditionEvent.violated(
+                            method,
+                            new NotHaveGettersOrSettersMessage(clazz, method).toString()
+                        )
+                    )
+            );
+    }
 }

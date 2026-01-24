@@ -27,26 +27,34 @@ import fr.guddy.roombookings.domain.room.Room;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public final class HasCapacity extends TypeSafeMatcher<Room> {
+/**
+ * {@link org.hamcrest.Matcher} to assert a {@link Room} has a capacity.
+ *
+ * @since 1.0.0
+ */
+public class HasCapacity extends TypeSafeMatcher<Room> {
 
-  private final int expectedCapacity;
+    /**
+     * The expected capacity.
+     */
+    private final int expected;
 
-  public HasCapacity(final int expectedCapacity) {
-    this.expectedCapacity = expectedCapacity;
-  }
+    public HasCapacity(final int expected) {
+        this.expected = expected;
+    }
 
-  @Override
-  protected boolean matchesSafely(final Room room) {
-    return room.capacity() == expectedCapacity;
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("a Room with capacity ").appendValue(this.expected);
+    }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("a Room with capacity ").appendValue(expectedCapacity);
-  }
+    @Override
+    protected final boolean matchesSafely(final Room room) {
+        return room.capacity() == this.expected;
+    }
 
-  @Override
-  protected void describeMismatchSafely(final Room room, final Description mismatchDescription) {
-    mismatchDescription.appendText("was a Room with capacity ").appendValue(room.capacity());
-  }
+    @Override
+    protected final void describeMismatchSafely(final Room room, final Description description) {
+        description.appendText("was a Room with capacity ").appendValue(room.capacity());
+    }
 }

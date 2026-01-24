@@ -23,26 +23,25 @@
  */
 package fr.guddy.roombookings.domain.slot;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 
 public record LogicalSlot(long timestampStart, long timestampEnd) implements Slot {
-  @Override
-  public long timestampStart() {
-    return Long.min(timestampStart, timestampEnd);
-  }
+    @Override
+    public long timestampStart() {
+        return Long.min(this.timestampStart, this.timestampEnd);
+    }
 
-  @Override
-  public long timestampEnd() {
-    return Long.max(timestampStart, timestampEnd);
-  }
+    @Override
+    public long timestampEnd() {
+        return Long.max(this.timestampStart, this.timestampEnd);
+    }
 
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<String, Object>(
-      new MapEntry<>("timestampStart", this.timestampStart),
-      new MapEntry<>("timestampEnd", this.timestampEnd)
-    );
-  }
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("timestampStart", this.timestampStart);
+        map.put("timestampEnd", this.timestampEnd);
+        return map;
+    }
 }

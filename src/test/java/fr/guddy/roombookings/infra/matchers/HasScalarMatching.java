@@ -27,39 +27,46 @@ import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.HttpTestCaseEnvelope;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
+import org.cactoos.func.UncheckedFunc;
+import org.cactoos.scalar.Unchecked;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasScalarMatching<
-  T extends HttpTestCaseEnvelope
-> extends TypeSafeDiagnosingMatcher<Scalar<T>> {
+/**
+ * {@link Matcher} to assert {@link Scalar} has value.
+ *
+ * @param <T> The type of value.
+ * @since 1.0.0
+ */
+public class HasScalarMatching<T extends HttpTestCaseEnvelope>
+    extends TypeSafeDiagnosingMatcher<Scalar<T>> {
 
-  private final Func<T, Matcher<HttpTestCase<String>>> matcherFunc;
+    /**
+     * The callback function.
+     */
+    private final Func<T, Matcher<HttpTestCase<String>>> func;
 
-  public HasScalarMatching(final Func<T, Matcher<HttpTestCase<String>>> matcherFunc) {
-    this.matcherFunc = matcherFunc;
-  }
-
-  @Override
-  protected boolean matchesSafely(final Scalar<T> result, final Description mismatch) {
-    try {
-      final T envelope = result.value();
-      final HttpTestCase<String> testCase = envelope.value();
-      final Matcher<HttpTestCase<String>> matcher = this.matcherFunc.apply(envelope);
-      final boolean matches = matcher.matches(testCase);
-      if (!matches) {
-        matcher.describeMismatch(testCase, mismatch);
-      }
-      return matches;
-    } catch (final Exception e) {
-      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
-      return false;
+    public HasScalarMatching(final Func<T, Matcher<HttpTestCase<String>>> func) {
+        this.func = func;
     }
-  }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("test case must match");
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description.appendText("test case must match");
+    }
+
+    @Override
+    protected final boolean matchesSafely(final Scalar<T> result, final Description mismatch) {
+        final T envelope = new Unchecked<>(result).value();
+        final HttpTestCase<String> testcase = new Unchecked<>(envelope).value();
+        final Matcher<HttpTestCase<String>> matcher = new UncheckedFunc<>(this.func).apply(
+            envelope
+        );
+        final boolean matches = matcher.matches(testcase);
+        if (!matches) {
+            matcher.describeMismatch(testcase, mismatch);
+        }
+        return matches;
+    }
 }

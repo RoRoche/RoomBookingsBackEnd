@@ -31,36 +31,42 @@ import fr.guddy.roombookings.infra.ApiExternalExtension;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
+/**
+ * Fixture to create a {@link SimpleBooking}.
+ *
+ * @since 1.0.0
+ */
 public final class CreateSimpleBooking implements Runnable {
 
-  private final Bookings bookings;
+    /**
+     * The collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     */
+    private final Bookings bookings;
 
-  public CreateSimpleBooking(final Bookings bookings) {
-    this.bookings = bookings;
-  }
+    public CreateSimpleBooking(final Bookings bookings) {
+        this.bookings = bookings;
+    }
 
-  public CreateSimpleBooking(final ApiExternalExtension api) {
-    this(api.bookings());
-  }
+    public CreateSimpleBooking(final ApiExternalExtension api) {
+        this(api.bookings());
+    }
 
-  @Override
-  public void run() {
-    this.bookings.create(
-      new SimpleBooking(
-        null,
-        "test_user_id",
-        new SimpleRoom("test_name", 12),
-        new LogicalSlot(
-          Instant.ofEpochSecond(1764352800)
-              .plus(Duration.standardMinutes(15).getMillis())
-              .getMillis() /
-            1000,
-          Instant.ofEpochSecond(1764352800)
-              .plus(Duration.standardMinutes(45).getMillis())
-              .getMillis() /
-            1000
-        )
-      )
-    );
-  }
+    @Override
+    public void run() {
+        this.bookings.create(
+            new SimpleBooking(
+                null,
+                "test_user_id",
+                new SimpleRoom("test_name", 12),
+                new LogicalSlot(
+                    Instant.ofEpochSecond(1_764_352_800)
+                        .plus(Duration.standardMinutes(15).getMillis())
+                        .getMillis() / 1000,
+                    Instant.ofEpochSecond(1_764_352_800)
+                        .plus(Duration.standardMinutes(45).getMillis())
+                        .getMillis() / 1000
+                )
+            )
+        );
+    }
 }

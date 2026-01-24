@@ -23,44 +23,65 @@
  */
 package fr.guddy.roombookings.infra.matchers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import java.util.Map;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public final class HasBodyContaining extends TypeSafeDiagnosingMatcher<HttpTestCase<String>> {
+/**
+ * Check if an HTTP request has body containing.
+ *
+ * @since 1.0.0
+ */
+public class HasBodyContaining extends TypeSafeDiagnosingMatcher<HttpTestCase<String>> {
 
-  private final Map<String, Object> expectedEntries;
+    /**
+     * The expected JSON entries.
+     */
+    private final Map<String, Object> expected;
 
-  public HasBodyContaining(final Map<String, Object> expectedEntries) {
-    this.expectedEntries = expectedEntries;
-  }
-
-  @Override
-  protected boolean matchesSafely(final HttpTestCase<String> testCase, final Description mismatch) {
-    try {
-      final ObjectMapper mapper = new ObjectMapper();
-      final HttpResponse<String> response = testCase.response();
-      final Map<String, Object> actual = mapper.readValue(
-        response.getBody(),
-        new TypeReference<>() {}
-      );
-      final Boolean matches = new DeepMatches().apply(actual, expectedEntries);
-      if (!matches) {
-        mismatch.appendText("body was ").appendValue(response.getBody());
-      }
-      return matches;
-    } catch (final Exception e) {
-      mismatch.appendText("exception while executing testcase: ").appendText(e.getMessage());
-      return false;
+    public HasBodyContaining(final Map<String, Object> expected) {
+        this.expected = expected;
     }
-  }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("HttpResponse body containing body ").appendValue(this.expectedEntries);
-  }
+    @Override
+    public final void describeTo(final Description description) {
+        description
+            .appendText("HttpResponse body containing body ")
+            .appendValue(this.expected);
+    }
+
+    @Override
+    protected final boolean matchesSafely(
+        final HttpTestCase<String> testcase,
+        final Description mismatch
+    ) {
+        final ObjectMapper mapper = new ObjectMapper();
+        final HttpResponse<String> response;
+        try {
+            response = testcase.response();
+        } catch (final UnirestException exception) {
+            throw new MatcherRuntimeException(exception);
+        }
+        final Map<String, Object> actual;
+        try {
+            actual = mapper.readValue(
+                response.getBody(),
+                new TypeReference<>() {
+                }
+            );
+        } catch (final JsonProcessingException exception) {
+            throw new MatcherRuntimeException(exception);
+        }
+        final Boolean matches = new DeepMatches().apply(actual, this.expected);
+        if (!matches) {
+            mismatch.appendText("body was ").appendValue(response.getBody());
+        }
+        return matches;
+    }
 }

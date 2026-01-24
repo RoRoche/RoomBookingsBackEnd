@@ -30,24 +30,32 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import fr.guddy.roombookings.architecture.rules.conditions.messages.ClassesAreAbstractOrFinalMessage;
 
+/**
+ * {@link ArchCondition} to assert a {@link JavaClass} is abstract or final.
+ *
+ * @since 1.0.0
+ */
 public final class BeAbstractOrFinal extends ArchCondition<JavaClass> {
 
-  public BeAbstractOrFinal() {
-    super("be final or abstract");
-  }
-
-  @Override
-  public void check(final JavaClass javaClass, final ConditionEvents events) {
-    final boolean isAbstract = javaClass.getModifiers().contains(JavaModifier.ABSTRACT);
-    final boolean isFinal = javaClass.getModifiers().contains(JavaModifier.FINAL);
-
-    if (!isAbstract && !isFinal) {
-      events.add(
-        SimpleConditionEvent.violated(
-          javaClass,
-          new ClassesAreAbstractOrFinalMessage(javaClass, isAbstract, isFinal).toString()
-        )
-      );
+    public BeAbstractOrFinal() {
+        super("be final or abstract");
     }
-  }
+
+    @Override
+    public void check(final JavaClass clazz, final ConditionEvents events) {
+        if (!clazz.getModifiers().contains(JavaModifier.ABSTRACT)
+            &&
+            !clazz.getModifiers().contains(JavaModifier.FINAL)) {
+            events.add(
+                SimpleConditionEvent.violated(
+                    clazz,
+                    new ClassesAreAbstractOrFinalMessage(
+                        clazz,
+                        clazz.getModifiers().contains(JavaModifier.ABSTRACT),
+                        clazz.getModifiers().contains(JavaModifier.FINAL)
+                    ).toString()
+                )
+            );
+        }
+    }
 }

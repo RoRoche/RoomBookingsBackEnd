@@ -23,16 +23,24 @@
  */
 package fr.guddy.roombookings.infra.ports;
 
+/**
+ * Simple implementation of {@link Port}.
+ *
+ * @since 1.0.0
+ */
 public final class SimplePort implements Port {
 
-  private final int port;
+    /**
+     * The port value.
+     */
+    private final int port;
 
-  public SimplePort(final int port) {
-    this.port = port;
-  }
+    public SimplePort(final int port) {
+        this.port = port;
+    }
 
-  @Override
-  public int value() {
-    return this.port;
-  }
+    @Override
+    public int value() {
+        return this.port;
+    }
 }

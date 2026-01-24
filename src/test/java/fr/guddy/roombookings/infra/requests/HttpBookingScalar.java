@@ -33,33 +33,64 @@ import fr.guddy.roombookings.infra.HttpTestCase;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
 
+/**
+ * {@link Scalar} to provide {@link HttpBooking}.
+ *
+ * @since 1.0.0
+ */
 public final class HttpBookingScalar implements Scalar<HttpBooking> {
 
-  private final ApiExternalExtension api;
-  private final long timestampStart;
-  private final long timestampEnd;
-  private final Func<Long, HttpTestCase<String>> testCaseFunc;
+    /**
+     * The API.
+     */
+    private final ApiExternalExtension api;
 
-  public HttpBookingScalar(
-    final ApiExternalExtension api,
-    final long timestampStart,
-    final long timestampEnd,
-    final Func<Long, HttpTestCase<String>> testCaseFunc
-  ) {
-    this.api = api;
-    this.timestampStart = timestampStart;
-    this.timestampEnd = timestampEnd;
-    this.testCaseFunc = testCaseFunc;
-  }
+    /**
+     * The starting timestamp.
+     */
+    private final long start;
 
-  @Override
-  public HttpBooking value() throws Exception {
-    this.api.rooms().clearAll();
-    this.api.bookings().clearAll();
-    final Room room = new SimpleRoom("test_name", 12);
-    this.api.rooms().create(room);
-    final Slot slot = new LogicalSlot(this.timestampStart, this.timestampEnd);
-    final long id = this.api.bookings().create(new SimpleBooking(null, "test_user_id", room, slot));
-    return new HttpBooking(id, "test_user_id", room, slot, this.testCaseFunc.apply(id));
-  }
+    /**
+     * The ending timestamp.
+     */
+    private final long end;
+
+    /**
+     * The {@link Func} to call the {@link HttpTestCase} with the generated ID.
+     */
+    private final Func<Long, HttpTestCase<String>> callback;
+
+    /**
+     * Primary constructor.
+     *
+     * @param api The API.
+     * @param start The starting timestamp.
+     * @param end The ending timestamp.
+     * @param callback The {@link Func} to call back with the generated ID.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public HttpBookingScalar(
+        final ApiExternalExtension api,
+        final long start,
+        final long end,
+        final Func<Long, HttpTestCase<String>> callback
+    ) {
+        this.api = api;
+        this.start = start;
+        this.end = end;
+        this.callback = callback;
+    }
+
+    @Override
+    public HttpBooking value() throws Exception {
+        this.api.rooms().clearAll();
+        this.api.bookings().clearAll();
+        final Room room = new SimpleRoom("test_name", 12);
+        this.api.rooms().create(room);
+        final Slot slot = new LogicalSlot(this.start, this.end);
+        final long id = this.api.bookings().create(
+            new SimpleBooking(null, "test_user_id", room, slot)
+        );
+        return new HttpBooking(id, "test_user_id", room, slot, this.callback.apply(id));
+    }
 }

@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.get;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleBooking;
@@ -40,97 +39,128 @@ import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link GetAvailableRoomsRequest}.
+ *
+ * @since 1.0.0
+ */
 final class GetAvailableRoomsRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void hasNoContent() {
-    MatcherAssert.assertThat(
-      "No available room",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:%d/rooms".formatted(api.port().value()))
-          .queryString("capacity", 10)
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )::asString
-      ),
-      new HasStatus(HttpStatus.NO_CONTENT_204)
-    );
-  }
+    @Test
+    void hasNoContent() {
+        MatcherAssert.assertThat(
+            "No available room",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetAvailableRoomsRequestTest.API.rooms()::clearAll,
+                    GetAvailableRoomsRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetAvailableRoomsRequestTest.API.port().value()
+                    )
+                )
+                    .queryString("capacity", 10)
+                    .queryString("timestamp_start", 1_764_352_800)
+                    .queryString(
+                        "timestamp_end",
+                        Instant.ofEpochSecond(1_764_352_800)
+                            .plus(Duration.standardHours(1).getMillis())
+                            .getMillis() / 1000
+                    )::asString
+            ),
+            new HasStatus(HttpStatus.NO_CONTENT_204)
+        );
+    }
 
-  @Test
-  void isMissingParameter() {
-    MatcherAssert.assertThat(
-      "A parameter is missing",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll),
-        get("http://localhost:%d/rooms".formatted(api.port().value()))
-          .queryString("capacity", 10)
-          .queryString("timestamp_start", 1764352800)::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.BAD_REQUEST_400),
-        new HasBody("Parameter named 'timestamp_end' is missing")
-      )
-    );
-  }
+    @Test
+    void isMissingParameter() {
+        MatcherAssert.assertThat(
+            "A parameter is missing",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetAvailableRoomsRequestTest.API.rooms()::clearAll,
+                    GetAvailableRoomsRequestTest.API.bookings()::clearAll
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetAvailableRoomsRequestTest.API.port().value()
+                    )
+                )
+                    .queryString("capacity", 10)
+                    .queryString("timestamp_start", 1_764_352_800)::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.BAD_REQUEST_400),
+                new HasBody("Parameter named 'timestamp_end' is missing")
+            )
+        );
+    }
 
-  @Test
-  void isOkWithAvailableRooms() {
-    MatcherAssert.assertThat(
-      "A room is available on the given slot",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, api.bookings()::clearAll, new CreateSimpleRoom(api)),
-        get("http://localhost:%d/rooms".formatted(api.port().value()))
-          .queryString("capacity", 10)
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.OK_200),
-        new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
-      )
-    );
-  }
+    @Test
+    void isOkWithAvailableRooms() {
+        MatcherAssert.assertThat(
+            "A room is available on the given slot",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetAvailableRoomsRequestTest.API.rooms()::clearAll,
+                    GetAvailableRoomsRequestTest.API.bookings()::clearAll,
+                    new CreateSimpleRoom(GetAvailableRoomsRequestTest.API)
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetAvailableRoomsRequestTest.API.port().value()
+                    )
+                )
+                    .queryString("capacity", 10)
+                    .queryString("timestamp_start", 1_764_352_800)
+                    .queryString(
+                        "timestamp_end",
+                        Instant.ofEpochSecond(1_764_352_800)
+                            .plus(Duration.standardHours(1).getMillis())
+                            .getMillis() / 1000
+                    )::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.OK_200),
+                new HasBody("[{\"name\":\"test_name\",\"capacity\":12}]")
+            )
+        );
+    }
 
-  @Test
-  void isOkWithNoAvailableRooms() {
-    MatcherAssert.assertThat(
-      "No room is available on the given slot",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(
-          api.rooms()::clearAll,
-          api.bookings()::clearAll,
-          new CreateSimpleRoom(api),
-          new CreateSimpleBooking(api)
-        ),
-        get("http://localhost:%d/rooms".formatted(api.port().value()))
-          .queryString("capacity", 10)
-          .queryString("timestamp_start", 1764352800)
-          .queryString(
-            "timestamp_end",
-            Instant.ofEpochSecond(1764352800)
-                .plus(Duration.standardHours(1).getMillis())
-                .getMillis() /
-              1000
-          )::asString
-      ),
-      new HasStatus(HttpStatus.NO_CONTENT_204)
-    );
-  }
+    @Test
+    void isOkWithNoAvailableRooms() {
+        MatcherAssert.assertThat(
+            "No room is available on the given slot",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    GetAvailableRoomsRequestTest.API.rooms()::clearAll,
+                    GetAvailableRoomsRequestTest.API.bookings()::clearAll,
+                    new CreateSimpleRoom(GetAvailableRoomsRequestTest.API),
+                    new CreateSimpleBooking(GetAvailableRoomsRequestTest.API)
+                ),
+                Unirest.get(
+                    "http://localhost:%d/rooms".formatted(
+                        GetAvailableRoomsRequestTest.API.port().value()
+                    )
+                )
+                    .queryString("capacity", 10)
+                    .queryString("timestamp_start", 1_764_352_800)
+                    .queryString(
+                        "timestamp_end",
+                        Instant.ofEpochSecond(1_764_352_800)
+                            .plus(Duration.standardHours(1).getMillis())
+                            .getMillis() / 1000
+                    )::asString
+            ),
+            new HasStatus(HttpStatus.NO_CONTENT_204)
+        );
+    }
 }

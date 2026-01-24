@@ -28,10 +28,16 @@ import io.javalin.http.Context;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link ExceptionHandler} to handle when {@link fr.guddy.roombookings.domain.booking.Booking}
+ * is not found.
+ *
+ * @since 1.0.0
+ */
 public final class BookingNotFoundResponse implements ExceptionHandler<BookingNotFoundException> {
 
-  @Override
-  public void handle(final BookingNotFoundException exception, final Context ctx) {
-    ctx.status(HttpStatus.NOT_FOUND_404).result(exception.getMessage());
-  }
+    @Override
+    public void handle(final BookingNotFoundException exception, final Context ctx) {
+        ctx.status(HttpStatus.NOT_FOUND_404).result(exception.getMessage());
+    }
 }

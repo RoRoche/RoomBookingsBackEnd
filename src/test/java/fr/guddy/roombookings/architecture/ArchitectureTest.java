@@ -28,55 +28,68 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
-import fr.guddy.roombookings.architecture.rules.*;
+import fr.guddy.roombookings.architecture.rules.ClassesAreAbstractOrFinalRule;
+import fr.guddy.roombookings.architecture.rules.ClassesShouldHaveNoStaticMethodsRule;
+import fr.guddy.roombookings.architecture.rules.ClassesShouldNotHaveGettersOrSettersRule;
+import fr.guddy.roombookings.architecture.rules.ClassesShouldNotHavePrivateMethodsRule;
+import fr.guddy.roombookings.architecture.rules.FieldsShouldBeFinalRule;
+import fr.guddy.roombookings.architecture.rules.PublicMethodsDeclaredInInterfacesRule;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Architecture testing.
+ *
+ * @since 1.0.0
+ */
 @SuppressWarnings({ "JTCOP.RuleEveryTestHasProductionClass", "JTCOP.RuleAssertionMessage" })
 final class ArchitectureTest {
 
-  private final JavaClasses classes = new ClassFileImporter()
-    .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-    .importPackages("fr.guddy.roombookings");
+    /**
+     * The classes to be checked.
+     */
+    private final JavaClasses classes = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("fr.guddy.roombookings");
 
-  @Test
-  void checksDomainClassesDoNotAccessInfra() {
-    final ArchRule rule = ArchRuleDefinition.noClasses()
-      .that()
-      .resideInAPackage("..domain..")
-      .should()
-      .accessClassesThat()
-      .resideInAPackage("..infra..")
-      .because("domain logic must not be dependent of infrastructure code");
-    rule.check(classes);
-  }
+    @Test
+    void checksDomainClassesDoNotAccessInfra() {
+        final ArchRule rule = ArchRuleDefinition.noClasses()
+            .that()
+            .resideInAPackage("..domain..")
+            .should()
+            .accessClassesThat()
+            .resideInAPackage("..infra..")
+            .because("domain logic must not be dependent of infrastructure code");
+        rule.check(this.classes);
+    }
 
-  @Test
-  void checksPublicMethodsAreDeclaredInInterfaces() {
-    new PublicMethodsDeclaredInInterfacesRule().check(classes);
-  }
+    @Test
+    void checksPublicMethodsAreDeclaredInInterfaces() {
+        new PublicMethodsDeclaredInInterfacesRule().check(this.classes);
+    }
 
-  @Test
-  void checksClassesAreAbstractOrFinal() {
-    new ClassesAreAbstractOrFinalRule().check(classes);
-  }
+    @Test
+    void checksClassesAreAbstractOrFinal() {
+        new ClassesAreAbstractOrFinalRule().check(this.classes);
+    }
 
-  @Test
-  void checksFieldsAreFinal() {
-    new FieldsShouldBeFinalRule().check(classes);
-  }
+    @Test
+    void checksFieldsAreFinal() {
+        new FieldsShouldBeFinalRule().check(this.classes);
+    }
 
-  @Test
-  void checksThereAreNoStaticMethods() {
-    new ClassesShouldHaveNoStaticMethodsRule().check(classes);
-  }
+    @Test
+    void checksThereAreNoStaticMethods() {
+        new ClassesShouldHaveNoStaticMethodsRule().check(this.classes);
+    }
 
-  @Test
-  void checksClassesDoNotHavePrivateMethods() {
-    new ClassesShouldNotHavePrivateMethodsRule().check(classes);
-  }
+    @Test
+    void checksClassesDoNotHavePrivateMethods() {
+        new ClassesShouldNotHavePrivateMethodsRule().check(this.classes);
+    }
 
-  @Test
-  void checksClassesDoNotHaveGettersOrSetters() {
-    new ClassesShouldNotHaveGettersOrSettersRule().check(classes);
-  }
+    @Test
+    void checksClassesDoNotHaveGettersOrSetters() {
+        new ClassesShouldNotHaveGettersOrSettersRule().check(this.classes);
+    }
 }

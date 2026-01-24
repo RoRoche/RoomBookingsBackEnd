@@ -26,6 +26,7 @@ package fr.guddy.roombookings.infra.requests;
 import fr.guddy.roombookings.domain.booking.Booking;
 import fr.guddy.roombookings.domain.booking.JsonBooking;
 import fr.guddy.roombookings.domain.bookings.Bookings;
+import fr.guddy.roombookings.infra.params.LongParameter;
 import fr.guddy.roombookings.infra.params.Parameter;
 import fr.guddy.roombookings.infra.params.QueryParameter;
 import fr.guddy.roombookings.infra.params.RequiredParameter;
@@ -33,33 +34,66 @@ import io.javalin.http.Context;
 import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Request} to get reminders of {@link Bookings} for a user.
+ *
+ * @since 1.0.0
+ */
 public final class GetRemindersRequest implements Request {
 
-  private final Bookings bookings;
-  private final String userId;
+    /**
+     * The collection of {@link Booking}.
+     */
+    private final Bookings bookings;
 
-  public GetRemindersRequest(final Bookings bookings, final String userId) {
-    this.bookings = bookings;
-    this.userId = userId;
-  }
+    /**
+     * The user ID.
+     */
+    private final String user;
 
-  public GetRemindersRequest(final Bookings bookings, final Parameter<String> userId) {
-    this(bookings, userId.value());
-  }
+    /**
+     * The starting timestamp.
+     */
+    private final long start;
 
-  public GetRemindersRequest(final Bookings bookings, final Context context) {
-    this(bookings, new RequiredParameter<>(new QueryParameter("user_id", context)));
-  }
-
-  @Override
-  public void perform(final Context context) {
-    final List<Booking> reminders = bookings.forUserFromStartDate(userId, 1764352800);
-    if (reminders.isEmpty()) {
-      context.status(HttpStatus.NO_CONTENT_204);
-    } else {
-      context
-        .json(reminders.stream().map(JsonBooking::new).map(JsonBooking::map).toList())
-        .status(HttpStatus.OK_200);
+    public GetRemindersRequest(final Bookings bookings, final String user, final long start) {
+        this.bookings = bookings;
+        this.user = user;
+        this.start = start;
     }
-  }
+
+    public GetRemindersRequest(
+        final Bookings bookings,
+        final Parameter<String> user,
+        final Parameter<Long> start
+    ) {
+        this(bookings, user.value(), start.value());
+    }
+
+    public GetRemindersRequest(final Bookings bookings, final Context context) {
+        this(
+            bookings,
+            new RequiredParameter<>(new QueryParameter("user_id", context)),
+            new LongParameter(
+                new RequiredParameter<>(
+                    new QueryParameter("timestamp_start", context)
+                )
+            )
+        );
+    }
+
+    @Override
+    public void perform(final Context context) {
+        final List<Booking> reminders = this.bookings.forUserFromStartDate(
+            this.user,
+            this.start
+        );
+        if (reminders.isEmpty()) {
+            context.status(HttpStatus.NO_CONTENT_204);
+        } else {
+            context
+                .json(reminders.stream().map(JsonBooking::new).map(JsonBooking::map).toList())
+                .status(HttpStatus.OK_200);
+        }
+    }
 }

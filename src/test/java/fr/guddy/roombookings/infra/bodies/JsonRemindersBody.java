@@ -24,39 +24,82 @@
 package fr.guddy.roombookings.infra.bodies;
 
 import fr.guddy.roombookings.infra.requests.Reminders;
-import org.cactoos.text.FormattedText;
+import javax.json.Json;
 import org.cactoos.text.TextEnvelope;
+import org.cactoos.text.TextOf;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
+/**
+ * Custom body to post {@link Reminders}.
+ *
+ * @since 1.0.0
+ */
 public final class JsonRemindersBody extends TextEnvelope {
 
-  public JsonRemindersBody(final Reminders reminders) {
-    super(
-      new FormattedText(
-        "[" +
-          "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}," +
-          "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}" +
-          "]",
-        reminders.idMinus15ToPlus15m(),
-        Instant.ofEpochSecond(1764352800)
-            .minus(Duration.standardMinutes(15).getMillis())
-            .getMillis() /
-          1000,
-        Instant.ofEpochSecond(1764352800)
-            .plus(Duration.standardMinutes(15).getMillis())
-            .getMillis() /
-          1000,
-        reminders.idPlus15To45m(),
-        Instant.ofEpochSecond(1764352800)
-            .plus(Duration.standardMinutes(15).getMillis())
-            .getMillis() /
-          1000,
-        Instant.ofEpochSecond(1764352800)
-            .plus(Duration.standardMinutes(45).getMillis())
-            .getMillis() /
-          1000
-      )
-    );
-  }
+    public JsonRemindersBody(final Reminders reminders) {
+        super(
+            new TextOf(
+                Json.createArrayBuilder()
+                    .add(
+                        Json.createObjectBuilder()
+                            .add("id", reminders.idMin15ToPlus15())
+                            .add("user_id", "test_user_id")
+                            .add(
+                                "room",
+                                Json.createObjectBuilder()
+                                    .add("name", "test_name")
+                                    .add("capacity", 12)
+                            )
+                            .add(
+                                "slot",
+                                Json.createObjectBuilder()
+                                    .add(
+                                        "timestamp_start",
+                                        Instant.ofEpochSecond(1_764_352_800)
+                                            .minus(Duration.standardMinutes(15).getMillis())
+                                            .getMillis() / 1000
+                                    )
+                                    .add(
+                                        "timestamp_end",
+                                        Instant.ofEpochSecond(1_764_352_800)
+                                            .plus(Duration.standardMinutes(15).getMillis())
+                                            .getMillis() / 1000
+                                    )
+                            )
+                            .build()
+                    )
+                    .add(
+                        Json.createObjectBuilder()
+                            .add("id", reminders.idPlus15To45())
+                            .add("user_id", "test_user_id")
+                            .add(
+                                "room",
+                                Json.createObjectBuilder()
+                                    .add("name", "test_name")
+                                    .add("capacity", 12)
+                            )
+                            .add(
+                                "slot",
+                                Json.createObjectBuilder()
+                                    .add(
+                                        "timestamp_start",
+                                        Instant.ofEpochSecond(1_764_352_800)
+                                            .plus(Duration.standardMinutes(15).getMillis())
+                                            .getMillis() / 1000
+                                    )
+                                    .add(
+                                        "timestamp_end",
+                                        Instant.ofEpochSecond(1_764_352_800)
+                                            .plus(Duration.standardMinutes(45).getMillis())
+                                            .getMillis() / 1000
+                                    )
+                            )
+                            .build()
+                    )
+                    .build()
+                    .toString()
+            )
+        );
+    }
 }

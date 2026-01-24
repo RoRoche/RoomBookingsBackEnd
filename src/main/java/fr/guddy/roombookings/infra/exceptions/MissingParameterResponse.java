@@ -28,10 +28,16 @@ import io.javalin.http.Context;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Exception} thrown when a required {@link fr.guddy.roombookings.infra.params.Parameter}
+ * is missing.
+ *
+ * @since 1.0.0
+ */
 public final class MissingParameterResponse implements ExceptionHandler<MissingParameterException> {
 
-  @Override
-  public void handle(final MissingParameterException exception, final Context ctx) {
-    ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
-  }
+    @Override
+    public void handle(final MissingParameterException exception, final Context ctx) {
+        ctx.status(HttpStatus.BAD_REQUEST_400).result(exception.getMessage());
+    }
 }

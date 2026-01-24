@@ -26,16 +26,24 @@ package fr.guddy.roombookings.architecture.rules.conditions.predicates;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import org.cactoos.Scalar;
 
+/**
+ * Is allowed static methods (main).
+ *
+ * @since 1.0.0
+ */
 public final class IsAllowedStaticMethod implements Scalar<Boolean> {
 
-  private final JavaMethod method;
+    /**
+     * The {@link JavaMethod} to test.
+     */
+    private final JavaMethod method;
 
-  public IsAllowedStaticMethod(final JavaMethod method) {
-    this.method = method;
-  }
+    public IsAllowedStaticMethod(final JavaMethod method) {
+        this.method = method;
+    }
 
-  @Override
-  public Boolean value() {
-    return this.method.getName().startsWith("$") || this.method.reflect().isSynthetic();
-  }
+    @Override
+    public Boolean value() {
+        return this.method.getName().startsWith("$") || this.method.reflect().isSynthetic();
+    }
 }

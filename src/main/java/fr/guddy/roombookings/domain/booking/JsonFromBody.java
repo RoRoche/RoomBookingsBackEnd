@@ -29,18 +29,27 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import org.cactoos.Scalar;
 
+/**
+ * Load a {@link JsonObject} from a {@link String} JSON.
+ *
+ * @since 1.0.0
+ */
 public final class JsonFromBody implements Scalar<JsonObject> {
 
-  private final String body;
+    /**
+     * The JSON body as {@link String}.
+     */
+    private final String body;
 
-  public JsonFromBody(final String body) {
-    this.body = body;
-  }
-
-  @Override
-  public JsonObject value() {
-    try (final JsonReader reader = Json.createReader(new StringReader(this.body))) {
-      return reader.readObject();
+    public JsonFromBody(final String body) {
+        this.body = body;
     }
-  }
+
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    @Override
+    public JsonObject value() {
+        try (JsonReader reader = Json.createReader(new StringReader(this.body))) {
+            return reader.readObject();
+        }
+    }
 }

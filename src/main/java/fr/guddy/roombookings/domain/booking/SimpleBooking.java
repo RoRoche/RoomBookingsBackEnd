@@ -25,17 +25,30 @@ package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.Slot;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 
-public record SimpleBooking(Long id, String userId, Room room, Slot slot) implements Booking {
-  @Override
-  public Map<String, Object> map() {
-    return new MapOf<>(
-      new MapEntry<>("id", id),
-      new MapEntry<>("room", room),
-      new MapEntry<>("slot", slot)
-    );
-  }
+/**
+ * Simple implementation of a {@link Booking}.
+ *
+ * @param identifier The ID.
+ * @param userId     The user ID that booked the roo.
+ * @param room       The booked {@link Room}.
+ * @param slot       The booked {@link Slot}.
+ */
+public record SimpleBooking(
+    Long identifier,
+    String userId,
+    Room room,
+    Slot slot
+) implements Booking {
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", identifier());
+        map.put("user_id", userId());
+        map.put("room", room().map());
+        map.put("slot", slot().map());
+        return map;
+    }
 }

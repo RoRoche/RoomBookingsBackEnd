@@ -23,51 +23,61 @@
  */
 package fr.guddy.roombookings.domain.slot;
 
-import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * A slot implementation backed by a JSON object.
+ * Wraps another {@link Slot} and delegates all calls to it.
+ *
+ * @since 1.0.0
+ */
 public final class JsonSlot implements Slot {
 
-  private static final String JSON_KEY_TIMESTAMP_START = "timestamp_start";
-  private static final String JSON_KEY_TIMESTAMP_END = "timestamp_end";
+    /**
+     * The JSON key corresponding to starting timestamp.
+     */
+    private static final String TIMESTAMP_START = "timestamp_start";
 
-  private final Slot delegate;
+    /**
+     * The JSON key corresponding to ending timestamp.
+     */
+    private static final String TIMESTAMP_END = "timestamp_end";
 
-  public JsonSlot(final Slot delegate) {
-    this.delegate = delegate;
-  }
+    /**
+     * The wrapped {@link Slot} to be decorated.
+     */
+    private final Slot delegate;
 
-  public JsonSlot(final String body) {
-    this(Json.createReader(new StringReader(body)).readObject());
-  }
+    public JsonSlot(final Slot delegate) {
+        this.delegate = delegate;
+    }
 
-  public JsonSlot(final JsonObject jsonObject) {
-    this(
-      new LogicalSlot(
-        jsonObject.getInt(JSON_KEY_TIMESTAMP_START),
-        jsonObject.getInt(JSON_KEY_TIMESTAMP_END)
-      )
-    );
-  }
+    public JsonSlot(final JsonObject json) {
+        this(
+            new LogicalSlot(
+                json.getInt(JsonSlot.TIMESTAMP_START),
+                json.getInt(JsonSlot.TIMESTAMP_END)
+            )
+        );
+    }
 
-  @Override
-  public long timestampStart() {
-    return delegate.timestampStart();
-  }
+    @Override
+    public long timestampStart() {
+        return this.delegate.timestampStart();
+    }
 
-  @Override
-  public long timestampEnd() {
-    return delegate.timestampEnd();
-  }
+    @Override
+    public long timestampEnd() {
+        return this.delegate.timestampEnd();
+    }
 
-  @Override
-  public Map<String, Object> map() {
-    final Map<String, Object> map = new LinkedHashMap<>();
-    map.put(JSON_KEY_TIMESTAMP_START, timestampStart());
-    map.put(JSON_KEY_TIMESTAMP_END, timestampEnd());
-    return map;
-  }
+    @Override
+    public Map<String, Object> map() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put(JsonSlot.TIMESTAMP_START, this.timestampStart());
+        map.put(JsonSlot.TIMESTAMP_END, this.timestampEnd());
+        return map;
+    }
 }

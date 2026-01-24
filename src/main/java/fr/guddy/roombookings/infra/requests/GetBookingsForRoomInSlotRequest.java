@@ -31,66 +31,100 @@ import fr.guddy.roombookings.domain.rooms.RoomNotFoundException;
 import fr.guddy.roombookings.domain.rooms.Rooms;
 import fr.guddy.roombookings.domain.slot.LogicalSlot;
 import fr.guddy.roombookings.domain.slot.Slot;
-import fr.guddy.roombookings.infra.params.*;
+import fr.guddy.roombookings.infra.params.LongParameter;
+import fr.guddy.roombookings.infra.params.Parameter;
+import fr.guddy.roombookings.infra.params.PathParameter;
+import fr.guddy.roombookings.infra.params.QueryParameter;
+import fr.guddy.roombookings.infra.params.RequiredParameter;
 import io.javalin.http.Context;
 import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * {@link Request} to get {@link Booking} for {@link Room} in {@link Slot}.
+ *
+ * @since 1.0.0
+ */
 public final class GetBookingsForRoomInSlotRequest implements Request {
 
-  private final Bookings bookings;
-  private final Room room;
-  private final Slot slot;
+    /**
+     * The collection of {@link Booking}.
+     */
+    private final Bookings bookings;
 
-  public GetBookingsForRoomInSlotRequest(
-    final Bookings bookings,
-    final Room room,
-    final Slot slot
-  ) {
-    this.bookings = bookings;
-    this.room = room;
-    this.slot = slot;
-  }
+    /**
+     * The specific {@link Room}.
+     */
+    private final Room room;
 
-  public GetBookingsForRoomInSlotRequest(
-    final Rooms rooms,
-    final Bookings bookings,
-    final Context context
-  ) {
-    this(
-      rooms,
-      bookings,
-      new RequiredParameter<>(new PathParameter("name", context)),
-      new LongParameter(new RequiredParameter<>(new QueryParameter("timestamp_start", context))),
-      new LongParameter(new RequiredParameter<>(new QueryParameter("timestamp_end", context)))
-    );
-  }
+    /**
+     * The targeted {@link Slot}.
+     */
+    private final Slot slot;
 
-  public GetBookingsForRoomInSlotRequest(
-    final Rooms rooms,
-    final Bookings bookings,
-    final Parameter<String> roomName,
-    final Parameter<Long> timestampStart,
-    final Parameter<Long> timestampEnd
-  ) {
-    this(
-      bookings,
-      rooms
-        .withName(roomName.value())
-        .orElseThrow(() -> new RoomNotFoundException(roomName.value())),
-      new LogicalSlot(timestampStart.value(), timestampEnd.value())
-    );
-  }
-
-  @Override
-  public void perform(final Context context) {
-    final List<Booking> existingBookings = bookings.forRoomInSlot(room, slot);
-    if (existingBookings.isEmpty()) {
-      context.status(HttpStatus.NO_CONTENT_204);
-    } else {
-      context
-        .json(existingBookings.stream().map(JsonBooking::new).map(JsonBooking::map).toList())
-        .status(HttpStatus.OK_200);
+    public GetBookingsForRoomInSlotRequest(
+        final Bookings bookings,
+        final Room room,
+        final Slot slot
+    ) {
+        this.bookings = bookings;
+        this.room = room;
+        this.slot = slot;
     }
-  }
+
+    public GetBookingsForRoomInSlotRequest(
+        final Rooms rooms,
+        final Bookings bookings,
+        final Context context
+    ) {
+        this(
+            rooms,
+            bookings,
+            new RequiredParameter<>(new PathParameter("name", context)),
+            new LongParameter(
+                new RequiredParameter<>(new QueryParameter("timestamp_start", context))
+            ),
+            new LongParameter(new RequiredParameter<>(new QueryParameter("timestamp_end", context)))
+        );
+    }
+
+    /**
+     * Secondary constructor.
+     *
+     * @param rooms The collection of {@link Room}.
+     * @param bookings The collection of {@link Booking}.
+     * @param room The {@link Room} name.
+     * @param start The starting timestamp.
+     * @param end The ending timestamp.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public GetBookingsForRoomInSlotRequest(
+        final Rooms rooms,
+        final Bookings bookings,
+        final Parameter<String> room,
+        final Parameter<Long> start,
+        final Parameter<Long> end
+    ) {
+        this(
+            bookings,
+            rooms
+                .withName(room.value())
+                .orElseThrow(() -> new RoomNotFoundException(room.value())),
+            new LogicalSlot(start.value(), end.value())
+        );
+    }
+
+    @Override
+    public void perform(final Context context) {
+        final List<Booking> existing = this.bookings.forRoomInSlot(this.room, this.slot);
+        if (existing.isEmpty()) {
+            context.status(HttpStatus.NO_CONTENT_204);
+        } else {
+            context
+                .json(
+                    existing.stream().map(JsonBooking::new).map(JsonBooking::map).toList()
+                )
+                .status(HttpStatus.OK_200);
+        }
+    }
 }

@@ -23,8 +23,7 @@
  */
 package fr.guddy.roombookings.infra.requests;
 
-import static com.mashape.unirest.http.Unirest.post;
-
+import com.mashape.unirest.http.Unirest;
 import fr.guddy.roombookings.infra.ApiExternalExtension;
 import fr.guddy.roombookings.infra.HttpTestCase;
 import fr.guddy.roombookings.infra.fixtures.CreateSimpleRoom;
@@ -39,43 +38,54 @@ import org.hamcrest.core.AllOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Tests on the {@link PostRoomRequest}.
+ *
+ * @since 1.0.0
+ */
 final class PostRoomRequestTest {
 
-  @RegisterExtension
-  @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-  static final ApiExternalExtension api = new ApiExternalExtension();
+    /**
+     * The API.
+     */
+    @RegisterExtension
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    static final ApiExternalExtension API = new ApiExternalExtension();
 
-  @Test
-  void isOK() {
-    MatcherAssert.assertThat(
-      "Create room is successful",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll),
-        post("http://localhost:%d/rooms".formatted(api.port().value())).body(
-          "{\"name\":\"test_name\",\"capacity\":12}"
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.CREATED_201),
-        new HasHeaderWithValue("Location", Matchers.startsWith("/rooms/"))
-      )
-    );
-  }
+    @Test
+    void isOK() {
+        MatcherAssert.assertThat(
+            "Create room is successful",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(PostRoomRequestTest.API.rooms()::clearAll),
+                Unirest.post(
+                    "http://localhost:%d/rooms".formatted(PostRoomRequestTest.API.port().value())
+                ).body("{\"name\":\"test_name\",\"capacity\":12}")::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.CREATED_201),
+                new HasHeaderWithValue("Location", Matchers.startsWith("/rooms/"))
+            )
+        );
+    }
 
-  @Test
-  void isConflict() {
-    MatcherAssert.assertThat(
-      "Is conflicting on name",
-      new HttpTestCase.WithFixtures<>(
-        new ListOf<>(api.rooms()::clearAll, new CreateSimpleRoom(api)),
-        post("http://localhost:%d/rooms".formatted(api.port().value())).body(
-          "{\"name\":\"test_name\",\"capacity\":12}"
-        )::asString
-      ),
-      new AllOf<>(
-        new HasStatus(HttpStatus.CONFLICT_409),
-        new HasBody("A room named 'test_name' already exists")
-      )
-    );
-  }
+    @Test
+    void isConflict() {
+        MatcherAssert.assertThat(
+            "Is conflicting on name",
+            new HttpTestCase.WithFixtures<>(
+                new ListOf<>(
+                    PostRoomRequestTest.API.rooms()::clearAll,
+                    new CreateSimpleRoom(PostRoomRequestTest.API)
+                ),
+                Unirest.post(
+                    "http://localhost:%d/rooms".formatted(PostRoomRequestTest.API.port().value())
+                ).body("{\"name\":\"test_name\",\"capacity\":12}")::asString
+            ),
+            new AllOf<>(
+                new HasStatus(HttpStatus.CONFLICT_409),
+                new HasBody("A room named 'test_name' already exists")
+            )
+        );
+    }
 }

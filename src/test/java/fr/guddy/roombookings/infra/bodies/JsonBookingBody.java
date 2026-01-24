@@ -29,21 +29,27 @@ import org.cactoos.text.TextEnvelope;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
+/**
+ * Custom body to compare a {@link fr.guddy.roombookings.domain.booking.JsonBooking}.
+ *
+ * @since 1.0.0
+ */
 public final class JsonBookingBody extends TextEnvelope {
 
-  public JsonBookingBody(final Long id) {
-    super(
-      new FormattedText(
-        "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
-        id,
-        1764352800,
-        Instant.ofEpochSecond(1764352800).plus(Duration.standardHours(1).getMillis()).getMillis() /
-          1000
-      )
-    );
-  }
+    public JsonBookingBody(final Long id) {
+        super(
+            new FormattedText(
+                "{\"id\":%d,\"user_id\":\"test_user_id\",\"room\":{\"name\":\"test_name\",\"capacity\":12},\"slot\":{\"timestamp_start\":%d,\"timestamp_end\":%d}}",
+                id,
+                1_764_352_800,
+                Instant.ofEpochSecond(1_764_352_800)
+                    .plus(Duration.standardHours(1).getMillis())
+                    .getMillis() / 1000
+            )
+        );
+    }
 
-  public JsonBookingBody(final Booking booking) {
-    this(booking.id());
-  }
+    public JsonBookingBody(final Booking booking) {
+        this(booking.identifier());
+    }
 }

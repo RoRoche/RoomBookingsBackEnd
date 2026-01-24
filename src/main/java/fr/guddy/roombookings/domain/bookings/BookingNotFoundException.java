@@ -23,9 +23,14 @@
  */
 package fr.guddy.roombookings.domain.bookings;
 
+/**
+ * {@link Exception} thrown when booking is not found.
+ *
+ * @since 1.0.O
+ */
 public final class BookingNotFoundException extends RuntimeException {
 
-  public BookingNotFoundException(final long id) {
-    super(String.format("No booking with id %d were found", id));
-  }
+    public BookingNotFoundException(final long id) {
+        super(String.format("No booking with id %d were found", id));
+    }
 }

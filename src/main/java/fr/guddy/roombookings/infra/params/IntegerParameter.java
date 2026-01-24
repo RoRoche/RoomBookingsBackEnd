@@ -24,26 +24,38 @@
 package fr.guddy.roombookings.infra.params;
 
 import fr.guddy.roombookings.infra.params.exceptions.NotProcessableParameterException;
-import io.vavr.control.Try;
 
+/**
+ * {@link Parameter} with value of type {@link Integer}.
+ *
+ * @since 1.0.0
+ */
 public final class IntegerParameter implements Parameter<Integer> {
 
-  private final Parameter<String> delegate;
+    /**
+     * The wrapped {@link Parameter} with {@link String} value.
+     */
+    private final Parameter<String> delegate;
 
-  public IntegerParameter(final Parameter<String> delegate) {
-    this.delegate = delegate;
-  }
+    public IntegerParameter(final Parameter<String> delegate) {
+        this.delegate = delegate;
+    }
 
-  @Override
-  public String name() {
-    return delegate.name();
-  }
+    @Override
+    public String name() {
+        return this.delegate.name();
+    }
 
-  @Override
-  public Integer value() {
-    final String value = delegate.value();
-    return Try.of(() -> Integer.valueOf(value)).getOrElseThrow((final Throwable throwable) ->
-      new NotProcessableParameterException(name(), Integer.class)
-    );
-  }
+    @Override
+    public Integer value() {
+        try {
+            return Integer.valueOf(this.delegate.value());
+        } catch (final NumberFormatException exception) {
+            throw new NotProcessableParameterException(
+                this.name(),
+                Integer.class,
+                exception
+            );
+        }
+    }
 }

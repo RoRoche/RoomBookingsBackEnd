@@ -27,22 +27,33 @@ import org.cactoos.Scalar;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.collection.NitriteCollection;
 
+/**
+ * A {@link NitriteCollection} with index on {@link fr.guddy.roombookings.domain.room.Room} name.
+ *
+ * @since 1.0.0
+ */
 public final class IndexedByRoomNameNitriteCollection implements Scalar<NitriteCollection> {
 
-  private static final String INDEX_ROOM_NAME = "room_name";
+    /**
+     * The index on {@link fr.guddy.roombookings.domain.room.Room} name.
+     */
+    private static final String INDEX_ROOM_NAME = "room_name";
 
-  private final Nitrite database;
+    /**
+     * The concrete {@link Nitrite} database on which to apply the index.
+     */
+    private final Nitrite database;
 
-  public IndexedByRoomNameNitriteCollection(final Nitrite database) {
-    this.database = database;
-  }
-
-  @Override
-  public NitriteCollection value() {
-    final NitriteCollection rooms = database.getCollection("rooms");
-    if (!rooms.hasIndex(INDEX_ROOM_NAME)) {
-      rooms.createIndex(INDEX_ROOM_NAME);
+    public IndexedByRoomNameNitriteCollection(final Nitrite database) {
+        this.database = database;
     }
-    return rooms;
-  }
+
+    @Override
+    public NitriteCollection value() {
+        final NitriteCollection rooms = this.database.getCollection("rooms");
+        if (!rooms.hasIndex(IndexedByRoomNameNitriteCollection.INDEX_ROOM_NAME)) {
+            rooms.createIndex(IndexedByRoomNameNitriteCollection.INDEX_ROOM_NAME);
+        }
+        return rooms;
+    }
 }

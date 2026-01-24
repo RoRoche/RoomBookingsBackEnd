@@ -23,64 +23,106 @@
  */
 package fr.guddy.roombookings.infra.routes;
 
-import static io.javalin.apibuilder.ApiBuilder.get;
-import static io.javalin.apibuilder.ApiBuilder.post;
-
 import fr.guddy.roombookings.domain.bookings.Bookings;
 import fr.guddy.roombookings.domain.rooms.Rooms;
-import fr.guddy.roombookings.infra.params.*;
-import fr.guddy.roombookings.infra.requests.*;
+import fr.guddy.roombookings.infra.params.IntegerParameter;
+import fr.guddy.roombookings.infra.params.OptionalParameter;
+import fr.guddy.roombookings.infra.params.Parameter;
+import fr.guddy.roombookings.infra.params.QueryParameter;
+import fr.guddy.roombookings.infra.params.StringParameter;
+import fr.guddy.roombookings.infra.requests.GetAvailableRoomsRequest;
+import fr.guddy.roombookings.infra.requests.GetBookingsForRoomInSlotRequest;
+import fr.guddy.roombookings.infra.requests.GetCapableRoomsRequest;
+import fr.guddy.roombookings.infra.requests.GetNamedRoomRequest;
+import fr.guddy.roombookings.infra.requests.GetRoomsRequest;
+import fr.guddy.roombookings.infra.requests.PostBookingRequest;
+import fr.guddy.roombookings.infra.requests.PostRoomRequest;
+import fr.guddy.roombookings.infra.requests.Request;
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Routes to expose {@link Rooms}.
+ *
+ * @since 1.0.0
+ */
 public final class RoomsRoute implements EndpointGroup {
 
-  private final Rooms rooms;
-  private final Bookings bookings;
+    /**
+     * Collection of {@link Rooms}.
+     */
+    private final Rooms rooms;
 
-  public RoomsRoute(final Rooms rooms, final Bookings bookings) {
-    this.rooms = rooms;
-    this.bookings = bookings;
-  }
+    /**
+     * Collection of {@link fr.guddy.roombookings.domain.booking.Booking}.
+     */
+    private final Bookings bookings;
 
-  @Override
-  public void addEndpoints() {
-    get((final Context ctx) -> {
-      final OptionalParameter<String> capacityParameter = new OptionalParameter<>(
-        new QueryParameter("capacity", ctx)
-      );
-      final OptionalParameter<String> timestampStartParameter = new OptionalParameter<>(
-        new QueryParameter("timestamp_start", ctx)
-      );
-      final Request request;
-      if (
-        Stream.of(capacityParameter, timestampStartParameter).allMatch(
-          (final Parameter<Optional<String>> parameter) -> parameter.value().isPresent()
-        )
-      ) {
-        request = new GetAvailableRoomsRequest(rooms, bookings, ctx);
-      } else {
-        request = capacityParameter
-          .value()
-          .<Request>map((final String capacity) ->
-            new GetCapableRoomsRequest(
-              rooms,
-              new IntegerParameter(new StringParameter("capacity", capacity))
-            )
-          )
-          .orElseGet(() -> new GetRoomsRequest(rooms));
-      }
-      request.perform(ctx);
-    });
-    get("/{name}", (final Context ctx) -> new GetNamedRoomRequest(rooms, ctx).perform(ctx));
-    get("/{name}/bookings", (final Context ctx) ->
-      new GetBookingsForRoomInSlotRequest(rooms, bookings, ctx).perform(ctx)
-    );
-    post("/{name}/bookings", (final Context ctx) ->
-      new PostBookingRequest(rooms, bookings, ctx).perform(ctx)
-    );
-    post((final Context ctx) -> new PostRoomRequest(rooms, ctx).perform(ctx));
-  }
+    public RoomsRoute(final Rooms rooms, final Bookings bookings) {
+        this.rooms = rooms;
+        this.bookings = bookings;
+    }
+
+    @Override
+    public void addEndpoints() {
+        ApiBuilder.get(
+            (final Context ctx) -> {
+                final OptionalParameter<String> capacity = new OptionalParameter<>(
+                    new QueryParameter("capacity", ctx)
+                );
+                final Request request;
+                if (
+                    Stream.of(
+                        capacity,
+                        new OptionalParameter<>(new QueryParameter("timestamp_start", ctx))
+                    ).allMatch(
+                        (final Parameter<Optional<String>> parameter) ->
+                            parameter.value().isPresent()
+                    )
+                ) {
+                    request = new GetAvailableRoomsRequest(this.rooms, this.bookings, ctx);
+                } else {
+                    request = capacity
+                        .value()
+                        .<Request>map(
+                            (final String capaAsString) ->
+                                new GetCapableRoomsRequest(
+                                    this.rooms,
+                                    new IntegerParameter(
+                                        new StringParameter("capacity", capaAsString)
+                                    )
+                                )
+                        )
+                        .orElseGet(() -> new GetRoomsRequest(this.rooms));
+                }
+                request.perform(ctx);
+            }
+        );
+        ApiBuilder.get(
+            "/{name}",
+            (final Context ctx) -> new GetNamedRoomRequest(this.rooms, ctx).perform(ctx)
+        );
+        ApiBuilder.get(
+            "/{name}/bookings",
+            (final Context ctx) -> new GetBookingsForRoomInSlotRequest(
+                this.rooms,
+                this.bookings,
+                ctx
+            ).perform(ctx)
+        );
+        ApiBuilder.post(
+            "/{name}/bookings",
+            (final Context ctx) -> new PostBookingRequest(
+                this.rooms,
+                this.bookings,
+                ctx
+            ).perform(ctx)
+        );
+        ApiBuilder.post(
+            (final Context ctx) -> new PostRoomRequest(this.rooms, ctx).perform(ctx)
+        );
+    }
 }
