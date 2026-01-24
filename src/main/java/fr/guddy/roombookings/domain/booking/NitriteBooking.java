@@ -37,7 +37,7 @@ import org.dizitart.no2.collection.Document;
  *
  * @since 1.0.0
  */
-public final class NitriteBooking implements Booking {
+public final class NitriteBooking extends BookingEnvelope {
 
     /**
      * The {@link Room} name.
@@ -59,13 +59,8 @@ public final class NitriteBooking implements Booking {
      */
     private static final String TIMESTAMP_END = "slot_timestamp_end";
 
-    /**
-     * The wrapped {@link Booking}.
-     */
-    private final Booking delegate;
-
     public NitriteBooking(final Booking delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     /**
@@ -117,26 +112,6 @@ public final class NitriteBooking implements Booking {
             rooms.withName(room).orElseThrow(() -> new RoomNotFoundException(room)),
             new LogicalSlot(start, end)
         );
-    }
-
-    @Override
-    public Long identifier() {
-        return this.delegate.identifier();
-    }
-
-    @Override
-    public String userId() {
-        return this.delegate.userId();
-    }
-
-    @Override
-    public Room room() {
-        return this.delegate.room();
-    }
-
-    @Override
-    public Slot slot() {
-        return this.delegate.slot();
     }
 
     @Override

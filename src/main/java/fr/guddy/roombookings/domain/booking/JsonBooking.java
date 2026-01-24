@@ -24,9 +24,7 @@
 package fr.guddy.roombookings.domain.booking;
 
 import fr.guddy.roombookings.domain.room.JsonRoom;
-import fr.guddy.roombookings.domain.room.Room;
 import fr.guddy.roombookings.domain.slot.JsonSlot;
-import fr.guddy.roombookings.domain.slot.Slot;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,12 +37,11 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 1.0.0
  */
-public final class JsonBooking implements Booking {
+public final class JsonBooking extends BookingEnvelope {
 
     /**
      * The JSON key for id.
      */
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private static final String IDENTIFIER = "id";
 
     /**
@@ -55,22 +52,15 @@ public final class JsonBooking implements Booking {
     /**
      * The JSON key for room.
      */
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private static final String ROOM = "room";
 
     /**
      * The JSON key for slot.
      */
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private static final String SLOT = "slot";
 
-    /**
-     * The wrapped {@link Booking}.
-     */
-    private final Booking delegate;
-
     public JsonBooking(final Booking delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public JsonBooking(final String body) {
@@ -94,26 +84,6 @@ public final class JsonBooking implements Booking {
 
     public JsonBooking(final Scalar<JsonObject> json) {
         this(new Unchecked<>(json).value());
-    }
-
-    @Override
-    public Long identifier() {
-        return this.delegate.identifier();
-    }
-
-    @Override
-    public String userId() {
-        return this.delegate.userId();
-    }
-
-    @Override
-    public Room room() {
-        return this.delegate.room();
-    }
-
-    @Override
-    public Slot slot() {
-        return this.delegate.slot();
     }
 
     @Override
