@@ -114,6 +114,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.roroche</groupId>
+      <artifactId>eorules</artifactId>
+      <version>0.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <version>3.0</version>
