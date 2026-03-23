@@ -23,17 +23,17 @@
  */
 package fr.guddy.roombookings.architecture;
 
+import com.github.roroche.eorules.ClassesAreAbstractOrFinalRule;
+import com.github.roroche.eorules.ClassesShouldHaveNoStaticMethodsRule;
+import com.github.roroche.eorules.ClassesShouldNotHaveGettersOrSettersRule;
+import com.github.roroche.eorules.ClassesShouldNotHavePrivateMethodsRule;
+import com.github.roroche.eorules.FieldsShouldBeFinalRule;
+import com.github.roroche.eorules.PublicMethodsDeclaredInInterfacesRule;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
-import fr.guddy.roombookings.architecture.rules.ClassesAreAbstractOrFinalRule;
-import fr.guddy.roombookings.architecture.rules.ClassesShouldHaveNoStaticMethodsRule;
-import fr.guddy.roombookings.architecture.rules.ClassesShouldNotHaveGettersOrSettersRule;
-import fr.guddy.roombookings.architecture.rules.ClassesShouldNotHavePrivateMethodsRule;
-import fr.guddy.roombookings.architecture.rules.FieldsShouldBeFinalRule;
-import fr.guddy.roombookings.architecture.rules.PublicMethodsDeclaredInInterfacesRule;
 import org.junit.jupiter.api.Test;
 
 /**
